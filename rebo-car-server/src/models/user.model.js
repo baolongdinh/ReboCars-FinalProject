@@ -1,4 +1,4 @@
-const {mongoose , Schema}= require("mongoose");
+const { mongoose, Schema } = require("mongoose");
 
 const userAccountSchema = new mongoose.Schema(
   {
@@ -6,8 +6,8 @@ const userAccountSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    password : {
-    type: String,
+    password: {
+      type: String,
       required: true,
     },
     name: {
@@ -19,33 +19,33 @@ const userAccountSchema = new mongoose.Schema(
     },
     phone: {
       number: {
-        type : String
+        type: String,
       },
-      active : { 
-        type : Boolean
-      }
+      active: {
+        type: Boolean,
+      },
     },
     driving_license: {
-      GPLX_image: { 
-        type: String
+      GPLX_image: {
+        type: String,
       },
-      GPLX_number: { 
-        type: String
+      GPLX_number: {
+        type: String,
       },
-      GPLX_Name: { 
-        type: String
+      GPLX_Name: {
+        type: String,
       },
-      DateOfBirth: { 
-        type: String
-      }
+      DateOfBirth: {
+        type: String,
+      },
     },
     role: {
       type: String,
     },
-    active : {
+    active: {
       type: Boolean,
-      default : false
-    }
+      default: false,
+    },
   },
   {
     timestamps: true,

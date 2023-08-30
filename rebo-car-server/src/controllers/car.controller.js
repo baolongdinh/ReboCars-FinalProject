@@ -54,6 +54,27 @@ const userController = {
         next(err);
       });
   },
+
+  updateCarById: async (req, res, next) => {
+    await carService
+      .updateCarById(req.params.id, req.body)
+      .then((updateCar) => {
+        respondOK(res, { updateCar }, "update car successfully", 200);
+      })
+      .catch((err) => {
+        console.log("err: ", err);
+        next(err);
+      });
+  },
+
+  updateCarImagesById: async (req, res, next) => {
+    await carService
+      .updateCarImagesById(req, res, req.params.id)
+      .catch((err) => {
+        console.log("err: ", err);
+        next(err);
+      });
+  },
 };
 
 module.exports = userController;

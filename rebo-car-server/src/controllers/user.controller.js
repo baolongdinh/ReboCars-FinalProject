@@ -32,20 +32,38 @@ const userController = {
     });
   },
   getAllUser: async (req, res, next) => {
-    await userServices.getAllUsers(res, req.query).catch((err) => {
-      console.log("err: ", err);
-      next(err);
-    });
+    await userServices
+      .getAllUsers(res, req.query)
+      .then((users) => {
+        respondOK(res, users, "get all users successfully", 201);
+      })
+      .catch((err) => {
+        console.log("err: ", err);
+        next(err);
+      });
   },
   deleteUserById: async (req, res, next) => {
-    await userServices.deleteUserById(res, req.params.id).catch((err) => {
-      console.log("err: ", err);
-      next(err);
-    });
+    await userServices
+      .deleteUserById(req.params.id)
+      .then(() => {
+        respondOK(res, null, "Deleted user successfully", 200);
+      })
+      .catch((err) => {
+        console.log("err: ", err);
+        next(err);
+      });
   },
   updateUserById: async (req, res, next) => {
     await userServices
-      .updateUserById(res, req.params.id, req.body)
+      .updateUserById(req.params.id, req.body)
+      .then((updatedUser) => {
+        respondOK(
+          res,
+          { updatedUser },
+          "Update user password successfully",
+          200
+        );
+      })
       .catch((err) => {
         console.log("err: ", err);
         next(err);
@@ -53,7 +71,10 @@ const userController = {
   },
   resetPwdByUserById: async (req, res, next) => {
     await userServices
-      .resetPwdByUserById(res, req.params.id, req.body)
+      .resetPwdByUserById(req.params.id, req.body)
+      .then(() => {
+        respondOK(res, null, "reset user password successfully", 200);
+      })
       .catch((err) => {
         console.log("err: ", err);
         next(err);

@@ -203,6 +203,88 @@ const carService = {
         throw new BadRequestError(err.message);
       });
   },
+
+  updateCarById: async (
+    carId,
+    {
+      name,
+      identifyNumber,
+      carType,
+      price,
+      description,
+      location,
+      characteristic,
+      feature,
+      vehicle_handling,
+    }
+  ) => {
+    const updatedCar = carModel
+      .findByIdAndUpdate(
+        carId,
+        {
+          name,
+          identifyNumber,
+          carType,
+          price,
+          description,
+          location,
+          characteristic,
+          feature,
+          vehicle_handling,
+        },
+        {
+          new: true,
+        }
+      )
+      .catch((err) => {
+        throw new BadRequestError(err.message);
+      });
+    return updatedCar;
+  },
+
+  updateCarImagesById: async (req, res, carId) => {
+    uploadCarImageFormData(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        return respondFailure(res, "Multer error occurred when uploading", 401);
+        // A Multer error occurred when uploading.
+      } else if (err) {
+        return respondFailure(res, "Internal error", 500);
+      }
+      // Everything went fine.
+
+      if (!req.files) {
+        return respondFailure(res, "can not found file upload", 500);
+      }
+
+      const existCar = await carModel.findById(carId).lean();
+      console.log(existCar);
+
+      if (!existCar) {
+        return respondFailure(res, "can not found car with id", 403);
+      }
+
+      deleteAllImagesOfCar(existCar);
+
+      const carImagesPath = cloneImagesPathOfFileToArray(req.files);
+
+      const updateImagesCar = await carModel.findByIdAndUpdate(
+        carId,
+        {
+          images: carImagesPath,
+        },
+        {
+          new: true,
+        }
+      );
+
+      respondOK(
+        res,
+        { updateImagesCar },
+        "updated car images successfully",
+        200
+      );
+    });
+  },
 };
 
 module.exports = carService;

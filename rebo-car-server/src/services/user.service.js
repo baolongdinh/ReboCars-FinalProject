@@ -43,20 +43,17 @@ var {
 // },
 
 const userSelectField = {
-  email: 1,
-  password: 1,
-  name: 1,
-  avatar: 1,
-  phone: 1,
-  driving_license: 1,
-  role: 1,
+  password: 0,
 };
 
 const userService = {
-  getAllUsers: async (
-    res,
-    { limit = 10, sort = "ctime", page = 1, filter, select = userSelectField }
-  ) => {
+  getAllUsers: async ({
+    limit = 10,
+    sort = "ctime",
+    page = 1,
+    filter,
+    select = userSelectField,
+  }) => {
     const skip = (page - 1) * limit;
     const sortBy = sort === "ctime" ? { _id: -1 } : { _id: 1 };
     const users = await userModel
@@ -70,7 +67,7 @@ const userService = {
     if (!users) {
       throw new NotfoundError("Invalid value");
     }
-    respondOK(res, { users }, "get users success", 200);
+    return users;
   },
 
   addUser: async (req, res) => {
@@ -116,12 +113,12 @@ const userService = {
       if (!newUser) {
         return respondFailure(res, "Mongoose create user got Error", 403);
       }
-
+      delete newUser._doc.password;
       return respondOK(res, { newUser }, "user added successfully", 201);
     });
   },
 
-  deleteUserById: async (res, id) => {
+  deleteUserById: async (id) => {
     const existedUser = await userModel.findById(id).lean();
     if (!existedUser) {
       throw new NotfoundError("Can not found user ID");
@@ -139,8 +136,6 @@ const userService = {
 
           deleteFileWithPath(userAvtImagePath);
         }
-
-        respondOK(res, null, "Deleted user successfully", 200);
       })
       .catch((err) => {
         throw new BadRequestError("Delete user with Id got error");
@@ -148,28 +143,33 @@ const userService = {
   },
 
   updateUserById: async (
-    res,
     id,
-    { name, avatar, phone, driving_license, role }
+    { name, phone, driving_license, role, active }
   ) => {
-    const user = await userModel.findByIdAndUpdate(id, {
-      name,
-      avatar,
-      phone,
-      driving_license,
-      role,
-    });
+    console.log(name);
+    const updatedUser = await userModel
+      .findByIdAndUpdate(
+        id,
+        {
+          name,
+          phone,
+          driving_license,
+          role,
+          active,
+        },
+        {
+          new: true,
+        }
+      )
+      .catch((err) => {
+        throw new NotfoundError(err.message);
+      });
 
-    if (!user) {
-      throw new NotfoundError("Can not found user ID");
-    }
-
-    const updated_user = [password, ...user];
-
-    respondOK(res, { updated_user }, "Update user successfully", 200);
+    delete updatedUser._doc.password;
+    return updatedUser;
   },
 
-  resetPwdByUserById: async (res, id, { oldPassword, newPassword }) => {
+  resetPwdByUserById: async (id, { oldPassword, newPassword }) => {
     const userExist = await userModel.findById(id);
 
     if (oldPassword === newPassword) {
@@ -190,8 +190,6 @@ const userService = {
     userExist.password = passwordHash;
 
     await userExist.save();
-
-    respondOK(res, null, "Update user successfully", 200);
   },
 
   updateUserAvtImageByID: async (req, res, id) => {
@@ -215,13 +213,12 @@ const userService = {
         const userAvtImagePath = userExist.avatar.replace("static", "public");
         deleteFileWithPath(userAvtImagePath);
       }
-
       const new_avatar_path = `/static/images/users/${req.file.filename}`;
 
       userExist.avatar = new_avatar_path;
       userExist
         .save()
-        .then((result) => {
+        .then(() => {
           return respondOK(
             res,
             { new_avatar_path },

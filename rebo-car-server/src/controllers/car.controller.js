@@ -8,11 +8,24 @@ const userController = {
       next(err);
     });
   },
+
   getAllCars: async (req, res, next) => {
     await carService
       .getAllCars(req.query)
       .then((cars) => {
         respondOK(res, { cars }, "get list cars success", 200);
+      })
+      .catch((err) => {
+        console.log("err: ", err);
+        next(err);
+      });
+  },
+
+  findCarById: async (req, res, next) => {
+    await carService
+      .findCarById(req.params.id)
+      .then((car) => {
+        respondOK(res, { car }, "get car success", 200);
       })
       .catch((err) => {
         console.log("err: ", err);
@@ -33,7 +46,7 @@ const userController = {
   },
   deleteCarById: async (req, res, next) => {
     await carService
-      .deleteCarById(res, req.params.id)
+      .deleteCarById(req, req.params.id)
       .then(() => {
         respondOK(res, null, "Deleted car successfully", 200);
       })
@@ -45,7 +58,7 @@ const userController = {
 
   deleteAllUserCars: async (req, res, next) => {
     await carService
-      .deleteAllUserCarsById(req.params.id)
+      .deleteAllUserCarsById(req, req.params.id)
       .then(() => {
         respondOK(res, null, "Deleted all user cars successfully", 200);
       })
@@ -57,7 +70,7 @@ const userController = {
 
   updateCarById: async (req, res, next) => {
     await carService
-      .updateCarById(req.params.id, req.body)
+      .updateCarById(req, req.params.id, req.body)
       .then((updateCar) => {
         respondOK(res, { updateCar }, "update car successfully", 200);
       })

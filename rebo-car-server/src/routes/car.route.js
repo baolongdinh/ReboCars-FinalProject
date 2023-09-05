@@ -1,25 +1,60 @@
 var express = require("express");
 var router = express.Router();
 const carController = require("../controllers/car.controller");
+const authMiddleware = require("../middlewares/auth.middleware");
 
-const middleWaresFunc = (req, res, next) => {
-  console.log(req.method);
+const defineEndpoint = (req, res, next) => {
+  req.endpoint = "userCars";
   next();
 };
 
-/* GET users listing. */
-router.get("/", middleWaresFunc, carController.getAllCars);
+router.get("/", carController.getAllCars);
 
-router.post("/", carController.addNewCar);
+router.get("/:id", carController.findCarById);
 
-router.get("/userCars/:id", carController.getAllUserCars);
+//Logged In require
+router.post(
+  "/",
+  defineEndpoint,
+  authMiddleware.isUserLoggedIn,
+  carController.addNewCar
+);
 
-router.delete("/:id", carController.deleteCarById);
+router.get(
+  "/userCars/:id",
+  defineEndpoint,
+  authMiddleware.isUserLoggedIn,
+  carController.getAllUserCars
+);
 
-router.delete("/userCars/:id", carController.deleteAllUserCars);
+router.delete(
+  "/userCars/:id",
+  defineEndpoint,
+  authMiddleware.isUserLoggedIn,
+  carController.deleteCarById
+);
 
-router.put("/:id", carController.updateCarById);
+router.delete(
+  "/userCars/:id",
+  defineEndpoint,
+  authMiddleware.isUserLoggedIn,
+  carController.deleteAllUserCars
+);
 
-router.patch("/carImages/:id", carController.updateCarImagesById);
+router.put(
+  "/userCars/:id",
+  defineEndpoint,
+  authMiddleware.isUserLoggedIn,
+  carController.updateCarById
+);
+
+router.patch(
+  "/carImages/:id",
+  defineEndpoint,
+  authMiddleware.isUserLoggedIn,
+  carController.updateCarImagesById
+);
+
+/* ADMIN PERMISSIONS */
 
 module.exports = router;

@@ -45,10 +45,20 @@ const cloneImagesPathOfFileToArray = (files) => {
   return imagesPath;
 };
 
+const checkUserPermission = (role, endpoint, method) => {
+  if (!role || !endpoint || !method) {
+    return false;
+  }
+  return role.permissions.find(
+    (x) => x.endpoint == endpoint && x.method == method
+  );
+};
+
 module.exports = {
   deleteFileWithPath,
   bcryptCompareValue,
   deleteAllImagesOfCars,
   deleteAllImagesOfCar,
   cloneImagesPathOfFileToArray,
+  checkUserPermission,
 };

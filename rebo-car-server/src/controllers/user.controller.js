@@ -42,6 +42,17 @@ const userController = {
         next(err);
       });
   },
+  findUserById: async (req, res, next) => {
+    await userServices
+      .findUserById(req.params.id)
+      .then((user) => {
+        respondOK(res, user, "get user successfully", 201);
+      })
+      .catch((err) => {
+        console.log("err: ", err);
+        next(err);
+      });
+  },
   deleteUserById: async (req, res, next) => {
     await userServices
       .deleteUserById(req.params.id)
@@ -55,7 +66,7 @@ const userController = {
   },
   updateUserById: async (req, res, next) => {
     await userServices
-      .updateUserById(req.params.id, req.body)
+      .updateUserById(req, req.params.id, req.body)
       .then((updatedUser) => {
         respondOK(
           res,
@@ -69,9 +80,27 @@ const userController = {
         next(err);
       });
   },
+
+  updateUserByIdByAdmin: async (req, res, next) => {
+    await userServices
+      .updateUserByIdByAdmin(req, req.params.id, req.body)
+      .then((updatedUser) => {
+        respondOK(
+          res,
+          { updatedUser },
+          "Update user password successfully",
+          200
+        );
+      })
+      .catch((err) => {
+        console.log("err: ", err);
+        next(err);
+      });
+  },
+
   resetPwdByUserById: async (req, res, next) => {
     await userServices
-      .resetPwdByUserById(req.params.id, req.body)
+      .resetPwdByUserById(req, req.params.id, req.body)
       .then(() => {
         respondOK(res, null, "reset user password successfully", 200);
       })

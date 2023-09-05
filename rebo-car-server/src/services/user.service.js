@@ -1,4 +1,5 @@
 const userModel = require("../models/user.model");
+const roleModel = require("../models/role.model");
 const { respondOK, respondFailure } = require("../helpers/respond.helper");
 const {
   uploadUserFormData,
@@ -9,6 +10,7 @@ const bcrypt = require("bcrypt");
 const {
   deleteFileWithPath,
   bcryptCompareValue,
+  checkUserPermission,
 } = require("../helpers/helperFunc");
 var {
   BadRequestError,
@@ -69,11 +71,22 @@ const userService = {
     }
     return users;
   },
+  findUserById: async (id) => {
+    const users = await userModel.findById(id);
 
+    if (!users) {
+      throw new NotfoundError("Invalid value");
+    }
+    return users;
+  },
   addUser: async (req, res) => {
     uploadUserFormData(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
-        return respondFailure(res, "Multer error occurred when uploading", 401);
+        return respondFailure(
+          res,
+          `Multer error occurred when uploading. ERROR: ${err.message}`,
+          401
+        );
         // A Multer error occurred when uploading.
       } else if (err) {
         return respondFailure(res, "Internal error", 500);
@@ -84,7 +97,7 @@ const userService = {
         return respondFailure(res, "can not found file upload", 500);
       }
 
-      const { email, password, name, phone, driving_license, role } = req.body;
+      const { email, password, name, phone, driving_license } = req.body;
 
       if (!password || !email || !name) {
         return respondFailure(res, "invalid value", 403);
@@ -97,9 +110,9 @@ const userService = {
       }
       const salt = await bcrypt.genSaltSync(10);
       const passwordHash = await bcrypt.hashSync(password, salt);
-
       const avatar_path = `/static/images/users/${req.file.filename}`;
       console.log(avatar_path);
+      const role = await roleModel.findOne({ name: "USER" });
       const newUser = await userModel.create({
         email,
         password: passwordHash,
@@ -107,7 +120,7 @@ const userService = {
         avatar: avatar_path,
         phone,
         driving_license,
-        role,
+        role: role._id,
       });
 
       if (!newUser) {
@@ -142,11 +155,11 @@ const userService = {
       });
   },
 
-  updateUserById: async (
-    id,
-    { name, phone, driving_license, role, active }
-  ) => {
-    console.log(name);
+  updateUserById: async (req, id, { name, phone, driving_license }) => {
+    if (req.user.id !== id) {
+      throw new UnAuthorizedError("permission denied");
+    }
+
     const updatedUser = await userModel
       .findByIdAndUpdate(
         id,
@@ -154,8 +167,6 @@ const userService = {
           name,
           phone,
           driving_license,
-          role,
-          active,
         },
         {
           new: true,
@@ -169,7 +180,40 @@ const userService = {
     return updatedUser;
   },
 
-  resetPwdByUserById: async (id, { oldPassword, newPassword }) => {
+  updateUserByIdByAdmin: async (
+    req,
+    id,
+    { name, phone, driving_license, active, role }
+  ) => {
+    if (req.user.id !== id) {
+      throw new UnAuthorizedError("permission denied");
+    }
+    const updatedUser = await userModel
+      .findByIdAndUpdate(
+        id,
+        {
+          name,
+          phone,
+          driving_license,
+          active,
+          role,
+        },
+        {
+          new: true,
+        }
+      )
+      .catch((err) => {
+        throw new NotfoundError(err.message);
+      });
+
+    delete updatedUser._doc.password;
+    return updatedUser;
+  },
+
+  resetPwdByUserById: async (req, id, { oldPassword, newPassword }) => {
+    if (req.user.id !== id) {
+      throw new UnAuthorizedError("permission denied");
+    }
     const userExist = await userModel.findById(id);
 
     if (oldPassword === newPassword) {
@@ -202,6 +246,9 @@ const userService = {
       }
 
       // Everything went fine.
+      if (req.user.id !== id) {
+        throw new UnAuthorizedError("permission denied");
+      }
       const userExist = await userModel.findById(id);
 
       if (!userExist) {

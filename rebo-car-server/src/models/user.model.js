@@ -40,7 +40,9 @@ const userAccountSchema = new mongoose.Schema(
       },
     },
     role: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "roles",
+      require: true,
     },
     active: {
       type: Boolean,

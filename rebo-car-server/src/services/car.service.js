@@ -11,6 +11,7 @@ const {
   deleteAllImagesOfCars,
   deleteAllImagesOfCar,
   cloneImagesPathOfFileToArray,
+  checkUserPermission,
 } = require("../helpers/helperFunc");
 var {
   BadRequestError,
@@ -81,6 +82,15 @@ const carService = {
 
     if (!cars) {
       throw new NotfoundError("Invalid value");
+    }
+    return cars;
+  },
+
+  findCarById: async (id) => {
+    const cars = await carModel.findById(id);
+
+    if (!cars) {
+      throw new NotfoundError("can not found car Id");
     }
     return cars;
   },
@@ -160,11 +170,18 @@ const carService = {
     });
   },
 
-  deleteCarById: async (res, id) => {
+  deleteCarById: async (req, id) => {
     const existedCar = await carModel.findById(id).lean();
 
     if (!existedCar) {
       throw new NotfoundError("Can not found car ID");
+    }
+
+    if (
+      !checkUserPermission(req.user.role, req.endpoint, req.method) && // check permissions of user own car or role permission to delete car
+      existedCar.user_id !== req.user.id
+    ) {
+      throw new UnAuthorizedError("permission denied");
     }
 
     carModel
@@ -180,12 +197,20 @@ const carService = {
       });
   },
 
-  deleteAllUserCarsById: async (userId) => {
+  deleteAllUserCarsById: async (req, userId) => {
     const existedUser = await userModel.findById(userId).lean();
 
     if (!existedUser) {
       throw new NotfoundError("Can not found user ID");
     }
+
+    if (
+      !checkUserPermission(req.user.role, req.endpoint, req.method) && // check permissions of user own car or role permission to delete car
+      existedUser._id !== req.user.id
+    ) {
+      throw new UnAuthorizedError("permission denied");
+    }
+
     const userCars = await carModel.find({ user_id: userId }).lean();
 
     console.log({ userCars });
@@ -218,7 +243,16 @@ const carService = {
       vehicle_handling,
     }
   ) => {
-    const updatedCar = carModel
+    const existedCar = await carModel.findById(id);
+
+    if (
+      !checkUserPermission(req.user.role, req.endpoint, req.method) && // check permissions of user own car or role permission to delete car
+      existedCar.user_id !== req.user.id
+    ) {
+      throw new UnAuthorizedError("permission denied");
+    }
+
+    const updatedCar = await carModel
       .findByIdAndUpdate(
         carId,
         {
@@ -258,7 +292,12 @@ const carService = {
 
       const existCar = await carModel.findById(carId).lean();
       console.log(existCar);
-
+      if (
+        !checkUserPermission(req.user.role, req.endpoint, req.method) && // check permissions of user own car or role permission to delete car
+        existCar.user_id !== req.user.id
+      ) {
+        throw new UnAuthorizedError("permission denied");
+      }
       if (!existCar) {
         return respondFailure(res, "can not found car with id", 403);
       }

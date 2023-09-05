@@ -7,6 +7,7 @@ var bodyParser = require("body-parser");
 var database = require("./database.init");
 var routers = require("./routes");
 var errorLogger = require("./middlewares/loggerHandler");
+var { sendAlertToSlack } = require("./helpers/sendSlackMessage");
 var app = express();
 
 require("dotenv").config();
@@ -32,6 +33,8 @@ app.use(function (req, res, next) {
 
 app.use(function (error, req, res, next) {
   console.error(error);
+  const apiUrl = `  ${req.method}--${req.url}`;
+  sendAlertToSlack(error, apiUrl);
   //logging errors
   errorLogger.error(
     `API:${req.method}--${req.url} -- statusCode: ${error.status} -- error.message: ${error.message}`

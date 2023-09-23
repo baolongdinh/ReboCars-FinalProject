@@ -1,59 +1,36 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
-const carController = require("../controllers/car.controller");
-const authMiddleware = require("../middlewares/auth.middleware");
+const carController = require('../controllers/car.controller');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 const defineEndpoint = (req, res, next) => {
-  req.endpoint = "userCars";
-  next();
+    req.endpoint = 'userCars';
+    next();
 };
 
-router.get("/", carController.getAllCars);
+router.get('/', carController.getAllCars);
 
-router.get("/:id", carController.findCarById);
+router.post('/find/filter', carController.getCarFilterWithDateTimeAndLocation);
+
+router.get('/:id', carController.findCarById);
 
 //Logged In require
 router.post(
-  "/",
-  defineEndpoint,
-  authMiddleware.isUserLoggedIn,
-  carController.addNewCar
+    '/',
+    defineEndpoint,
+    // authMiddleware.isUserLoggedIn,
+    carController.addNewCar
 );
 
-router.get(
-  "/userCars/:id",
-  defineEndpoint,
-  authMiddleware.isUserLoggedIn,
-  carController.getAllUserCars
-);
+router.get('/userCars/:id', defineEndpoint, authMiddleware.isUserLoggedIn, carController.getAllUserCars);
 
-router.delete(
-  "/userCars/:id",
-  defineEndpoint,
-  authMiddleware.isUserLoggedIn,
-  carController.deleteCarById
-);
+router.delete('/userCars/:id', defineEndpoint, authMiddleware.isUserLoggedIn, carController.deleteAllUserCars);
 
-router.delete(
-  "/userCars/:id",
-  defineEndpoint,
-  authMiddleware.isUserLoggedIn,
-  carController.deleteAllUserCars
-);
+router.put('/userCars/:id', defineEndpoint, authMiddleware.isUserLoggedIn, carController.updateCarById);
 
-router.put(
-  "/userCars/:id",
-  defineEndpoint,
-  authMiddleware.isUserLoggedIn,
-  carController.updateCarById
-);
+router.patch('/carImages/:id', defineEndpoint, authMiddleware.isUserLoggedIn, carController.updateCarImagesById);
 
-router.patch(
-  "/carImages/:id",
-  defineEndpoint,
-  authMiddleware.isUserLoggedIn,
-  carController.updateCarImagesById
-);
+router.patch('/review/:id', carController.addReviewByCarId);
 
 /* ADMIN PERMISSIONS */
 

@@ -11,7 +11,7 @@
                     placeholder="Searching..." required>
 
                 <div>
-                    <ul class="absolute mt-5 space-y-4 ">
+                    <ul class="absolute z-50 mt-5 space-y-4 bg-gray-200">
                         <li v-for="(item, index) in placeList " v-bind:key="index">
                             <div class=" hover:bg-gray-400 text-left">
                                 <p @click="handleClickLocation(item)">
@@ -32,8 +32,8 @@
 import apiKey from "../../configs/apikey.config"
 import { ref, onUpdated, onMounted, watch, reactive, defineEmits } from 'vue'
 
-export default{
-    setup(props, { emit }) {   
+export default {
+    setup(props, { emit }) {
         const placeList = ref([])
         const inputValue = ref('')
         const fetchApi = async (apiKey, input) => {

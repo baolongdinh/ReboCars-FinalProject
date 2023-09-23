@@ -1,5 +1,5 @@
 <template>
-    <nav class="">
+    <nav class="shadow-sm">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a class="flex items-center">
                 <img src="https://img.freepik.com/premium-vector/car-rental-logo-template-design_316488-1614.jpg?w=740"
@@ -12,7 +12,8 @@
                     id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown"
                     data-dropdown-placement="bottom">
                     <span class="sr-only">Open user menu</span>
-                    <img class="w-8 h-8 rounded-full" src="https://upload.wikimedia.org/wikipedia/commons/5/59/User-avatar.svg" alt="user photo">
+                    <img class="w-8 h-8 rounded-full"
+                        src="https://upload.wikimedia.org/wikipedia/commons/5/59/User-avatar.svg" alt="user photo">
                 </button>
                 <!-- Dropdown menu -->
                 <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"

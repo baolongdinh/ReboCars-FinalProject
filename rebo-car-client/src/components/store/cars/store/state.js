@@ -1,0 +1,23 @@
+export default {
+  features: [
+    "Bản đồ",
+    "Camera cập lề",
+    "Cảm biến lốp",
+    "Cửa sổ trời",
+    "Khe cắm USB",
+    "Màn hình Android",
+    "Bluetooth",
+    "Camera hành trình",
+    "Cảm biến va chạm",
+    "Định vị GPS",
+    "Lốp dự phòng",
+    "ETC",
+    "Camera 360",
+    "Camera Lùi",
+    "Cảnh báo tốc độ",
+    "Ghế trẻ em",
+    "Màn hình DVD",
+    "Túi khí an toàn",
+  ],
+  fuels: ["Tất cả", "Xăng", "Dầu Diesel", "Điện"],
+};

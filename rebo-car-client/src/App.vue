@@ -1,5 +1,5 @@
 <template>
-  <div class = "ml-28 mr-28">
+  <div class = "">
     <navigation/>
     <router-view> </router-view>
   </div>

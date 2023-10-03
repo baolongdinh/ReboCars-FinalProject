@@ -12,12 +12,12 @@ const carSchema = new mongoose.Schema(
         location: { type: Schema.Types.Mixed, require: true },
         characteristics: {
             // đặc điểm xe
-            typeofCar: String, // Loại xe (Sedan, Mui trần..)
+            typeOfCar: String, // Loại xe (Sedan, Mui trần..)
             autoMaker: String, // hãng xe
             seats: Number,
             transmission: String, // truyền động (số sàn, số tự động)
             fuel: String, // Nhiên liệu cho xe (xăng, điện, dầu)
-            sfc_100km: String, // mức tiêu hao nhiên liệu trên 100km (10L/100km)
+            sfc_100km: Number, // mức tiêu hao nhiên liệu trên 100km (10L/100km)
             yearOfManufacture: Number
         },
         features: { type: Array, default: [] },

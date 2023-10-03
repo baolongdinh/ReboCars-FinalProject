@@ -15,13 +15,12 @@
                         Sắp xếp
 
                         <select
-                            class="bg-gray-50 mt-3 border border-gray-6500 font-sans text-lg text-gray-900  rounded-lg block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-black dark:focus:border-black">
-                            <option selected>Tối ưu</option>
-                            <option value="near">Khoảng cách gần nhất</option>
-                            <option value="lowestPrice">Giá thấp nhất</option>
-                            <option value="highestPrice">Giá cao nhất</option>
-                            <option value="bestReview">Đánh giá tốt nhất</option>
-                            <option value="bestDiscount">Xe Giảm Giá</option>
+                            class="bg-gray-50 mt-3 border border-gray-6500 font-sans text-lg text-gray-900  rounded-lg block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-black dark:focus:border-black"
+                            @change="handleSortSelected">
+                            <option selected value="">Tối ưu</option>
+                            <option v-for="(sortOption, index) in sortOptions" :value="sortOption" :key="index">
+                                {{ sortOption }}
+                            </option>
                         </select>
 
                     </div>
@@ -30,10 +29,14 @@
                         Loại xe
 
                         <select
-                            class="bg-gray-50 mt-3 border border-gray-6500 font-sans text-lg text-gray-900  rounded-lg block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-black dark:focus:border-black">
+                            class="bg-gray-50 mt-3 border border-gray-6500 font-sans text-lg text-gray-900  rounded-lg block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-black dark:focus:border-black"
+                            @change="handleTypeOfCarSelected">
                             <option selected>Tất cả</option>
-                            <option value="mini">4 chỗ (Mini)</option>
-                            <option value="sedan">4 chỗ (Sedan)</option>
+
+                            <option v-for="(typeOfCar, index) in typeOfCars" :value="typeOfCar" :key="index">
+                                {{ typeOfCar }}
+                            </option>
+
                         </select>
 
                     </div>
@@ -42,10 +45,12 @@
                         Hãng xe
 
                         <select
-                            class="bg-gray-50 mt-3 border border-gray-6500 font-sans text-lg text-gray-900  rounded-lg block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-black dark:focus:border-black">
+                            class="bg-gray-50 mt-3 border border-gray-6500 font-sans text-lg text-gray-900  rounded-lg block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-black dark:focus:border-black"
+                            @change="handleAutoMakerSelected">
                             <option selected>Tất cả</option>
-                            <option value="bmw">BMW</option>
-                            <option value="chevrolet">Chevrolet</option>
+                            <option v-for="(autoMaker, index) in autoMakers" :value="autoMaker" :key="index">
+                                {{ autoMaker }}
+                            </option>
                         </select>
 
                     </div>
@@ -54,8 +59,7 @@
                         Mức giá
                         <div class="mt-9 w-11/12 mx-auto">
                             <Slider v-model="priceRangeValue" :min="200" :max="5000" :step="100"
-                                :format="(value) => `${Math.round(value)}K`"
-                                @change="(e) => console.log('priceRangeValue', e)" />
+                                :format="(value) => `${Math.round(value)}K`" @change="handleUpdatePriceRangeChanged" />
                         </div>
 
                     </div>
@@ -64,7 +68,7 @@
                         Số ghế
                         <div class="mt-9 w-11/12 mx-auto">
                             <Slider v-model="seatRangeValue" :min="2" :max="10" :step="1"
-                                @change="(e) => console.log('priceRangeValue', e)" />
+                                @change="handleUpdateSeatsRangeChanged" />
                         </div>
 
                     </div>
@@ -73,16 +77,15 @@
                         Năm sản xuất
                         <div class="mt-9 w-11/12 mx-auto">
                             <Slider v-model="yearRangeValue" :min="2005" :max="2023" :step="1"
-                                @change="(e) => console.log('priceRangeValue', e)" />
+                                @change="handleUpdateYearRangeChanged" />
                         </div>
-
                     </div>
 
                     <div class="text-left">
                         Mức tiêu thụ nhiên liệu
                         <div class="mt-9 w-11/12 mx-auto">
-                            <Slider v-model="oilConsumedValue" :min="0" :max="30" :step="5" :tooltips="true"
-                                @change="(e) => console.log('priceRangeValue', e)" />
+                            <Slider v-model="oilConsumedValue" :min="0" :max="100" :step="5" :tooltips="true"
+                                @change="handleUpdateSFCChanged" />
 
                             <div v-if="oilConsumedValue == 0"
                                 class="border-2 border-gray-300 rounded-lg mt-3 w-2/6 text-center font-normal text-base">
@@ -100,10 +103,10 @@
                         Tính năng
 
                         <div class="grid grid-cols-3 gap-2 mt-3">
-                            <div v-for="feature in features" :key="feature">
+                            <div v-for="(feature, index) in features" :key="index">
                                 <div class="text-base font-normal flex">
-                                    <input class="rounded" type="checkbox" id="checkbox" v-model="checked" />
-
+                                    <input class="rounded" type="checkbox" :value="feature" v-model="checkedFeatures"
+                                        @change="handleCheckedFeatures" />
                                     <label for="checkbox" class="ml-1 my-auto">
                                         {{ feature }}
                                     </label>
@@ -120,9 +123,10 @@
                         <div class="grid grid-cols-4 gap-2 mt-3">
                             <div v-for="fuel in fuels" :key="fuel">
                                 <div class="text-base font-normal flex">
-                                    <input class="rounded" type="checkbox" id="checkbox" v-model="checked" />
+                                    <input class="rounded" type="radio" :value="fuel" v-model="checkedFuels"
+                                        @change="handleCheckedFuels" />
 
-                                    <label for="checkbox" class="ml-1 my-auto">
+                                    <label for="fuel" class="ml-1 my-auto">
                                         {{ fuel }}
                                     </label>
 
@@ -150,7 +154,6 @@
 
             </div>
 
-
         </div>
 
 
@@ -164,17 +167,87 @@ import Slider from '@vueform/slider'
 import { useStore } from 'vuex'
 import { ref, onUpdated } from 'vue'
 
-const store = useStore()
-const homeStore = store.state.homeStore
+const carStore = useStore()
 
 const priceRangeValue = ref([200, 5000])
 const seatRangeValue = ref([2, 10])
 const yearRangeValue = ref([2005, 2023])
-const oilConsumedValue = ref(30)
-const features = homeStore.features
-const fuels = homeStore.fuels
-onUpdated(() => {
-    console.log('updated')
+const oilConsumedValue = ref(100)
+const features = carStore.getters.getFeatures
+const fuels = carStore.getters.getFuels
+const sortOptions = carStore.getters.getSortOptions
+const typeOfCars = carStore.getters.getListTypeOfCars
+const autoMakers = carStore.getters.getAutoMakers
+const checkedFeatures = ref([])
+const checkedFuels = ref([])
+
+
+
+console.log('sort', sortOptions)
+
+const filter = {}
+
+const emit = defineEmits(['handleUpdateFilterChanged'])
+
+function handleUpdatePriceRangeChanged(priceRange) {
+    filter.priceRange = {
+        min: priceRange[0],
+        max: priceRange[1],
+    }
+    emit('handleUpdateFilterChanged', filter)
+}
+
+function handleUpdateSeatsRangeChanged(seatsRange) {
+    filter.seatsRange = {
+        min: seatsRange[0],
+        max: seatsRange[1],
+    }
+    emit('handleUpdateFilterChanged', filter)
+}
+
+function handleUpdateYearRangeChanged(yearsRange) {
+    filter.manufactureYearRange = {
+        min: yearsRange[0],
+        max: yearsRange[1],
+    }
+    emit('handleUpdateFilterChanged', filter)
+}
+
+function handleUpdateSFCChanged(sfc_100km) {
+    filter.sfc_100km = sfc_100km
+    emit('handleUpdateFilterChanged', filter)
+}
+
+function handleCheckedFeatures() {
+    filter.features = checkedFeatures.value
+    emit('handleUpdateFilterChanged', filter)
+
+}
+
+function handleCheckedFuels() {
+    filter.fuel = checkedFuels.value
+    emit('handleUpdateFilterChanged', filter)
+}
+
+async function handleSortSelected(event) {
+    const sort = await carStore.dispatch("matchSortSelected", event.target.value)
+    filter.sort = sort
+    emit('handleUpdateFilterChanged', filter)
+}
+
+function handleTypeOfCarSelected(event) {
+    filter.typeOfCar = event.target.value
+    emit('handleUpdateFilterChanged', filter)
+}
+
+function handleAutoMakerSelected(event) {
+    filter.autoMaker = event.target.value
+    emit('handleUpdateFilterChanged', filter)
+}
+
+
+onUpdated(async () => {
+
 })
 </script>
 

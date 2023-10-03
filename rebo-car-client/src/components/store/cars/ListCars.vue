@@ -17,12 +17,13 @@
 
 <script>
 import Car from './Car.vue'
+import { defineProps } from 'vue'
 
 export default {
     components: { Car },
     setup() {
-
-
+        const props = defineProps(['cars'])
+        console.log(props)
         return {}
     }
 }

@@ -1,6 +1,4 @@
 export default {
-    productsLoading: true,
-    productList : [
-    ]
-}
-
+  productsLoading: true,
+  productList: [],
+};

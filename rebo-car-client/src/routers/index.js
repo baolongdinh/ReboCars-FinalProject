@@ -4,6 +4,7 @@ import Product from "../components/products/Product.vue";
 import Navigation from "../components/store/Navigation.vue";
 import ProductDetail from "../components/products/ProductDetail.vue";
 import ListCarsFinding from "../components/store/cars/ListCarsFinding.vue";
+import CarDetail from "../components/store/cars/CarDetail.vue";
 import Home from "../components/store/Home.vue";
 export const router = createRouter({
   history: createWebHistory(),
@@ -14,9 +15,14 @@ export const router = createRouter({
       name: "home",
     },
     {
-      path: "/cars",
+      path: "/find/filter/cars",
       component: ListCarsFinding,
       name: "cars",
+    },
+    {
+      path: "/car",
+      component: CarDetail,
+      name: "car",
     },
     {
       path: "/products",

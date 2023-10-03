@@ -7,6 +7,9 @@ import "element-plus/dist/index.css";
 import App from "./App.vue";
 import "./assets/index.css";
 
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+
 /* import the fontawesome core */
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -22,17 +25,18 @@ import {
   faLocationDot,
   faCarRear,
   faFilter,
+  faCalendar,
 } from "@fortawesome/free-solid-svg-icons";
 
 //import module store
 import productStore from "./components/products/store";
 
-import homeStore from "./components/store/cars/store";
+import carStore from "./components/store/cars/store";
 
 const store = createStore({
   modules: {
     productStore: productStore,
-    homeStore: homeStore,
+    carStore: carStore,
   },
 });
 
@@ -45,12 +49,14 @@ library.add(
   faLocation,
   faLocationDot,
   faCarRear,
-  faFilter
+  faFilter,
+  faCalendar
 );
 
 const app = createApp(App);
 app.use(store);
 app.component("font-awesome-icon", FontAwesomeIcon);
+app.component("VueDatePicker", VueDatePicker);
 app.use(ElementPlus);
 app.use(vfm);
 app.use(router);

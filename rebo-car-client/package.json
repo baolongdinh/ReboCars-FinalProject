@@ -13,6 +13,8 @@
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "@saeris/vue-spinners": "^1.0.8",
     "@vueform/slider": "^2.1.7",
+    "@vuepic/vue-datepicker": "^7.0.0",
+    "axios": "^1.5.1",
     "element-plus": "^2.3.9",
     "flowbite": "^1.8.1",
     "unplugin-auto-import": "^0.16.6",

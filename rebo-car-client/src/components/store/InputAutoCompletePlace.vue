@@ -7,7 +7,7 @@
 
                 </div>
                 <input type="search" @keyup="handleKeyup($event.target.value)" v-model="inputValue" id="default-search"
-                    class="block w-5/6 min-w-250 h-33 p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    class="block w-full min-w-250 h-9 p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-md bg-white focus:ring-blue-500 focus:border-blue-500 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Searching..." required>
 
                 <div>
@@ -33,13 +33,18 @@ import apiKey from "../../configs/apikey.config"
 import { ref, onUpdated, onMounted, watch, reactive, defineEmits } from 'vue'
 
 export default {
+    props: {
+        searchValue: String
+    },
     setup(props, { emit }) {
+
         const placeList = ref([])
-        const inputValue = ref('')
+        const inputValue = ref(props.searchValue) || ref("")
         const fetchApi = async (apiKey, input) => {
             const data = await fetch(`https://rsapi.goong.io/Place/AutoComplete?api_key=${apiKey}&location=21.013715429594125,%20105.79829597455202&input=${input}`)
             return data.json()
         }
+
         // Init a timeout variable to be used below
         let timeout = null;
 
@@ -65,17 +70,14 @@ export default {
         function handleClickLocation(value) {
             inputValue.value = value.description //change model input vale
             placeList.value = null
-
-            emit('selectedValue', value.compound)
+            const location = {
+                compound: value.compound,
+                description: value.description,
+                place_id: value.place_id
+            }
+            emit('selectedValue', location)
         }
 
-
-        onUpdated(() => {
-            console.log('component update')
-        })
-        onMounted(() => {
-            console.log('component mount')
-        })
 
         return {
             placeList,

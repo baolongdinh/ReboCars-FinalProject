@@ -102,7 +102,8 @@ const orderServices = {
                 throw new NotfoundError();
             }
             return orders;
-        } catch (err) {
+        } catch (err) { 
+            
             throw new InternalServerError(err.message);
         }
     },

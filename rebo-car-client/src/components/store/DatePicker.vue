@@ -2,26 +2,34 @@
     <div>
         <div class="shadow-2xl bg-white rounded-3xl mx-16 mt-3">
             <div class="demo-datetime-picker mx-14 ">
-                <div class="block">
-                    <span class="demonstration ">Địa chỉ tìm kiếm xe</span>
-                    <input-auto-complete-place @selectedValue="handleEmit_setSelectedLocation" />
+                <div class="block ">
+                    <div>
+                        <span class="demonstration">
+                            <font-awesome-icon :icon="['fas', 'location-dot']" size="lg" />
+                            <label class="ml-3">
+                                Địa chỉ tìm kiếm xe
+                            </label>
+                        </span>
+                    </div>
+
+                    <div>
+                        <input-auto-complete-place @selectedValue="handleSelectedLocation" />
+                    </div>
+
                 </div>
 
-                <div class="block">
-                    <span class="demonstration ">Ngày bắt đầu</span>
-                    <el-date-picker v-model="startDate" type="datetime" placeholder="Select date and time"
-                        :default-time="defaultTime" :value="value" />
+                <div class="block gap-x-3 mx-14">
+                    <span class="demonstration ">
+                        <font-awesome-icon :icon="['fas', 'calendar']" />
+                        <label class="ml-3">
+                            Ngày bắt đầu - Ngày kết thúc
+                        </label>
+
+                    </span>
+                    <VueDatePicker v-model="dateRange" range :partial-range="false" />
                 </div>
 
-                <div class="block">
-                    <span class="demonstration">Ngày kết thúc</span>
-                    <el-date-picker v-model="endDate" type="datetime" placeholder="Select date and time"
-                        :default-time="defaultTime" />
-                </div>
-
-
-                <button
-                    class=" bg-blue-500 hover:bg-blue-700  text-white font-bold py-2 ml-12 px-4 mt-12 h-12 w-32 rounded-xl"
+                <button class=" bg-blue-500 hover:bg-blue-700  text-white font-bold py-2  px-4 mt-12 h-12 w-32 rounded-xl"
                     @click="handleClickFindingCars()">
                     Tìm xe
                 </button>
@@ -32,27 +40,51 @@
 </template>
   
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import InputAutoCompletePlace from './InputAutoCompletePlace.vue'
 import { useRouter, useRoute } from 'vue-router'
-const startDate = ref('')
-const endDate = ref('')
+import { useStore } from 'vuex';
+
+const store = useStore()
+
 const locationSelected = ref('')
 
+
+const dateRange = ref();
+
+onMounted(() => {
+    const startDate = new Date();
+    const endDate = new Date(new Date().setDate(startDate.getDate() + 7));
+    dateRange.value = [startDate, endDate];
+})
+
 const router = useRouter()
-const value = new Date(2000, 2, 12, 12, 0, 0)
-const defaultTime = new Date(2000, 1, 1, 12, 0, 0)
 
 
-const handleEmit_setSelectedLocation = (data) => {
-    locationSelected.value = data
+
+const handleSelectedLocation = (data) => {
+    locationSelected.value = data.description
+    store.commit("setLocation", data)
+
+    const filters = store.getters.getFilters
+
+    filters.location = data
+    store.commit("setFilters", filters)
+
     console.log('data emit recept', data)
 }
 
 function handleClickFindingCars() {
-    console.log(`start date : ${startDate.value} -- end date: ${endDate.value}`)
-    console.log('data: ', locationSelected.value)
-    router.push({ path: '/cars', query: { startDate: startDate.value, endDate: endDate.value, location: locationSelected.value } })
+    console.log(dateRange.value)
+    store.commit("setStartDateTime", dateRange.value[0])
+    store.commit("setEndDateTime", dateRange.value[1])
+
+    const filters = store.getters.getFilters
+    filters.startDateTime = dateRange.value[0]
+    filters.endDateTime = dateRange.value[1]
+
+
+    router.push({ path: '/find/filter/cars' })
 }
 
 
@@ -68,7 +100,6 @@ function handleClickFindingCars() {
 .demo-datetime-picker .block {
 
     padding: 30px 0;
-    text-align: center;
     border-right: solid 1px var(--el-border-color);
     flex: 1;
 }

@@ -1,40 +1,46 @@
-const buildCarMatchFilterCondition = (filter, features, fuels, location) => {
+const buildCarMatchFilterCondition = (filter, features, fuel, location) => {
     const matchAndStageFilter = [{}];
 
-    if (location?.compound?.commune) {
-        matchAndStageFilter.push({ 'location.compound.commune': location.compound.commune });
+    if (location?.compound?.province) {
+        matchAndStageFilter.push({ 'location.compound.province': location.compound.province });
     }
     if (location?.compound?.district) {
         matchAndStageFilter.push({ 'location.compound.district': location.compound.district });
     }
-    if (filter?.typeOfCar) {
+    if (filter?.typeOfCar && filter?.typeOfCar !== 'Tất cả') {
         matchAndStageFilter.push({ 'characteristics.typeOfCar': filter.typeOfCar });
     }
-    if (filter?.autoMaker) {
+    if (filter?.autoMaker && filter?.autoMaker !== 'Tất cả') {
         matchAndStageFilter.push({ 'characteristics.autoMaker': filter.autoMaker });
     }
     if (filter?.priceRange?.min) {
-        matchAndStageFilter.push({ 'characteristics.priceRange.min': { $gte: filter.priceRange.min } });
+        matchAndStageFilter.push({ price: { $gte: filter.priceRange.min } });
     }
     if (filter?.priceRange?.max) {
-        matchAndStageFilter.push({ 'characteristics.priceRange.max': { $lte: filter.priceRange.max } });
+        matchAndStageFilter.push({ price: { $lte: filter.priceRange.max } });
     }
     if (filter?.seatsRange?.min) {
-        matchAndStageFilter.push({ 'characteristics.seatsRange.min': { $gte: filter.seatsRange.min } });
+        matchAndStageFilter.push({ 'characteristics.seats': { $gte: filter.seatsRange.min } });
     }
+    if (filter?.seatsRange?.max) {
+        matchAndStageFilter.push({ 'characteristics.seats': { $lte: filter.seatsRange.min } });
+    }
+
     if (filter?.manufactureYearRange?.min) {
         matchAndStageFilter.push({
-            'characteristics.manufactureYearRange.min': { $gte: filter.manufactureYearRange.min }
+            'characteristics.yearOfManufacture': { $gte: filter.manufactureYearRange.min }
         });
     }
     if (filter?.manufactureYearRange?.max) {
         matchAndStageFilter.push({
-            'characteristics.manufactureYearRange.max': { $lte: filter.manufactureYearRange.max }
+            'characteristics.yearOfManufacture': { $lte: filter.manufactureYearRange.max }
         });
     }
     if (filter?.sfc_100km) {
         matchAndStageFilter.push({
-            $lte: filter.sfc_100km
+            'characteristics.sfc_100km': {
+                $lte: filter.sfc_100km
+            }
         });
     }
     if (features.length > 0) {
@@ -44,13 +50,13 @@ const buildCarMatchFilterCondition = (filter, features, fuels, location) => {
             }
         });
     }
-    if (fuels.length > 0) {
+    if (fuel && fuel !== 'Tất cả') {
         matchAndStageFilter.push({
-            fuel: {
-                $in: fuels
-            }
+            'characteristics.fuel': fuel
         });
     }
+    console.log(filter, features, fuel, location);
+    console.log({ matchAndStageFilter });
 
     return matchAndStageFilter;
 };

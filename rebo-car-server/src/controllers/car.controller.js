@@ -20,6 +20,7 @@ const userController = {
     },
 
     getCarFilterWithDateTimeAndLocation: async (req, res, next) => {
+        console.log('----controldfer', req.body);
         await carService
             .FindCarFilterWithDateTimeAndLocation(req.query, req.body)
             .then((cars) => {

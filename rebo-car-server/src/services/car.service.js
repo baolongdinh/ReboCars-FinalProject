@@ -103,10 +103,11 @@ const carService = {
             },
             filter,
             features = [],
-            fuels = []
+            fuel
         }
     ) => {
         try {
+            console.log(filter, features, fuel);
             const skip = (page - 1) * parseInt(limit);
 
             startDateTime = new Date('2023/09/19');
@@ -161,7 +162,7 @@ const carService = {
                                 }
                             }
                         ],
-                        $and: buildCarMatchFilterCondition(filter, features, fuels, location)
+                        $and: buildCarMatchFilterCondition(filter, features, fuel, location)
                     }
                 },
                 { $limit: parseInt(limit) },

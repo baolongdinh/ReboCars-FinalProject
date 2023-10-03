@@ -1,4 +1,30 @@
+const today = new Date();
+const sevenDateLater = new Date(today.setDate(today.getDate() + 7));
 export default {
+  cars: ["1", "3"],
+  page: 1,
+  limit: 12,
+  startDateTime: today,
+  endDateTime: sevenDateLater,
+  typeOfCars: ["Mini", "Sedan", "Hatchback", "Gầm cao"],
+  filters: {},
+  autoMakers: [
+    "BMW",
+    "Ford",
+    "Volkswagen AG",
+    "Toyota",
+    "Stellantis",
+    "Mercedes-Benz",
+    "Honda",
+    "Hyundai",
+  ],
+  sortOptions: [
+    "Giá thấp nhất",
+    "Giá cao nhất",
+    "Đánh giá tốt nhất",
+    "Giảm giá nhiều nhất",
+  ],
+  location: {},
   features: [
     "Bản đồ",
     "Camera cập lề",

@@ -9,7 +9,7 @@ import "./assets/index.css";
 
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-
+import { VueperSlides, VueperSlide } from "vueperslides";
 /* import the fontawesome core */
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -29,14 +29,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 //import module store
-import productStore from "./components/products/store";
 
 import carStore from "./components/store/cars/store";
+import authStore from "./components/store/auths/store";
 
 const store = createStore({
   modules: {
-    productStore: productStore,
     carStore: carStore,
+    authStore: authStore,
   },
 });
 

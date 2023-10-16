@@ -2,29 +2,38 @@
     <div class="ml-28 mr-28">
 
         <div class="grid grid-cols-4 gap-4 mt-12">
-            <car></car>
-            <car></car>
-            <car></car>
-            <car></car>
-            <car></car>
-            <car></car>
-            <car></car>
-            <car></car>
+            <div v-for="car in listCars" :key="car._id" @click="handleUserClickCarCard(car._id)">
+                <Car :car=car />
+            </div>
         </div>
 
     </div>
 </template>
 
 <script>
-import Car from './Car.vue'
-import { defineProps } from 'vue'
+
+import { defineAsyncComponent, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+const Car = defineAsyncComponent(() =>
+    import('./Car.vue')
+)
 
 export default {
     components: { Car },
-    setup() {
-        const props = defineProps(['cars'])
-        console.log(props)
-        return {}
+    props: {
+        listCars: Array,
+    },
+    setup(props, { emit }) {
+
+        function handleUserClickCarCard(carId) {
+            emit("handleUserClickCarCard", carId)
+
+            // router.push({ name: "car", params: { id: carId }, query: { startDateTime: props.startDateTime, endDateTime: props.endDateTime, location: stringifyLocation } })
+        }
+
+        return {
+            handleUserClickCarCard
+        }
     }
 }
 </script>

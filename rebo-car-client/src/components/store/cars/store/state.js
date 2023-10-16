@@ -4,7 +4,7 @@ export default {
   cars: ["1", "3"],
   page: 1,
   limit: 12,
-  startDateTime: today,
+  startDateTime: new Date(),
   endDateTime: sevenDateLater,
   typeOfCars: ["Mini", "Sedan", "Hatchback", "Gầm cao"],
   filters: {},
@@ -24,7 +24,11 @@ export default {
     "Đánh giá tốt nhất",
     "Giảm giá nhiều nhất",
   ],
-  location: {},
+  location: {
+    compound: {
+      province: "Hồ Chí Minh",
+    },
+  },
   features: [
     "Bản đồ",
     "Camera cập lề",

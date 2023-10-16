@@ -31,11 +31,14 @@ const discountSelectField = {
 
 const discountServices = {
     getAllDiscount: async ({ limit = 5, sort = 'ctime', page = 1, filter, select = discountSelectField }) => {
+        limit = parseInt(limit) || 0;
+        page = parseInt(page) || 0;
+
         const skip = (page - 1) * limit;
         const sortBy = sort === 'ctime' ? { _id: -1 } : { _id: 1 };
 
         if (!filter) {
-            filter = {};
+            filter = JSON.stringify({});
         }
 
         const discounts = await discountModel
@@ -92,7 +95,7 @@ const discountServices = {
                     throw new InternalServerError(err.message);
                 });
 
-            return newDiscount;
+            return respondOK(res, newDiscount, 'create discount successfully', 201);
         });
     },
     updateDiscountById: async (
@@ -130,7 +133,8 @@ const discountServices = {
             .catch((err) => {
                 throw new InternalServerError(err.message);
             });
-        return discountUpdated;
+
+        respondOK(res, { discountUpdated }, 'update discount successfully', 200);
     },
 
     updateDiscountImageById: async (id, req, res) => {
@@ -157,7 +161,7 @@ const discountServices = {
                 throw new InternalServerError(err.message);
             });
 
-            return existedDiscount.image;
+            return respondOK(res, existedDiscount, 'updated discount image successfully', 201);
         });
     },
     deleteDiscountById: async (id) => {

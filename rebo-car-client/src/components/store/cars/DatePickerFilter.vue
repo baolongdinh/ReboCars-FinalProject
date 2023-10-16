@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="shadow-lg bg-white rounded-3xl  mx-16 ">
+        <div class="shadow-lg bg-white rounded-3xl border border-gray-300 mx-16 ">
             <div class="demo-datetime-picker ">
                 <div class="block mx-8">
                     <div>
@@ -47,13 +47,13 @@
 
                         <div>
 
-                            <div class="opacity-80 bg-gray-800 fixed z-30 inset-0 w-full h-full " v-if="show">
+                            <div class="opacity-80 bg-gray-800 fixed z-40 inset-0 " v-if="show">
                                 <!-- OVERLAY SCREEN WHEN POP UP DIALOG MODAL -->
 
-                                <filter-modal v-model="show" @handleUpdateFilterChanged="handleUpdateFilterChanged"
-                                    @confirm="() => confirm()">
+                                <FilterModal class="overflow-y-auto h-650 w-580 absolute m-auto inset-0 " v-model="show"
+                                    @handleUpdateFilterChanged="handleUpdateFilterChanged" @confirm="() => confirm()">
 
-                                </filter-modal>
+                                </FilterModal>
                             </div>
                         </div>
 
@@ -75,13 +75,16 @@ import { useStore } from 'vuex'
 const emit = defineEmits(['handleUpdateFilterChanged', 'handleUpdateLocation', 'handleUpdateDateRange'])
 
 const store = useStore()
+const router = useRouter()
 const dateRange = ref();
-const location = ref(store.getters.getLocation.description)
 
+const location = ref(store.getters.getLocation.description)
 const startDateTime = store.getters.getStartDateTime
 const endDateTime = store.getters.getEndDateTime
 
 dateRange.value = [startDateTime, endDateTime]
+
+
 
 
 function handleSubmitUpdateDateRange() {

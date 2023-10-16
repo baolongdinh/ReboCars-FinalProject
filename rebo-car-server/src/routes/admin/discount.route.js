@@ -1,39 +1,24 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
-const discountController = require("../../controllers/discount.controller");
-const authMiddleware = require("../../middlewares/auth.middleware");
+const discountController = require('../../controllers/discount.controller');
+const authMiddleware = require('../../middlewares/auth.middleware');
 /* GET users listing. */
 const defineEndpoint = (req, res, next) => {
-    req.endpoint = "discounts";
+    req.endpoint = 'discounts';
     next();
 };
 
-router.delete(
-    "/:id",
-    defineEndpoint,
-    authMiddleware.checkPermission,
-    discountController.deleteDiscountById
-);
+router.delete('/:id', defineEndpoint, discountController.deleteDiscountById);
 
-router.put(
-    "/:id",
-    defineEndpoint,
-    authMiddleware.checkPermission,
-    discountController.updateDiscountById
-);
+router.put('/:id', defineEndpoint, discountController.updateDiscountById);
 
 router.patch(
-    "/:id",
+    '/:id',
     defineEndpoint,
-    authMiddleware.checkPermission,
+
     discountController.updateDiscountImageById
 );
 
-router.post(
-    "/",
-    defineEndpoint,
-    authMiddleware.checkPermission,
-    discountController.addNewDiscount
-);
+router.post('/', defineEndpoint, discountController.addNewDiscount);
 
 module.exports = router;

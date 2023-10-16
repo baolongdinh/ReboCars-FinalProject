@@ -20,7 +20,7 @@
             <div class=" font-sans  text-black text-5xl font-medium text-center">
                 Xe Dành Cho Bạn
             </div>
-            <listCars></listCars>
+            <listCars :listCars=cars @handleUserClickCarCard="handleUserClickCarCard"> </listCars>
         </div>
 
 
@@ -32,12 +32,49 @@
 import DatePicker from './DatePicker.vue'
 import Promotions from './Promotions.vue'
 import listCars from './cars/ListCars.vue'
+import { useStore, mapGetters } from 'vuex'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 export default {
     components: { DatePicker, Promotions, listCars },
     setup() {
+        const carStore = useStore()
+        const router = useRouter()
+        var cars = ref([])
+        const today = new Date();
+        const sevenDateLater = new Date(today.setDate(today.getDate() + 7));
+        const startDateTime = new Date()
+        const endDateTime = sevenDateLater
+        const location = {
+            compound: {
+                province: "Hồ Chí Minh",
+            },
+        }
+        var page = 1
+        var limit = 12
+        const filterPayload = {
+            startDateTime, endDateTime, location
+        }
+
+        async function updateListCars(page, limit, filterPayload) {
+            cars.value = await carStore.dispatch('findCarsFilter', { page, limit, filterPayload })
+        }
+
+        function handleUserClickCarCard(carId) {
+            router.push({
+                name: "car", params: { id: carId },
+                query: {
+                    startDateTime,
+                    endDateTime
+                }
+            })
+        }
 
 
-        return {}
+        onMounted(() => {
+            updateListCars(page, limit, filterPayload)
+        })
+        return { cars, handleUserClickCarCard }
     }
 }
 </script>

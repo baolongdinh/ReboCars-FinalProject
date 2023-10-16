@@ -23,7 +23,7 @@ const buildCarMatchFilterCondition = (filter, features, fuel, location) => {
         matchAndStageFilter.push({ 'characteristics.seats': { $gte: filter.seatsRange.min } });
     }
     if (filter?.seatsRange?.max) {
-        matchAndStageFilter.push({ 'characteristics.seats': { $lte: filter.seatsRange.min } });
+        matchAndStageFilter.push({ 'characteristics.seats': { $lte: filter.seatsRange.max } });
     }
 
     if (filter?.manufactureYearRange?.min) {

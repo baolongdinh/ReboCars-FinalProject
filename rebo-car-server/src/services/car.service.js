@@ -141,6 +141,19 @@ const carService = {
                     $addFields: {
                         reviewRateAvg: {
                             $avg: '$reviews.rate'
+                        },
+                        discountPrice: {
+                            $subtract: [
+                                '$price',
+                                {
+                                    $divide: [
+                                        {
+                                            $multiply: ['$price', '$discount']
+                                        },
+                                        100
+                                    ]
+                                }
+                            ]
                         }
                     }
                 },
@@ -165,10 +178,10 @@ const carService = {
                         $and: buildCarMatchFilterCondition(filter, features, fuel, location)
                     }
                 },
-                { $limit: parseInt(limit) },
-                { $skip: skip },
+                { $project: select },
                 { $sort: sort },
-                { $project: select }
+                { $skip: skip },
+                { $limit: parseInt(limit) }
             ]);
 
             if (!cars) {
@@ -179,13 +192,35 @@ const carService = {
             throw new InternalServerError(error.message);
         }
     },
-    findCarById: async (id) => {
-        const cars = await carModel.findById(id);
+    findCarById: async (carId) => {
+        const cars = await carModel.aggregate([
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(carId)
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user_id',
+                    foreignField: '_id',
+                    as: 'carOwner'
+                }
+            },
+            {
+                $addFields: {
+                    reviewRateAvg: {
+                        $avg: '$reviews.rate'
+                    }
+                }
+            }
+        ]);
 
-        if (!cars) {
+        if (!cars[0]) {
             throw new NotfoundError('can not found car Id');
         }
-        return cars;
+        console.log(cars[0]);
+        return cars[0];
     },
 
     getAllUserCarsByUserId: async (

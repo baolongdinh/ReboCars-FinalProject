@@ -1,8 +1,9 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
+const authMiddleware = require('../middlewares/auth.middleware');
 
-const discountController = require("../controllers/discount.controller");
+const discountController = require('../controllers/discount.controller');
 
-router.get("/", discountController.getAllDiscount);
+router.get('/', authMiddleware.isUserLoggedIn, discountController.getAllDiscount);
 
 module.exports = router;

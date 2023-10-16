@@ -11,6 +11,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
+    "@goongmaps/goong-js": "^1.0.9",
     "@saeris/vue-spinners": "^1.0.8",
     "@vueform/slider": "^2.1.7",
     "@vuepic/vue-datepicker": "^7.0.0",
@@ -22,6 +23,8 @@
     "vue": "^3.3.4",
     "vue-final-modal": "^4.4.5",
     "vue-router": "4",
+    "vue-sidebar-menu": "^5.2.11",
+    "vueperslides": "^3.5.1",
     "vuetify": "^3.3.15",
     "vuex": "^4.0.2"
   },

@@ -1,10 +1,10 @@
 <template>
-    <VueFinalModal class="flex justify-center items-center absolute m-auto inset-0 text-center "
-        content-class="flex w-665 h-620 flex-col max-w-xl  bg-gray-100 text-black rounded-lg space-y-2 overflow-y-auto ">
+    <VueFinalModal class="justify-center items-center text-center absolute "
+        content-class="flex flex-col bg-gray-100 text-black rounded-lg space-y-2  ">
 
         <div class="relative">
             <div
-                class="font-sans font-semibold text-black text-center sticky top-0 z-40 bg-gray-50 h-7 text-2xl w-full border-bottom ">
+                class="font-sans font-semibold text-black text-center sticky top-0 z-40 bg-gray-50 h-16 text-2xl w-full border-bottom ">
                 Bộ lọc nâng cao
 
             </div>
@@ -140,13 +140,13 @@
             </div>
 
 
-            <div class="border-top mt-2 w-full h-16 bg-gray-50  shadow-inner">
-                <div class="absolute flex gap-2 right-5 h-10 p-1">
-                    <button class="mt-1 ml-auto px-2 border rounded-lg bg-gray-400 hover:bg-gray-700"
+            <div class="border-top border-gray-200 mt-2 w-full h-16 bg-white shadow-md sticky z-40 left-0 bottom-0 py-auto">
+                <div class="flex gap-2 mt-3 h-10 absolute right-5">
+                    <button class=" ml-auto px-auto border w-24 rounded-lg bg-gray-400 hover:bg-gray-700 "
                         @click="this.$emit('confirm')">
                         Xóa bộ lọc
                     </button>
-                    <button class="mt-1 ml-auto px-2 border rounded-lg bg-green-500 hover:bg-green-700"
+                    <button class=" ml-auto px-auto border w-24 rounded-lg bg-green-500 hover:bg-green-700"
                         @click="this.$emit('confirm')">
                         Áp dụng
                     </button>
@@ -169,10 +169,13 @@ import { ref, onUpdated } from 'vue'
 
 const carStore = useStore()
 
+
 const priceRangeValue = ref([200, 5000])
 const seatRangeValue = ref([2, 10])
 const yearRangeValue = ref([2005, 2023])
 const oilConsumedValue = ref(100)
+
+
 const features = carStore.getters.getFeatures
 const fuels = carStore.getters.getFuels
 const sortOptions = carStore.getters.getSortOptions

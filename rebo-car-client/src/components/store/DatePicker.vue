@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="shadow-2xl bg-white rounded-3xl mx-16 mt-3">
+        <div class="shadow-2xl bg-white rounded-3xl border border-gray-300 mx-16 mt-3">
             <div class="demo-datetime-picker mx-14 ">
                 <div class="block ">
                     <div>

@@ -1,16 +1,15 @@
 <template>
-  <div class = "">
-    <navigation/>
+  <div class="">
+    <navigation class="" />
     <router-view> </router-view>
   </div>
 </template>
 
 <script>
 
-import Product from './components/products/Product.vue'
 import Navigation from './components/store/Navigation.vue'
 export default {
-  components: { Product, Navigation },
+  components: { Navigation },
 
 }
 </script>

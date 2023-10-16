@@ -12,7 +12,7 @@ export default {
       filter
     );
   },
-  getCarById(id) {
+  findCarById(id) {
     return repository.get(`${resource}/${id}`);
   },
   addCar(payload) {

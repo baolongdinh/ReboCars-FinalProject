@@ -5,26 +5,63 @@
             Chương trình khuyến mãi
         </div>
 
-        <div class="flex flex-row overflow-x-scroll touch-auto space-x-12 bg-white p-4 mx-14 mt-5 ">
-
-            <img class="w-410 h-250" 
-                src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80">
-            <img class="w-410 h-250"
-                src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80">
-            <img class="w-410 h-250"
-                src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80">
-            <img class="w-410 h-250"
-                src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80">
-            <img class="w-410 h-250"
-                src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80">
-            <img class="w-410 h-250"
-                src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=320&h=160&q=80">
+        <div>
+            <vueper-slides class="no-shadow ml-24 mr-24 mt-8 " :visible-slides="3" :slide-ratio="1 / 5"
+                :dragging-distance="70" :gap="1">
+                <vueper-slide class="rounded-lg w-400 h-72" v-for="(promotion, i) in promotions" :key="i"
+                    :image="promotion.image" @click="(e) => console.log(i)">
+                </vueper-slide>
+            </vueper-slides>
         </div>
 
     </div>
 </template>
 
 <script setup>
+import { VueperSlides, VueperSlide } from 'vueperslides'
+import 'vueperslides/dist/vueperslides.css'
+
+const promotions = [
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+    {
+        image: 'https://n1-cstg.mioto.vn/g/2023/09/02/10/5K3K1C89.jpg'
+    },
+
+
+]
+
 
 </script>
 

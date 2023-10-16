@@ -5,30 +5,45 @@
                 <div class="relative">
                     <img class="h-auto w-full rounded-2xl object-cover"
                         src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/morris_garages_mg5_luxury_2022/p/g/2023/03/14/12/0qunI422EmCFfaB-Fhk2UQ.jpg">
+
+                    <div v-if="car.discount"
+                        class="absolute w-20 h-8 bg-orange-500 text-white font-semibold text-sm  rounded-3xl bottom-ne16 right-5 text-center p-de5">
+                        Giảm {{ car.discount }} %
+                    </div>
+
+
                 </div>
 
                 <div class=" mt-4 ">
                     <div class="flex">
-                        <div class="bg-blue-200   text-black font-bold py-2 px-4 rounded-xl font-sans font-light  text-xxm">
-                            Số tự động
+                        <div v-if="car?.characteristics?.transmission"
+                            class="bg-blue-200   text-black py-2 px-4 rounded-xl font-sans font-normal  text-xxm">
+                            {{ car.characteristics.transmission }}
                         </div>
 
-                        <div class="bg-pink-100   text-black font-bold py-2 px-4 rounded-xl font-sans font-light  text-xxm">
+                        <div v-if="car?.car_delivery"
+                            class="bg-pink-100   text-black py-2 px-4 rounded-xl font-sans font-normal  text-xxm">
                             Giao xe tận nơi
                         </div>
                     </div>
                 </div>
 
-                <div class=" mt-4 font-sans ">
-                    <div class="text-lg font-bold text-black ">
-                        TOYOTA VELOZ CROSS 2022
+                <div v-if="car?.name" class=" mt-2 font-sans ">
+                    <div class="text-lg font-bold text-black flex">
+                        <div>
+                            {{ car.name }}
+                        </div>
+                        <div class="pl-1">
+                            <img :src="activeIcon">
+                        </div>
+
                     </div>
                     <div class="mt-2 text-sm font-normal text-black flex ">
 
                         <font-awesome-icon :icon="['fas', 'location-dot']" size="lg" />
 
-                        <div class="ml-1">
-                            Quận Thủ Đức, Thành Phố Hồ Chí Minh
+                        <div v-if="car?.location?.compound?.district && car?.location?.compound?.province" class="ml-1">
+                            {{ car.location.compound.district }}, {{ car.location.compound.province }}
                         </div>
 
                     </div>
@@ -38,23 +53,49 @@
                     <hr class="h-px bg-gray-200 border-0 dark:bg-gray-300">
 
                     <div class=" mt-1 font-sans font-normal text-sm flex">
-                        <div>
+                        <div v-if="car?.reviewRateAvg">
                             <font-awesome-icon :icon="['fas', 'star']" style="color: #f7fb32;" />
-                            5.0
+                            {{ car.reviewRateAvg }}
+                        </div>
+                        <div v-else>
+                            <font-awesome-icon :icon="['fas', 'star']" style="color: #f7fb32;" />
+                            0
                         </div>
 
-                        <div class="ml-2">
+                        <div v-if="car.bookedNumber" class="ml-2">
                             <font-awesome-icon :icon="['fas', 'car-rear']" size="lg" style="color: #17ba22;" />
-                            61 Chuyến
+                            {{ car.bookedNumber }}
+                        </div>
+                        <div v-else class="ml-2">
+                            <font-awesome-icon :icon="['fas', 'car-rear']" size="lg" style="color: #17ba22;" />
+                            0
                         </div>
 
                     </div>
                 </div>
 
-                <div class="mt-5 relative">
-                    <div class="font-sans font-bold text-xl text-green-400 absolute right-0">
-                        950K
+                <div class="mt-5 relative flex font-sans">
+
+                    <div class="pl-1 font-bold text-xl text-green-400 absolute right-0 flex">
+
+                        <div v-if="car.discount > 0" class="text-gray-400 font-normal text-base pt-1 line-through">
+                            {{ car.price }}K
+                        </div>
+
+                        <div class="pl-1" v-if="car.discount > 0">
+                            {{ car.discountPrice.toFixed() }}K
+                        </div>
+
+                        <div v-if="car.price && car.discount === 0">
+                            {{ car.price }}K
+                        </div>
+
+                        <div class="text-gray-400 font-normal text-base pt-1 pl-2">
+                            / ngày
+                        </div>
+
                     </div>
+
                 </div>
 
 
@@ -63,8 +104,20 @@
     </div>
 </template>
 
-<script setup>
+<script>
+import { ref, onMounted } from "vue"
+import activeIcon from "../../../assets/icons/active.svg"
+export default {
+    props: {
+        car: Object
+    },
 
+    setup(props) {
+        return {
+            activeIcon
+        }
+    }
+}
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,28 +1,18 @@
-const discountService = require("../services/discount.service");
-const { respondOK } = require("../helpers/respond.helper");
+const discountService = require('../services/discount.service');
+const { respondOK } = require('../helpers/respond.helper');
 
 const discountController = {
     addNewDiscount: async (req, res, next) => {
-        await discountService
-            .addDiscount(req, res)
-            .then((discount) => {
-                respondOK(
-                    res,
-                    { discount },
-                    "add new discount successfully",
-                    201
-                );
-            })
-            .catch((err) => {
-                next(err);
-            });
+        await discountService.addDiscount(req, res).catch((err) => {
+            next(err);
+        });
     },
 
     getAllDiscount: async (req, res, next) => {
         await discountService
             .getAllDiscount(req.query)
-            .then((discount) => {
-                respondOK(res, { discount }, "get list discounts success", 200);
+            .then((discounts) => {
+                respondOK(res, { discounts }, 'get list discounts success', 200);
             })
             .catch((err) => {
                 next(err);
@@ -44,7 +34,7 @@ const discountController = {
         await discountService
             .deleteDiscountById(req.params.id)
             .then(() => {
-                respondOK(res, null, "Deleted discount successfully", 203);
+                respondOK(res, null, 'Deleted discount successfully', 203);
             })
             .catch((err) => {
                 next(err);
@@ -54,14 +44,7 @@ const discountController = {
     updateDiscountById: async (req, res, next) => {
         await discountService
             .updateDiscountById(req.params.id, req.body)
-            .then((updatedDiscount) => {
-                respondOK(
-                    res,
-                    { updatedDiscount },
-                    "update discount successfully",
-                    200
-                );
-            })
+
             .catch((err) => {
                 next(err);
             });
@@ -70,18 +53,11 @@ const discountController = {
     updateDiscountImageById: async (req, res, next) => {
         await discountService
             .updateDiscountImageById(req.params.id, req, res)
-            .then((newDiscountImage) => {
-                respondOK(
-                    res,
-                    { newDiscountImage },
-                    "update discount image successfully",
-                    200
-                );
-            })
+
             .catch((err) => {
                 next(err);
             });
-    },
+    }
 };
 
 module.exports = discountController;

@@ -5,32 +5,34 @@
                 @handleUpdateFilterChanged="findCarsByFilter">
             </date-picker-filter>
         </div>
-        <img :src="seatIcon" />
+
         <!-- <list-cars /> -->
-        <ul @scroll="handleScroll">
-            {{ cars }}
-        </ul>
+        <div>
+            <ListCars :listCars=cars @handleUserClickCarCard="handleUserClickCarCard" />
+        </div>
 
     </div>
 </template>
 
 <script setup>
-
-import listCars from './ListCars.vue';
-import seatIcon from "../../../assets/icons/seats.svg"
-import { RepositoryFactory } from '../../../apis/repositoryFactory';
+import ListCars from "./ListCars.vue"
 import DatePickerFilter from '../cars/DatePickerFilter.vue';
-import { computed, onMounted, onUpdated, watch, ref, onBeforeMount } from 'vue';
+import { computed, onMounted, onUpdated, watch, ref, onBeforeMount, onUnmounted, onActivated, onDeactivated } from 'vue';
 import { useStore, mapGetters } from 'vuex'
-const carsRepo = RepositoryFactory.get("cars");
+import { useRouter } from "vue-router";
+///// api call logic 
 
 const carStore = useStore()
+const router = useRouter()
 var cars = ref([])
-
 const startDateTime = carStore.getters.getStartDateTime
 const endDateTime = carStore.getters.getEndDateTime
 const location = carStore.getters.getLocation
-const filters = ref({})
+const filters = ref({
+    startDateTime,
+    endDateTime,
+    location
+})
 var page = 1
 var limit = 12
 
@@ -39,47 +41,109 @@ async function updateListCars(page, limit, filterPayload) {
     cars.value = await carStore.dispatch('findCarsFilter', { page, limit, filterPayload })
 }
 
+
+async function loadMoreListCars(page, limit, filterPayload) {
+    console.log('loadMore', page)
+    console.log({ filterPayload })
+    const loadMoreListCars = await carStore.dispatch('findCarsFilter', { page, limit, filterPayload })
+    cars.value = cars.value.concat(loadMoreListCars)
+    console.log('loadMoreListCars', cars.value)
+}
+
 async function findCarsByFilter(AllFilterCondition) {
 
     const { features, fuel, sort, ...filter } = AllFilterCondition
-
-    const filterPayload = { startDateTime, endDateTime, location, sort, filter, features, fuel, }
+    const startDateTimeValue = startDateTime.value
+    const endDateTimeValue = endDateTime.value
+    const locationValue = location.value
+    const filterPayload = { startDateTime: startDateTimeValue, endDateTime: endDateTimeValue, location: locationValue, sort, filter, features, fuel, }
     filters.value = filterPayload
     carStore.commit("setFilters", filterPayload)
-    updateListCars(page, limit, filterPayload)
+    page = 1  // set page eq 1 before filter
+    updateListCars(page, limit, filterPayload).then(() => console.log('filter Cars', cars.value))
+
 
 }
 
 async function handleUpdateLocation(location) {
     const filterPayload = filters.value
+    filters.value.location = location
     filterPayload.location = location
+    page = 1  // set page eq 1 before filter
     updateListCars(page, limit, filterPayload)
 
 }
 
 async function handleUpdateDateRange(dateRange) {
     const filterPayload = filters.value
+    filters.value.startDateTime = dateRange[0]
+    filters.value.endDateTime = dateRange[1]
     filterPayload.startDateTime = dateRange[0]
     filterPayload.endDateTime = dateRange[1]
+    page = 1  // set page eq 1 before filter
     updateListCars(page, limit, filterPayload)
 
 }
 
-function handleScroll(e) {
-    const { scrollTop, offsetHeight, scrollHeight } = e.target
-    if ((scrollTop + offsetHeight) >= scrollHeight) {
+// handle users click items
+function handleUserClickCarCard(carId) {
+
+    router.push({
+        name: "car", params: { id: carId },
+        query: {
+            startDateTime: filters.value.startDateTime,
+            endDateTime: filters.value.endDateTime,
+
+        }
+    })
+
+}
+
+
+
+//// handle user scroll
+
+function increasePage() {
+    page++
+}
+
+const handleUserScrollBottom = async (e) => {
+
+    const clientHeight = e.target.documentElement.clientHeight
+    const scrollHeight = e.target.documentElement.scrollHeight
+    const scrollTop = e.target.documentElement.scrollTop
+
+    if (scrollTop + clientHeight >= scrollHeight - 1) {
+
         console.log('bottom!')
+        increasePage()
+        await loadMoreListCars(page, limit, filters.value)
     }
 }
 
+function scrollToTop() {
+    window.scrollTo(0, 0);
+}
+
 onMounted(async () => {
+    console.log('mounted', startDateTime.value)
+    window.addEventListener("scroll", handleUserScrollBottom)
     const filterPayload = carStore.getters.getFilters
-    console.log('mounted', filterPayload)
-    updateListCars(page, limit, filterPayload)
+    console.log('mounted', page)
+    await updateListCars(page, limit, filterPayload)
+
 })
+
+
+onUnmounted(() => {
+    console.log('un mounted')
+    window.removeEventListener("scroll", handleUserScrollBottom)
+})
+
 
 onUpdated(() => {
     console.log('update')
+    console.log(filters.value)
 
 })
 

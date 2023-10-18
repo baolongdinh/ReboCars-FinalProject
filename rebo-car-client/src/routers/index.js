@@ -14,6 +14,8 @@ import MyListCars from "../components/store/userDashboard/userCarsDashboard/MyLi
 import TripOrders from "../components/store/userDashboard/userCarsDashboard/TripOrders.vue";
 import TripsHistory from "../components/store/userDashboard/userCarsDashboard/TripsHistory.vue";
 import Contracts from "../components/store/userDashboard/userCarsDashboard/Contract.vue";
+import CarRegistration from "../components/store/cars/CarRegistration.Vue";
+import CarStepRegister from "../components/store/cars/CarStepRegister.Vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -29,6 +31,16 @@ export const router = createRouter({
       path: "/find/filter/cars",
       component: ListCarsFinding,
       name: "cars",
+    },
+    {
+      path: "/carregister",
+      component: CarRegistration,
+      name: "CarRegistration",
+    },
+    {
+      path: "/registerstep",
+      component: CarStepRegister,
+      name: "CarStepRegister",
     },
     {
       path: "/car/:id",

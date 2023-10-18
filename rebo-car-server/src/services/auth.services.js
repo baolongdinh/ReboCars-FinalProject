@@ -1,6 +1,8 @@
 const userModel = require('../models/user.model');
+const roleModel = require('../models/role.model');
 const bcrypt = require('bcrypt');
 const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../helpers/jwtService');
+const { respondOK, respondFailure } = require('../helpers/respond.helper');
 var {
     BadRequestError,
     UnAuthorizedError,
@@ -40,6 +42,43 @@ const authService = {
         } catch (error) {
             throw new BadRequestError(error.message);
         }
+    },
+
+    signUp: async (req, res) => {
+        const { email, password, rePassword, name, phone } = req.body;
+
+        console.log(req.body);
+        if (!password || !email || !rePassword || !name) {
+            return respondFailure(res, 'invalid value', 403);
+        }
+
+        if (password !== rePassword) {
+            return respondFailure(res, 'password and rePassword did not match', 400);
+        }
+
+        //Check email exist
+        const emailExist = await userModel.findOne({ email });
+        if (emailExist) {
+            return respondFailure(res, 'Email exist', 400);
+        }
+        const salt = await bcrypt.genSaltSync(10);
+        const passwordHash = await bcrypt.hashSync(password, salt);
+
+        const role = await roleModel.findOne({ name: 'USER' });
+        const newUser = await userModel
+            .create({
+                email,
+                password: passwordHash,
+                name,
+                phone,
+                role: role._id
+            })
+            .catch((err) => {
+                return respondFailure(res, err.message, 400);
+            });
+
+        delete newUser._doc.password;
+        return respondOK(res, { newUser }, 'user added successfully', 201);
     },
 
     generateNewAccessToken: async (refreshToken) => {

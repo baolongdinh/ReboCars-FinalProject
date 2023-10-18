@@ -45,7 +45,7 @@
         </div>
 
         <div class="absolute bottom-5 right-5">
-            <button class="bg-green-400 hover:bg-green-500 w-32 h-12 rounded-lg ">
+            <button class="bg-green-400 hover:bg-green-500 w-32 h-12 rounded-lg " @click="handleInfoDetailBtn">
                 <div class="text-white font-sans font-semibold text-base">
                     Xem chi tiết
                 </div>
@@ -57,6 +57,12 @@
 </template>
 
 <script setup>
+
+const emit = defineEmits(['handleInfoDetailBtn'])
+
+function handleInfoDetailBtn() {
+    emit('handleInfoDetailBtn')
+}
 
 </script>
 

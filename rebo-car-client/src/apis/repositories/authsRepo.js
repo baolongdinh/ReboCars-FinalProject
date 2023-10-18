@@ -9,4 +9,13 @@ export default {
       password,
     });
   },
+  signUp(email, password, rePassword, name, phone) {
+    return repository.post(`${resource}/signup`, {
+      email,
+      password,
+      rePassword,
+      name,
+      phone,
+    });
+  },
 };

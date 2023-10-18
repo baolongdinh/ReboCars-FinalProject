@@ -11,6 +11,11 @@ const authController = {
                 next(err);
             });
     },
+    signUp: async (req, res, next) => {
+        authService.signUp(req, res).catch((err) => {
+            next(err);
+        });
+    },
     generateNewToken: (req, res, next) => {
         authService
             .generateNewAccessToken(req.body.refreshToken)

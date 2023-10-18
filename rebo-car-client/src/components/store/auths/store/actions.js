@@ -13,4 +13,8 @@ export default {
       return user;
     }
   },
+
+  signUp: async (context, { email, password, rePassword, name, phone }) => {
+    await authRepo.signUp(email, password, rePassword, name, phone);
+  },
 };

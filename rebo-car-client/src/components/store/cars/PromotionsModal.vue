@@ -22,7 +22,7 @@
             </div>
 
             <div class=" overflow-y-auto">
-                <ListPromotions v-if="listPromotions" :listPromotions=listPromotions
+                <ListPromotions :listPromotions=listPromotions
                     @handleSelectDiscount="(promotion) => this.$emit('handleSelectDiscount', promotion)"></ListPromotions>
             </div>
 

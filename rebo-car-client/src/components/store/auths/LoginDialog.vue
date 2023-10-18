@@ -100,9 +100,10 @@ async function handleSignInBtn() {
         password: password.value
     }
     console.log(payload)
-    store.dispatch('login', payload).then(() => {
-        emitPopDownDialog()
-    })
+    store.dispatch('login', payload)
+        .then(() => {
+            emitPopDownDialog()
+        })
         .catch(err => {
             alertMessage.value = err.response.data.message
         })

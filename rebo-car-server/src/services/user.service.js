@@ -74,10 +74,14 @@ const userService = {
                 return respondFailure(res, 'can not found file upload', 500);
             }
 
-            const { email, password, name, phone, driving_license } = req.body;
+            const { email, password, rePassword, name, phone, driving_license } = req.body;
 
             if (!password || !email || !name) {
                 return respondFailure(res, 'invalid value', 403);
+            }
+
+            if (password !== rePassword) {
+                return respondFailure(res, 'password and rePassword did not match', 400);
             }
 
             //Check email exist

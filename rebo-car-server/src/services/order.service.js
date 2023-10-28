@@ -63,7 +63,8 @@ const orderServices = {
         prices_table,
         status,
         user_id,
-        car_id
+        car_id,
+        car_owner_id
     }) => {
         if (!start_date_time || !end_date_time) {
             throw new BadRequestError('invalid request');
@@ -80,7 +81,8 @@ const orderServices = {
                 prices_table,
                 status,
                 user_id,
-                car_id
+                car_id,
+                car_owner_id
             })
             .catch((err) => {
                 throw new InternalServerError(err.message);
@@ -110,6 +112,14 @@ const orderServices = {
                     }
                 },
                 {
+                    $lookup: {
+                        from: 'users',
+                        localField: '_id',
+                        foreignField: 'car_owner_id',
+                        as: 'car_owner_info'
+                    }
+                },
+                {
                     $match: buildOrderMatchFilterCondition(startDate, endDate)
                 },
                 {
@@ -125,6 +135,58 @@ const orderServices = {
             return orders;
         } catch (err) {
             throw new InternalServerError(err.message);
+        }
+    },
+
+    getAllUserOrders: async (
+        { limit = 12, page = 1 },
+        { user_id, sort = { start_date_time: -1 }, start_date_time, end_date_time, historyOrders }
+    ) => {
+        try {
+            const skip = (page - 1) * parseInt(limit);
+            const orders = await orderModel.aggregate([
+                {
+                    $lookup: {
+                        from: 'cars',
+                        localField: 'car_id',
+                        foreignField: '_id',
+                        as: 'car_info'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'user_id',
+                        foreignField: '_id',
+                        as: 'user_info'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'car_owner_id',
+                        foreignField: '_id',
+                        as: 'car_owner_info'
+                    }
+                },
+                {
+                    $match: buildOrderMatchFilterCondition(
+                        start_date_time,
+                        end_date_time,
+                        historyOrders,
+                        user_id
+                    )
+                },
+                { $sort: sort },
+                { $skip: skip },
+                { $limit: parseInt(limit) }
+            ]);
+            if (!orders) {
+                throw new NotfoundError();
+            }
+            return orders;
+        } catch (err) {
+            throw new BadRequestError(err.message);
         }
     },
 

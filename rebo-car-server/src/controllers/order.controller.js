@@ -12,6 +12,17 @@ const orderControllers = {
                 next(err);
             });
     },
+    getAllUserOrders: async (req, res, next) => {
+        orderServices
+            .getAllUserOrders(req.query, req.body)
+            .then((data) => {
+                respondOK(res, data, 'get all user orders successfully', 200);
+            })
+            .catch((err) => {
+                next(err);
+            });
+    },
+
     createOrder: async (req, res, next) => {
         orderServices
             .createOrder(req.body)

@@ -23,6 +23,11 @@ const orderSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'cars',
             require: true
+        },
+        car_owner_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'users',
+            require: true
         }
     },
     {

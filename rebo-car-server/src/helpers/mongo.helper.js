@@ -1,3 +1,4 @@
+var mongoose = require('mongoose');
 const buildCarMatchFilterCondition = (filter, features, fuel, location) => {
     const matchAndStageFilter = [{}];
 
@@ -61,54 +62,53 @@ const buildCarMatchFilterCondition = (filter, features, fuel, location) => {
     return matchAndStageFilter;
 };
 
-const buildOrderMatchFilterCondition = (startDate, endDate) => {
-    const matchOrderStage = {};
+const buildOrderMatchFilterCondition = (_start_date_time, _end_date_time, historyOrders, user_id) => {
+    var matchOrderStage = {};
+    const dateNow = new Date();
 
-    if (startDate) {
-        matchOrderStage[start_date_time] = {
-            $gte: startDate
+    if (historyOrders) {
+        const addMatchStage = {
+            end_date_time: {
+                $lt: dateNow
+            }
         };
+        matchOrderStage = { ...matchOrderStage, ...addMatchStage };
+    } else {
+        const addMatchStage = {
+            end_date_time: {
+                $gte: dateNow
+            }
+        };
+        matchOrderStage = { ...matchOrderStage, ...addMatchStage };
     }
 
-    if (endDate) {
-        matchOrderStage[end_date_time] = {
-            $lte: endDate
+    if (user_id) {
+        const addMatchStage = {
+            user_id: mongoose.Types.ObjectId(user_id)
         };
+        matchOrderStage = { ...matchOrderStage, ...addMatchStage };
     }
+
+    if (_start_date_time) {
+        const addMatchStage = {
+            start_date_time: { $gte: _start_date_time }
+        };
+        matchOrderStage = { ...matchOrderStage, ...addMatchStage };
+    }
+
+    if (_end_date_time) {
+        const addMatchStage = {
+            end_date_time: { $lte: _end_date_time }
+        };
+        matchOrderStage = { ...matchOrderStage, ...addMatchStage };
+    }
+
+    console.log({ matchOrderStage });
 
     return matchOrderStage;
 };
 
-const buildMatchSearchOrderCondition = (search) => {
-    const matchOrSearchCheck = [{}];
-
-    if (search) {
-        matchOrSearchCheck.push({
-            _id: search
-        });
-
-        matchOrSearchCheck.push({
-            'user_info.name': search
-        });
-
-        matchOrSearchCheck.push({
-            'car_info.name': search
-        });
-
-        matchOrSearchCheck.push({
-            'car_info.identifyNumber': search
-        });
-    }
-
-    const matchSearchStage = {
-        $or: matchOrSearchCheck
-    };
-
-    return matchSearchStage;
-};
-
 module.exports = {
     buildCarMatchFilterCondition,
-    buildOrderMatchFilterCondition,
-    buildMatchSearchOrderCondition
+    buildOrderMatchFilterCondition
 };

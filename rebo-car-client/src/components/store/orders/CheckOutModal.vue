@@ -163,7 +163,8 @@ function handlePurchaseClick() {
                 delivery_receipt_address,
                 prices_table,
                 user_id,
-                car_id: car.value._id
+                car_id: car.value._id,
+                car_owner_id: car.value.user_id
             }).then(() => {
                 braintreeLoading.value = false
                 showSuccessPaymentGateway.value = true

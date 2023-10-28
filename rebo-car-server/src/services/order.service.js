@@ -9,57 +9,78 @@ var {
     InternalServerError
 } = require('../core/error.response');
 
+//  {
 //         start_date_time: { type: Date, required: true },
 //         end_date_time: { type: Date, required: true },
-//         price_per_day: { type: Number, required: true },
-//         delivery_price: { type: Number, default: 0 },
-//         delivery_accept: { type: Boolean, default: false },
-//         receipt_place: { type: String },
-//         delivery_place: { type: String },
-//         delivery_distance: { type: Number, default: 0 },
-//         discount_rate: { type: Number, default: 0 },
-//         unit_price: {
-//             type: Number,
-//             default: function () {
-//                 return this.price + this.delivery_price * this.delivery_distance - this.price * this.discount_rate;
+//         delivery_receipt_address: { type: Schema.Types.Mixed, require: true },
+//         prices_tables: {
+//             price: {
+//                 type: Number
+//             },
+//             discountPrice: {
+//                 type: Number
+//             },
+//             brokerageCost: {
+//                 type: Number
+//             },
+//             unitPrice: {
+//                 type: Number
+//             },
+//             promotionDiscount: {
+//                 type: Number
+//             },
+//             deliveryPrice: {
+//                 type: Number
+//             },
+//             unitTotalPrice: {
+//                 type: Number
 //             }
 //         },
-//         user_id:
-//         car_id:
-
+//         status: {
+//             type: String
+//         },
+//         reviewed: {
+//             type: Boolean,
+//             default: false
+//         },
+//         user_id: {
+//             type: mongoose.Schema.Types.ObjectId,
+//             ref: 'users',
+//             require: true
+//         },
+//         car_id: {
+//             type: mongoose.Schema.Types.ObjectId,
+//             ref: 'cars',
+//             require: true
+//         }
+//     },
 const orderServices = {
     createOrder: async ({
+        transaction_id,
         start_date_time,
         end_date_time,
-        price_per_day,
-        delivery_price,
-        delivery_accept,
-        receipt_place,
-        delivery_place,
-        delivery_distance,
-        discount_rate,
+        delivery_receipt_address,
+        prices_table,
+        status,
         user_id,
-        car_id,
-        car_owner_id
+        car_id
     }) => {
         if (!start_date_time || !end_date_time) {
             throw new BadRequestError('invalid request');
         }
 
+        console.log({ transaction_id, prices_table });
+
         const order = await orderModel
             .create({
+                transaction_id,
                 start_date_time,
                 end_date_time,
-                price_per_day,
-                delivery_price,
-                delivery_accept,
-                receipt_place,
-                delivery_place,
-                delivery_distance,
-                discount_rate,
+                delivery_receipt_address,
+                prices_table,
+                status,
                 user_id,
-                car_id,
-                car_owner_id
+                car_id
             })
             .catch((err) => {
                 throw new InternalServerError(err.message);
@@ -102,8 +123,7 @@ const orderServices = {
                 throw new NotfoundError();
             }
             return orders;
-        } catch (err) { 
-            
+        } catch (err) {
             throw new InternalServerError(err.message);
         }
     },

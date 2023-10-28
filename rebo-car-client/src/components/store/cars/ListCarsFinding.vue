@@ -113,7 +113,7 @@ const handleUserScrollBottom = async (e) => {
     const scrollHeight = e.target.documentElement.scrollHeight
     const scrollTop = e.target.documentElement.scrollTop
 
-    if (scrollTop + clientHeight >= scrollHeight - 1) {
+    if (scrollTop + clientHeight >= scrollHeight - 0.5) {
 
         console.log('bottom!')
         increasePage()
@@ -128,7 +128,7 @@ function scrollToTop() {
 onMounted(async () => {
     console.log('mounted', startDateTime.value)
     window.addEventListener("scroll", handleUserScrollBottom)
-    const filterPayload = carStore.getters.getFilters
+    const filterPayload = filters.value
     console.log('mounted', page)
     await updateListCars(page, limit, filterPayload)
 

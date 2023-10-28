@@ -2,20 +2,17 @@ const { mongoose, Schema } = require('mongoose');
 
 const orderSchema = new mongoose.Schema(
     {
+        transaction_id: { type: String, require: true },
         start_date_time: { type: Date, required: true },
         end_date_time: { type: Date, required: true },
-        price_per_day: { type: Number, required: true },
-        delivery_price: { type: Number, default: 0 },
-        delivery_accept: { type: Boolean, default: false },
-        receipt_place: { type: String },
-        delivery_place: { type: String },
-        delivery_distance: { type: Number, default: 0 },
-        discount_rate: { type: Number, default: 0 },
-        unit_price: {
-            type: Number,
-            default: function () {
-                return this.price + this.delivery_price * this.delivery_distance - this.price * this.discount_rate;
-            }
+        delivery_receipt_address: { type: Schema.Types.Mixed, require: true },
+        prices_table: { type: Schema.Types.Mixed, require: true },
+        status: {
+            type: String
+        },
+        reviewed: {
+            type: Boolean,
+            default: false
         },
         user_id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -25,11 +22,6 @@ const orderSchema = new mongoose.Schema(
         car_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'cars',
-            require: true
-        },
-        car_owner_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'users',
             require: true
         }
     },

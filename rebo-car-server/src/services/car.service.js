@@ -66,23 +66,24 @@ const carSelectField = {
 };
 
 const carService = {
-    getAllCars: async ({ limit = 12, sort = 'ctime', page = 1, filter, select = carSelectField }) => {
-        const skip = (page - 1) * limit;
-        const sortBy = sort === 'ctime' ? { _id: -1 } : { _id: 1 };
-
-        console.log({ limit, page });
+    getAllCars: async ({
+        limit = 12,
+        sort = {
+            discount: -1,
+            price: 1,
+            reviewRateAvg: -1
+        },
+        page = 1,
+        filter,
+        select = carSelectField
+    }) => {
+        const skip = (page - 1) * parseInt(limit);
 
         if (!filter) {
             filter = '{}';
         }
 
-        const cars = await carModel
-            .find(JSON.parse(filter))
-            .sort(sortBy)
-            .skip(skip)
-            .limit(limit)
-            .select(select)
-            .lean();
+        const cars = await carModel.find().sort(sort).skip(skip).limit(parseInt(limit)).select(select);
 
         if (!cars) {
             throw new NotfoundError('Invalid value');

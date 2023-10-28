@@ -61,20 +61,19 @@ instance.interceptors.response.use(
 
     if (err.response) {
       // Access Token was expired
-      if (err.response.status === 401 && !config?.sent) {
-        config.sent = true;
+      if (err.response.status === 401 && !config?._retry) {
+        config._retry = true;
 
         try {
           const payload =
             await getNewAccessTokenAndRefreshTokenByRefreshToken();
-
+          console.log("get new access token and refresh token");
           const { newAccessToken, newRefreshToken } = payload;
 
           localStorage.setItem("accessToken", "Bearer " + newAccessToken);
           localStorage.setItem("refreshToken", "Bearer " + newRefreshToken);
 
-          instance.defaults.headers.common["authToken"] =
-            "Bearer " + newAccessToken;
+          config.headers["authToken"] = "Bearer " + newAccessToken;
 
           return instance(config);
         } catch (_error) {

@@ -384,16 +384,16 @@ import Cart from "./Cart.vue"
 import infoIcon from "../../../assets/icons/info.svg"
 import ReviewCard from "./ReviewCard.vue"
 import { useRouter, useRoute } from 'vue-router'
-import { ref, onMounted, shallowRef } from "vue"
+import { ref, onMounted, shallowRef, provide } from "vue"
 import gongAPI from "../../../apis/goongMapAPI/api"
 import goongAPIKey from "../../../configs/apikey.config"
 import { useStore, mapGetters } from 'vuex'
 
 
-
 const store = useStore()
 const route = useRoute()
 const car = ref({})
+provide('car', car)
 
 const startDateTime = route.query.startDateTime ? route.query.startDateTime : store.getters.getStartDateTime
 const endDateTime = route.query.endDateTime ? route.query.endDateTime : store.getters.getEndDateTime
@@ -406,9 +406,7 @@ async function findCarByIdAndSetValue(id) {
     car.value = await store.dispatch("findCarById", id)
 }
 
-
 onMounted(async () => {
-
     await findCarByIdAndSetValue(route.params.id)
     console.log(car.value)
     // const place = await gongAPI.getPlaceDetailById(location.place_id)

@@ -78,7 +78,8 @@ const store = useStore()
 const router = useRouter()
 const dateRange = ref();
 
-const location = ref(store.getters.getLocation.description)
+const location = ref(store.getters.getLocation.description) ? "Hồ Chí Minh" : ref(store.getters.getLocation.description)
+console.log({ location })
 const startDateTime = store.getters.getStartDateTime
 const endDateTime = store.getters.getEndDateTime
 

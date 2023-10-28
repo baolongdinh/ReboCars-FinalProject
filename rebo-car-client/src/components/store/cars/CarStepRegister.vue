@@ -25,7 +25,7 @@ import CarRegisterStep1 from './CarRegisterStep1.vue';
 import CarRegisterStep2 from './CarRegisterStep2.vue';
 import CarRegisterStep3 from './CarRegisterStep3.vue';
 import { ref } from 'vue';
-import HorizontalStepper from 'vue-stepper';
+import HorizontalStepper from '../../../helpers/components/stepper/HorizontalStepper.vue';
 
 const demoSteps = ref([
     {

@@ -27,6 +27,7 @@ export default {
       limit,
       JSON.stringify(filter)
     );
+
     if (response) {
       const discounts = response.data.metadata.discounts;
       return discounts;

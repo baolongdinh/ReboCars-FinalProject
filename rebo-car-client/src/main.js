@@ -6,6 +6,7 @@ import { createVfm } from "vue-final-modal";
 import "element-plus/dist/index.css";
 import App from "./App.vue";
 import "./assets/index.css";
+import vueBraintree from "vue-braintree";
 
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
@@ -55,6 +56,8 @@ library.add(
 
 const app = createApp(App);
 app.use(store);
+app.use(vueBraintree);
+
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.component("VueDatePicker", VueDatePicker);
 app.use(ElementPlus);

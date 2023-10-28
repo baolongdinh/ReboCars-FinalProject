@@ -22,7 +22,7 @@
             </div>
 
             <div class=" overflow-y-auto">
-                <ListPromotions :listPromotions=listPromotions
+                <ListPromotions v-if="listPromotions" :listPromotions=listPromotions
                     @handleSelectDiscount="(promotion) => this.$emit('handleSelectDiscount', promotion)"></ListPromotions>
             </div>
 
@@ -33,7 +33,6 @@
 
 <script setup>
 import { VueFinalModal } from 'vue-final-modal'
-import PromotionCardDialog from './PromotionCardDialog.vue';
 import ListPromotions from './ListPromotions.vue';
 import { useStore } from 'vuex';
 import { ref, onMounted } from 'vue';

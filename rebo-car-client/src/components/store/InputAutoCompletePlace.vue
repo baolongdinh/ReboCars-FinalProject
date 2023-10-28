@@ -7,7 +7,7 @@
                     <input type="search" class="pl-10 pr-4 py-2 border rounded-md w-full h-9 border-gray-300"
                         placeholder="Tìm kiếm địa chỉ" @keyup="handleKeyup($event.target.value)" v-model="inputValue"
                         id="default-search" />
-                    <div class="absolute inset-y-0 left-0 pl-3 
+                    <button class="absolute inset-y-0 left-0 pl-3 
                     flex items-center 
                     pointer-events-none">
 
@@ -20,7 +20,7 @@
                                 fill="black"></path>
                         </svg>
 
-                    </div>
+                    </button>
                 </div>
 
                 <div>
@@ -54,6 +54,7 @@ export default {
 
         const placeList = ref([])
         const inputValue = ref(props.searchValue) || ref("")
+        console.log({ inputValue })
         const fetchApi = async (apiKey, input) => {
             const data = await fetch(`https://rsapi.goong.io/Place/AutoComplete?api_key=${apiKey}&location=21.013715429594125,%20105.79829597455202&input=${input}`)
             return data.json()
@@ -93,11 +94,13 @@ export default {
         }
 
 
+
         return {
             placeList,
             handleKeyup,
             inputValue,
-            handleClickLocation
+            handleClickLocation,
+
         }
     }
 }

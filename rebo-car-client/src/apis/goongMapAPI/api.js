@@ -23,6 +23,16 @@ const gongAPI = {
     );
     return data.json();
   },
+
+  getDistanceMatrix: async (origin, destination) => {
+    const data = await fetch(
+      `https://rsapi.goong.io/DistanceMatrix?origins=${origin.lat},${origin.lng}&destinations=${destination.lat},${destination.lng}&vehicle=car&api_key=${goongAPIKey.goongMapAPI}`
+    );
+    const jsonData = await data.json();
+    const distance = jsonData.rows[0].elements[0];
+
+    return distance;
+  },
 };
 
 export default gongAPI;

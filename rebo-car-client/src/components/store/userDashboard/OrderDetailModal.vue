@@ -37,7 +37,7 @@
             </div>
 
             <div class="pb-4">
-                <button class="bg-green-400 hover:bg-green-500 p-2 rounded-lg ">
+                <button @click="handleBtnClickCarDetail" class="bg-green-400 hover:bg-green-500 p-2 rounded-lg ">
                     <div class="text-white font-sans font-semibold text-lg">
                         Xem thông tin chi tiết của xe
                     </div>
@@ -67,11 +67,11 @@
 
                                 <span class=" font-medium text-gray-700">Bắt đầu:</span>
 
-                                09/12/2023, 14:00
+                                {{ startDateTimeString }}
                             </div>
                             <div class="text-base font-normal">
                                 <span class=" font-medium text-gray-700">Kết thúc:</span>
-                                14/12/2023, 14:00
+                                {{ endDateTimeString }}
                             </div>
                         </div>
 
@@ -87,7 +87,7 @@
                         </div>
 
                         <div class="ml-4 pt-4 font-normal">
-                            Chung Cư Gia Phúc, 94 Tô Vĩnh Diện, Kp 5, Thủ Đức, Thành phố Hồ Chí Minh 700000
+                            {{ order.delivery_receipt_address.description }}
                         </div>
 
                     </div>
@@ -95,7 +95,45 @@
 
             </div>
 
-            <div class="border-t border-gray-300 pb-8">
+
+            <div v-if="carOwnerOrder" class="border-t border-gray-300 pb-8">
+
+                <div class="text-lg font-sans pt-4 font-bold ">
+                    THÔNG TIN NGƯỜI THUÊ XE
+                </div>
+
+                <div class="grid grid-cols-2 mt-3 p-auto relative">
+                    <div class="flex">
+
+                        <div>
+                            <img class="rounded-full w-20 h-20" loading="lazy"
+                                src="https://n1-astg.mioto.vn/g/2023/05/20/11/Amw7XK7x-BYML-KfFumPFA.jpg">
+                        </div>
+
+                        <div class="grid grid-row-2 gap-1 pl-6 absolute top-ne24 left-20   ">
+                            <div v-if="order?.user_info[0]?.name" class="font-medium text-xl pt-6">
+                                {{ order.user_info[0].name }}
+                            </div>
+
+                            <div v-if="order?.user_info[0]?.phone" class="font-normal text-base text-gray-800">
+                                <span class="font-medium"> SĐT: </span>
+                                {{ order.user_info[0].phone }}
+                            </div>
+                            <div v-if="order.user_info[0].email" class="font-normal text-base text-gray-800">
+                                <span class="font-medium"> Email: </span>
+                                {{ order.user_info[0].email }}
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <div v-else class="border-t border-gray-300 pb-8">
 
                 <div class="text-lg font-sans pt-4 font-bold ">
                     THÔNG TIN CHỦ XE
@@ -103,23 +141,24 @@
 
                 <div class="grid grid-cols-2 mt-3 p-auto relative">
                     <div class="flex">
-                        <div class="">
+
+                        <div>
                             <img class="rounded-full w-20 h-20" loading="lazy"
                                 src="https://n1-astg.mioto.vn/g/2023/05/20/11/Amw7XK7x-BYML-KfFumPFA.jpg">
                         </div>
 
                         <div class="grid grid-row-2 gap-1 pl-2 absolute top-ne24 left-20   ">
-                            <div class="font-medium text-xl pt-6">
-                                Bảo Long
+                            <div v-if="order?.car_owner_info[0]?.name" class="font-medium text-xl pt-6">
+                                {{ order.car_owner_info[0].name }}
                             </div>
 
-                            <div class="font-normal text-base text-gray-800">
+                            <div v-if="order?.car_owner_info[0]?.phone" class="font-normal text-base text-gray-800">
                                 <span class="font-medium"> SĐT: </span>
-                                0911896496
+                                {{ order.car_owner_info[0].phone }}
                             </div>
-                            <div class="font-normal text-base text-gray-800">
+                            <div v-if="order.car_owner_info[0].email" class="font-normal text-base text-gray-800">
                                 <span class="font-medium"> Email: </span>
-                                highskikes11@gmail.com
+                                {{ order.car_owner_info[0].email }}
                             </div>
                         </div>
 
@@ -155,8 +194,11 @@
                     </div>
                 </div>
 
-
             </div>
+
+
+
+
 
             <div class="border-t border-gray-300 pb-8">
 
@@ -181,72 +223,74 @@
                                 Đơn giá thuê
                             </div>
                             <div class="text-black font-medium">
-                                123 000đ/ngày
+                                {{ order.prices_table.discountPrice || order.prices_table.price }} 000đ/ngày
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 relative">
+                        <div v-if="order.prices_table.discountPrice" class="grid grid-cols-2 relative">
                             <div class="text-gray-700">
                                 Giảm giá
                             </div>
                             <div class="text-black font-medium line-through">
-                                123 000đ/ngày
+                                {{ order.prices_table.price }} 000đ/ngày
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 relative">
+                        <div v-if="order.prices_table.brokerageCost" class="grid grid-cols-2 relative">
                             <div class="text-gray-700">
                                 Phí dịch vụ
                             </div>
                             <div class="text-black font-medium">
-                                123 000đ/ngày
+                                {{ order.prices_table.brokerageCost }} 000đ/ngày
                             </div>
                         </div>
 
                     </div>
 
-                    <div class="grid grid-cols-2 relative pl-2 pt-1">
+                    <div v-if="order.prices_table.unitPrice" class="grid grid-cols-2 relative pl-2 pt-1">
                         <div class="text-gray-700">
                             Tổng phí thuê xe
                         </div>
                         <div class="text-black font-medium">
-                            123 000đ/ngày
+                            {{ order.prices_table.unitPrice }} 000đ/ngày
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 relative pl-2 pt-1 pb-2">
+                    <div v-if="order.prices_table.promotionDiscount" class="grid grid-cols-2 relative pl-2 pt-1 pb-2">
                         <div class="text-gray-700">
-                            Khuyến mãi (BANMOI)
+                            Khuyến mãi
                         </div>
                         <div class="text-black font-medium line-through">
-                            123 000đ
+                            {{ order.prices_table.promotionDiscount }} 000đ
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 relative border-t border-gray-500 pt-2 pb-2 pl-2 pt-1">
+                    <div v-if="order.prices_table.unitTotalPrice"
+                        class="grid grid-cols-2 relative border-t border-gray-500 pt-2 pb-2 pl-2 pt-1">
                         <div class="text-black font-semibold">
                             Tổng cộng
                         </div>
                         <div class="text-black font-bold">
-                            123 000đ
+                            {{ order.prices_table.unitTotalPrice }} 000đ
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 relative border-t border-gray-500 pt-2 pl-2 ">
+                    <div v-if="order.prices_table.depositPrice"
+                        class="grid grid-cols-2 relative border-t border-gray-500 pt-2 pl-2 ">
                         <div class="text-black font-semibold">
                             Số tiền đã cọc
                         </div>
                         <div class="text-green-600 font-bold">
-                            123 000đ
+                            {{ order.prices_table.depositPrice }} 000đ
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 relative  pt-2 pl-2">
+                    <div v-if="order.prices_table.payLaterPrice" class="grid grid-cols-2 relative  pt-2 pl-2">
                         <div class="text-black font-semibold">
                             Số tiền thanh toán cho chủ xe khi nhận xe
                         </div>
                         <div class="text-green-600 font-bold">
-                            123 000đ
+                            {{ order.prices_table.payLaterPrice }} 000đ
                         </div>
                     </div>
 
@@ -304,7 +348,7 @@
 
                 </div>
 
-                <div class="text-lg font-sans font-bold pt-4 border-t-8 border-gray-200">
+                <div class="text-lg font-sans font-bold pt-4 border-t-8 border-gray-200 pb-6">
                     CHÍNH SÁCH HỦY XE
 
                     <div class="font-normal text-base text-gray-900  pt-5 ">
@@ -384,18 +428,68 @@
 
                 </div>
 
-            </div>
+                <div v-if="order.reviewed" class="border-t-8 border-gray-200  pb-6 pt-4 ">
+                    <div class="text-lg font-sans font-bold">
+                        NGƯỜI DÙNG ĐÁNH GIÁ
+                    </div>
 
-            <button class="bg-red-400 hover:bg-red-500 p-2 rounded-lg w-1/6 absolute bottom-0 right-2 ">
-                <div class="text-white font-sans font-semibold text-lg">
-                    Hủy đơn hàng
+                    <ReviewCardVue :review=order.review></ReviewCardVue>
                 </div>
 
-            </button>
+            </div>
+
+            <div v-if="date_now < start_date_time">
+                <button v-if="carOwnerOrder" @click="showCarOwnerDeleteOrderConfirmDialog"
+                    class="bg-red-400 hover:bg-red-500 p-2 rounded-lg w-1/6 absolute bottom-0 right-2 ">
+                    <div class="text-white font-sans font-semibold text-lg">
+                        Hủy đơn hàng
+                    </div>
+
+                </button>
+
+                <button v-else @click="showDeleteOrderConfirmDialog"
+                    class="bg-red-400 hover:bg-red-500 p-2 rounded-lg w-1/6 absolute bottom-0 right-2 ">
+                    <div class="text-white font-sans font-semibold text-lg">
+                        Hủy đơn hàng
+                    </div>
+
+                </button>
+            </div>
+            <div v-else>
+                <button v-if="!carOwnerOrder && !order.reviewed" @click="showReviewOrderDialog"
+                    class="bg-green-400 hover:bg-green-600 p-3 rounded-lg absolute bottom-0 right-2 ">
+                    <div class="text-white font-sans font-semibold text-lg">
+                        Đánh giá đơn hàng
+                    </div>
+                </button>
+            </div>
+
+
+            <div class="opacity-80 bg-gray-800 fixed z-200 inset-0" v-if="showDeleteOrderConfirm">
+
+                <DeleteOrderConfirmModal v-if="order" :order="order" class=" w-415 h-60 absolute m-auto inset-0"
+                    v-model="showDeleteOrderConfirm" @logout="hiddenDeleteOrderConfirmDialog">
+                </DeleteOrderConfirmModal>
+
+            </div>
+
+            <div class="opacity-80 bg-gray-800 fixed z-200 inset-0" v-if="showCarOwnerDeleteOrderConfirm">
+
+                <CarOwnerDeleteOrderConfirmModal v-if="order" :order="order" class=" w-415 h-60 absolute m-auto inset-0"
+                    v-model="showCarOwnerDeleteOrderConfirm" @logout="hiddenCarOwnerDeleteOrderConfirmDialog">
+                </CarOwnerDeleteOrderConfirmModal>
+
+            </div>
+
+            <div class="opacity-80 bg-gray-800 fixed z-200 inset-0" v-if="showReviewOrderModal">
+
+                <ReviewOrderModal class=" w-580 h-56 absolute mx-auto mt-36 inset-0" v-model="showReviewOrderModal"
+                    @logout="hideReviewOrderDialog" @handleConfirmSubmitReviewBtn="handleConfirmSubmitReviewBtn">
+                </ReviewOrderModal>
+
+            </div>
+
         </div>
-
-
-
 
     </VueFinalModal>
 </template>
@@ -407,20 +501,103 @@ import locationIcon from '../../../assets/icons/location.svg'
 import infoIcon from '../../../assets/icons/info.svg'
 import redCumulus from '../../../assets/icons/redCumulus.svg'
 import greenCumulus from '../../../assets/icons/greenCumulus.svg'
-
-
 import gongAPI from "../../../apis/goongMapAPI/api"
+import { ref, onMounted, onUpdated, shallowRef, provide } from 'vue'
+import { useRouter } from 'vue-router'
+import DeleteOrderConfirmModal from '../orders/DeleteOrderConfirmModal.vue'
+import CarOwnerDeleteOrderConfirmModal from "../orders/CarOwnerDeleteOrderConfirmModal.vue"
+import ReviewOrderModal from '../orders/ReviewOrderModal.vue'
+import ReviewCardVue from '../cars/ReviewCard.vue'
 
 
-import { ref, onMounted, shallowRef } from 'vue'
 
+const props = defineProps({
+    order: Object,
+    orderHistory: Boolean,
+    carOwnerOrder: Boolean
+})
 
+//provide
+provide('orderId', props.order._id)
+provide('carId', props.order.car_id)
+
+const router = useRouter()
+const emit = defineEmits(['handleConfirmSubmitReviewBtn'])
+//define
 const mapContainer = shallowRef(null)
 const map = shallowRef(null)
+const startDateTimeString = new Date(props.order.start_date_time).toLocaleString()
+const endDateTimeString = new Date(props.order.end_date_time).toLocaleString()
+const date_now = new Date()
+const start_date_time = new Date(props.order.start_date_time)
 
+//userinfo
+const userAvatar = props.order.user_info[0].avatar
+const userName = props.order.user_info[0].name
+
+// handle btn delete order
+// in case user order
+const showDeleteOrderConfirm = ref(false)
+
+function showDeleteOrderConfirmDialog() {
+    showDeleteOrderConfirm.value = true
+}
+
+function hiddenDeleteOrderConfirmDialog() {
+    showDeleteOrderConfirm.value = false
+}
+
+//in case car owner order 
+
+const showCarOwnerDeleteOrderConfirm = ref(false)
+
+function showCarOwnerDeleteOrderConfirmDialog() {
+    showCarOwnerDeleteOrderConfirm.value = true
+}
+
+function hiddenCarOwnerDeleteOrderConfirmDialog() {
+    showCarOwnerDeleteOrderConfirm.value = false
+}
+
+// show review order modal
+
+const showReviewOrderModal = ref(false)
+
+function showReviewOrderDialog() {
+    showReviewOrderModal.value = true
+}
+
+function hideReviewOrderDialog() {
+    showReviewOrderModal.value = false
+}
+
+// handle Confirm Submit Review Btn
+function handleConfirmSubmitReviewBtn() {
+    console.log('success reviewed')
+    showReviewOrderModal.value = false
+    router.go()
+}
+
+async function loadMap() {
+    const lat = props.order.delivery_receipt_address.geometry.lat
+    const lng = props.order.delivery_receipt_address.geometry.lng
+    map.value = await gongAPI.loadMap(lng, lat, mapContainer.value, 12)
+}
+
+function handleBtnClickCarDetail() {
+    const carId = props.order.car_id
+    router.push({ name: 'car', params: { id: carId } })
+}
 
 onMounted(async () => {
-    map.value = await gongAPI.loadMap(105.83991, 21.028, mapContainer.value, 12)
+    await loadMap()
+    console.log({ props })
+    console.log(startDateTimeString, endDateTimeString)
+
+})
+
+onUpdated(() => {
+    console.log('updated', props.order)
 })
 
 </script>

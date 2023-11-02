@@ -29,7 +29,7 @@
             <span class=" text-base text-gray-700">
                 Tổng số tiền cần thanh toán:
                 <span class="pl-4 font-bold text-xl ">
-                    {{ unitTotalPrice }} 000đ
+                    {{ depositPrice }} 000đ
                 </span>
                 <span>
                     ~
@@ -106,6 +106,8 @@ const promotionDiscount = inject('promotionDiscount')
 const deliveryPrice = inject('deliveryPrice')
 const deliveryAddress = inject('deliveryAddress')
 const unitTotalPrice = inject('unitTotalPrice')
+const depositPrice = inject('depositPrice')
+const payLaterPrice = inject('payLaterPrice')
 
 const rate_vnd_usd_exchange = 0.000041
 const usdPrice = ref()
@@ -120,7 +122,7 @@ const user_id = store.state.authStore.user._id
 calculateUSDPrice()
 
 function calculateUSDPrice() {
-    usdPrice.value = unitTotalPrice.value * 1000 * rate_vnd_usd_exchange
+    usdPrice.value = depositPrice.value * 1000 * rate_vnd_usd_exchange
     usdPrice.value = usdPrice.value.toFixed(2)
 }
 
@@ -149,7 +151,9 @@ function handlePurchaseClick() {
                 unitPrice: unitPrice.value,
                 promotionDiscount: promotionDiscount.value,
                 deliveryPrice: deliveryPrice.value,
-                unitTotalPrice: unitTotalPrice.value
+                unitTotalPrice: unitTotalPrice.value,
+                depositPrice: depositPrice.value,
+                payLaterPrice: payLaterPrice.value
             }
 
             console.log({ transaction_id, prices_table })

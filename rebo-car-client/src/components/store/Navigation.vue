@@ -15,7 +15,8 @@
                             <a href="#" class="block py-2   text-gray-900 rounded" aria-current="page">Về Rebocars</a>
                         </li>
                         <li>
-                            <a href="#" class="block py-2  text-gray-900 rounded">Trở thành chủ xe</a>
+                            <router-link to="/carregister" class="block py-2  text-gray-900 rounded">Trở thành chủ
+                                xe</router-link>
                         </li>
 
 

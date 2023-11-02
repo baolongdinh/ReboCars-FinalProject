@@ -25,6 +25,7 @@ const carSchema = new mongoose.Schema(
         car_delivery: { type: Boolean, default: false }, //giao nhận xe
         mortgage: { type: Boolean, default: false }, //thế chấp
         bookedNumber: { type: Number, default: 0 },
+        status: { type: Boolean, default: true },
         user_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'users',

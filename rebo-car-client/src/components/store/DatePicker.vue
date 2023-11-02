@@ -26,7 +26,7 @@
                         </label>
 
                     </span>
-                    <VueDatePicker v-model="dateRange" range :partial-range="false" />
+                    <VueDatePicker v-model="dateRange" range :partial-range="false" :min-date="new Date()" />
                 </div>
 
                 <button class=" bg-blue-500 hover:bg-blue-700  text-white font-bold py-2  px-4 mt-12 h-12 w-32 rounded-xl"

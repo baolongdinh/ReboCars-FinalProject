@@ -62,7 +62,13 @@ const buildCarMatchFilterCondition = (filter, features, fuel, location) => {
     return matchAndStageFilter;
 };
 
-const buildOrderMatchFilterCondition = (_start_date_time, _end_date_time, historyOrders, user_id) => {
+const buildOrderMatchFilterCondition = (
+    _start_date_time,
+    _end_date_time,
+    historyOrders,
+    user_id,
+    car_owner_id
+) => {
     var matchOrderStage = {};
     const dateNow = new Date();
 
@@ -84,7 +90,14 @@ const buildOrderMatchFilterCondition = (_start_date_time, _end_date_time, histor
 
     if (user_id) {
         const addMatchStage = {
-            user_id: mongoose.Types.ObjectId(user_id)
+            user_id: new mongoose.Types.ObjectId(user_id)
+        };
+        matchOrderStage = { ...matchOrderStage, ...addMatchStage };
+    }
+
+    if (car_owner_id) {
+        const addMatchStage = {
+            car_owner_id: new mongoose.Types.ObjectId(car_owner_id)
         };
         matchOrderStage = { ...matchOrderStage, ...addMatchStage };
     }

@@ -14,6 +14,27 @@ const orderSchema = new mongoose.Schema(
             type: Boolean,
             default: false
         },
+        review: {
+            user_avatar: {
+                type: String,
+                require: true
+            },
+            user_name: {
+                type: String,
+                require: true
+            },
+            rate: {
+                type: Number,
+                default: 0
+            },
+            comment: {
+                type: String
+            },
+            date_created: {
+                type: Date,
+                default: new Date()
+            }
+        },
         user_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'users',

@@ -3,8 +3,10 @@ import repository from "../repository";
 const resource = "cars";
 
 export default {
-  getCars(page, limit) {
-    return repository.get(`${resource}?page=${page}&limit=${limit}`);
+  getCars({ page, limit, filter }) {
+    return repository.get(
+      `${resource}?page=${page}&limit=${limit}&filter=${filter}`
+    );
   },
   findFilterCars(page, limit, filter) {
     return repository.post(

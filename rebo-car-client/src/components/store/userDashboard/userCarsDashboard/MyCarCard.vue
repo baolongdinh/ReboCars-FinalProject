@@ -1,40 +1,43 @@
 <template>
     <div class=" p-8 bg-white w-full relative rounded-lg">
         <div class="flex flex-col">
-            <div class="text-bold font-sans text-xl rounded-xl text-white bg-green-400 w-44 text-center ">
-                SUZUKI XL7 2023
+            <div v-if="userCar.name"
+                class="text-bold font-sans text-xl rounded-xl text-white bg-green-400 max-w-fit px-6 text-center ">
+                {{ userCar.name }}
             </div>
 
             <div class="flex mt-2">
                 <div>
-                    <img class=" w-64 h-150 rounded-lg"
+                    <img class=" max-w-xs w-48 h-150 rounded-lg"
                         src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mitsubishi_xpander_2021/p/g/2023/07/22/17/Jx-BZ9TvayCUDVOjSJ10Mw.jpg">
                 </div>
 
-                <div class="ml-8 flex-col space-y-1 text-base font-normal text-gray-800">
-                    <div>
+                <div class=" max-w-md ml-8 flex-col space-y-1 text-base font-normal text-gray-800">
+                    <div v-if="userCar.location.description">
                         <span class="font-semibold">
                             Vị trí:
                         </span>
-                        Chung cư gia phúc, 94 Tô Vĩnh Diện, Phường Linh Chiểu, Quận Thủ Đức, Thành Phố Hồ Chí Minh
+                        {{ userCar.location.description }}
                     </div>
 
                     <div class="flex">
                         <span class="font-semibold">
                             Trạng thái:
                         </span>
-                        <div class="flex pl-1">
+                        <div v-if="!userCar?.status" class="flex pl-1">
+                            Không hoạt động
+                            <img :src="redCumulus" alt="redCumulus">
+                        </div>
+                        <div v-else class="flex pl-1">
                             Đang hoạt động
-
                             <img :src="activeIcon" alt="activeIcon">
-
                         </div>
 
                     </div>
 
                     <div class="text-lg font-semibold">
                         Giá cho thuê: <span class="ml-2 text-green-400 font-bold text-xl">
-                            300K
+                            {{ userCar.price }}K
                         </span>
                         <span class="text-gray-600 font-normal font-sans">
                             /ngày
@@ -44,15 +47,19 @@
                     <div class="flex space-x-4">
                         <div class="text-base font-normal">
                             <font-awesome-icon :icon="['fas', 'star']" style="color: #f7fb32;" />
-                            <span class="">
-                                5.0
+
+                            <span v-if="!userCar.reviews.length" class="">
+                                0.0
+                            </span>
+                            <span v-else class="">
+                                {{ userCar.reviewAvg }}
                             </span>
                         </div>
 
                         <div class="text-base font-normal">
                             <font-awesome-icon :icon="['fas', 'car-rear']" size="lg" style="color: #17ba22;" />
                             <span class="pl-1">
-                                20 chuyến
+                                {{ userCar.bookedNumber }} chuyến
                             </span>
                         </div>
                     </div>
@@ -74,6 +81,20 @@
 
 <script setup>
 import activeIcon from "../../../../assets/icons/active.svg"
+import redCumulus from "../../../../assets/icons/redCumulus.svg"
+
+import { onMounted } from "vue";
+
+
+const props = defineProps({
+    userCar: Object
+})
+
+onMounted(() => {
+    console.log({ props })
+})
+
+
 </script>
 
 <style lang="scss" scoped></style>

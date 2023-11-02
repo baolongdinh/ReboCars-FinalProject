@@ -6,7 +6,6 @@ import userDashboard from "../components/store/userDashboard/Dashboard.vue";
 import Account from "../components/store/userDashboard/Account.vue";
 import CarWishList from "../components/store/userDashboard/CarWishList.vue";
 import MyReward from "../components/store/userDashboard/MyReward.vue";
-import MyTrip from "../components/store/userDashboard/MyTrip.vue";
 import ResetPwd from "../components/store/userDashboard/ResetPwd.vue";
 import MyOrders from "../components/store/userDashboard/MyOrders.vue";
 import UserCarsDashboard from "../components/store/userDashboard/userCarsDashboard/UserCarsDashboard.vue";
@@ -16,6 +15,7 @@ import TripsHistory from "../components/store/userDashboard/userCarsDashboard/Tr
 import Contracts from "../components/store/userDashboard/userCarsDashboard/Contract.vue";
 import CarRegistration from "../components/store/cars/CarRegistration.Vue";
 import CarStepRegister from "../components/store/cars/CarStepRegister.Vue";
+import MyHistoryOrders from "../components/store/userDashboard/MyHistoryOrders.Vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -69,11 +69,6 @@ export const router = createRouter({
           name: "MyReward",
         },
         {
-          path: "mytrips",
-          component: MyTrip,
-          name: "MyTrip",
-        },
-        {
           path: "resetpwd",
           component: ResetPwd,
           name: "ResetPwd",
@@ -82,6 +77,11 @@ export const router = createRouter({
           path: "myorders",
           component: MyOrders,
           name: "MyOrders",
+        },
+        {
+          path: "historytrips",
+          component: MyHistoryOrders,
+          name: "historytrips",
         },
       ],
     },

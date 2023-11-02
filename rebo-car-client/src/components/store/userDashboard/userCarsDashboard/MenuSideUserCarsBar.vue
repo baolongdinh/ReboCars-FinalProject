@@ -170,7 +170,7 @@
                         </li>
 
                         <li>
-                            <router-link to="/userdashboard/myrewards"
+                            <router-link to="/carregister"
                                 class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg  hover:bg-gray-100 ">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">

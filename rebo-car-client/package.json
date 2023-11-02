@@ -31,6 +31,7 @@
     "vue-paypal-checkout": "^3.2.0",
     "vue-router": "4",
     "vue-sidebar-menu": "^5.2.11",
+    "vue-star-rating": "^2.1.0",
     "vue3-steppy": "^1.2.1",
     "vueperslides": "^3.5.1",
     "vuetify": "^3.3.15",

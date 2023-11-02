@@ -23,11 +23,11 @@
             <div class="flex-col space-x-1">
 
                 <div class="font-semibold text-base font-sans">
-                    BANMOI
+                    {{ promotion.discount_name }}
                 </div>
 
                 <div class="font-normal text-sm">
-                    Giảm 200k trên đơn hàng 1000k
+                    {{ promotion.discount_description }}
                 </div>
 
             </div>
@@ -35,7 +35,7 @@
         </div>
 
         <div class="absolute top-5 right-8">
-            <button class="bg-green-400 hover:bg-green-500 w-32 h-12 rounded-lg ">
+            <button class="bg-green-400 hover:bg-green-500 w-32 h-12 rounded-lg" @click="handleBtnShowPromotionDetail">
                 <div class="text-white font-sans font-semibold text-base">
                     Xem chi tiết
                 </div>
@@ -49,6 +49,23 @@
 </template>
 
 <script setup>
+
+import { onMounted } from 'vue';
+
+const props = defineProps({
+    promotion: Object
+})
+
+const emit = defineEmits(['handleBtnShowPromotionDetail'])
+
+function handleBtnShowPromotionDetail() {
+    emit('handleBtnShowPromotionDetail', props.promotion)
+}
+
+onMounted(() => {
+    console.log({ props })
+})
+
 
 </script>
 

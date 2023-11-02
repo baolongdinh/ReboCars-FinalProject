@@ -45,13 +45,24 @@ async function paymentProcess(res, { amountTotal, paymentMethod }) {
     );
 }
 
-async function refundPayment(transactionId, amount) {
+async function refundPayment({ transactionId, amount }) {
+    console.log({ transactionId, amount });
     gateway.transaction.refund(transactionId, amount, (err, result) => {
         if (err) {
             throw new BadRequestError(err.message);
         }
-
-        return result;
+        console.log({ result });
+        if (!result.success) {
+            // transaction is not settled then void transaction
+            gateway.transaction.void(transactionId, (err, res) => {
+                if (err) {
+                    console.log(err);
+                }
+                return res;
+            });
+        } else {
+            return result;
+        }
     });
 }
 

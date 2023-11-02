@@ -13,6 +13,7 @@ const orderControllers = {
             });
     },
     getAllUserOrders: async (req, res, next) => {
+        console.log(req.body);
         orderServices
             .getAllUserOrders(req.query, req.body)
             .then((data) => {
@@ -49,6 +50,16 @@ const orderControllers = {
             .deleteOrderById(req.params.id)
             .then(() => {
                 respondOK(res, null, 'delete order successfully', 200);
+            })
+            .catch((err) => {
+                next(err);
+            });
+    },
+    reviewOrderById: async (req, res, next) => {
+        orderServices
+            .reviewOrderById(req.params.id, req.body)
+            .then(() => {
+                respondOK(res, null, 'add review to order successfully', 200);
             })
             .catch((err) => {
                 next(err);

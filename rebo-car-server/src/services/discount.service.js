@@ -30,7 +30,7 @@ const discountSelectField = {
 };
 
 const discountServices = {
-    getAllDiscount: async ({ limit = 5, sort = 'ctime', page = 1, filter, select = discountSelectField }) => {
+    getAllDiscount: async ({ limit, sort = 'ctime', page, filter, select = discountSelectField }) => {
         limit = parseInt(limit) || 0;
         page = parseInt(page) || 0;
 

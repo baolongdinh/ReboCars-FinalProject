@@ -38,7 +38,7 @@ instance.interceptors.request.use(
   async function (config) {
     const accessToken = await getLocalAccessToken();
     if (accessToken) {
-      instance.defaults.headers.common["authToken"] = accessToken;
+      config.headers["authToken"] = accessToken;
     }
     return config;
   },

@@ -80,10 +80,14 @@ const carService = {
         const skip = (page - 1) * parseInt(limit);
 
         if (!filter) {
-            filter = '{}';
+            filter = {};
+        } else {
+            filter = JSON.parse(filter);
         }
 
-        const cars = await carModel.find().sort(sort).skip(skip).limit(parseInt(limit)).select(select);
+        console.log({ filter });
+
+        const cars = await carModel.find(filter).sort(sort).skip(skip).limit(parseInt(limit)).select(select);
 
         if (!cars) {
             throw new NotfoundError('Invalid value');
@@ -459,7 +463,7 @@ const carService = {
             respondOK(res, { updateImagesCar }, 'updated car images successfully', 200);
         });
     },
-    addCarReviewByCarId: async (carId, { review }) => {
+    addCarReviewByCarId: async (carId, review) => {
         console.log(review, carId);
         const car = await carModel
             .findByIdAndUpdate(
@@ -477,6 +481,7 @@ const carService = {
                 throw new BadRequestError(err.message);
             });
 
+        console.log({ car });
         return car;
     }
 };

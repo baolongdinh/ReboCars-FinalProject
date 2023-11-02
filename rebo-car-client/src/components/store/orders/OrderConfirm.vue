@@ -356,7 +356,7 @@ import redCumulus from '../../../assets/icons/redCumulus.svg'
 import greenCumulus from '../../../assets/icons/greenCumulus.svg'
 import CheckOutModal from './CheckOutModal.vue'
 import gongAPI from "../../../apis/goongMapAPI/api"
-import { ref, onMounted, shallowRef, inject } from 'vue'
+import { ref, onMounted, shallowRef, inject, provide } from 'vue'
 
 
 const mapContainer = shallowRef(null)
@@ -379,8 +379,14 @@ const promotionDiscount = inject('promotionDiscount')
 const deliveryPrice = inject('deliveryPrice')
 const unitTotalPrice = inject('unitTotalPrice')
 
+//define
 const depositPrice = ref()
 const payLaterPrice = ref()
+
+//provide
+provide('depositPrice', depositPrice)
+provide('payLaterPrice', payLaterPrice)
+
 
 calculateDepositPrice()
 

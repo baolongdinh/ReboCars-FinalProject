@@ -1,12 +1,8 @@
 <template>
     <div class="relative">
-        <div class="absolute right-0 flex font-normal">
-
-            <VueDatePicker v-model="dateRange" range :partial-range="false" placeholder="Chọn khoảng thời gian" />
-        </div>
         <div class="font-bold font-sans text-3xl flex-col">
             <div>
-                Danh sách chuyến đi
+                Lịch sử đặt xe
             </div>
 
             <div v-if="!orders.length" class="flex flex-col space-y-2 w-355 h-305 mx-auto mt-4">
@@ -20,10 +16,12 @@
                 </div>
             </div>
 
+
+
             <div class="flex-col space-y-5 pt-4">
 
                 <div v-for="order in orders" :key="order">
-                    <CardCarOrder :order="order" class="shadow-xl rounded-lg"
+                    <CardCarOrder :order="order" :orderHistory="true" class="shadow-xl rounded-lg"
                         @handleInfoDetailBtn="showOrderDetailDialog" />
                 </div>
 
@@ -31,12 +29,11 @@
 
             <div class="opacity-80 bg-gray-800 fixed z-40 inset-0" v-if="showOrderDetailModal">
                 <!-- OVERLAY SCREEN WHEN POP UP DIALOG MODAL -->
-
-                <OrderDetailModal :order="orderSelected" :orderHistory="false" :carOwnerOrder="true" v-if="orderSelected"
+                <OrderDetailModal :order="orderSelected" :orderHistory="true" v-if="orderSelected"
                     class=" absolute m-auto inset-0 p-20" v-model="showOrderDetailModal" @logout="hiddenOrderDetailDialog"
                     @handleSelectDiscount="handleSelectDiscount">
-
                 </OrderDetailModal>
+
             </div>
 
         </div>
@@ -44,11 +41,11 @@
 </template>
 
 <script setup>
-import CardCarOrder from '../CardCarOrder.vue';
+import CardCarOrder from './CardCarOrder.vue';
 import { ref, onMounted, onUpdated } from 'vue';
-import OrderDetailModal from '../OrderDetailModal.vue';
+import OrderDetailModal from './OrderDetailModal.vue';
 import { useStore } from 'vuex';
-import { RepositoryFactory } from "../../../../apis/repositoryFactory";
+import { RepositoryFactory } from "../../../apis/repositoryFactory";
 
 const ordersRepo = RepositoryFactory.get("orders");
 const store = useStore()
@@ -59,18 +56,22 @@ var limit = 6
 var page = 1
 const user_id = store.state.authStore.user._id
 const orderSelected = ref({})
-const dateRange = ref()
 
 
-const filter = ref({ car_owner_id: user_id })
+const filter = ref({ user_id, historyOrders: true })
+
 
 // logical
+
 async function loadOrders() {
 
     const result = await ordersRepo.getOrders(limit, page, filter.value)
 
     orders.value = result.data.metadata
 }
+
+
+
 
 async function loadMoreOrders() {
     page = page + 1

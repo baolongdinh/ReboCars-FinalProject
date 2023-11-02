@@ -1,6 +1,7 @@
 const orderModel = require('../models/order.model');
 const {} = require('../helpers/helperFunc');
 const { buildOrderMatchFilterCondition, buildMatchSearchOrderCondition } = require('../helpers/mongo.helper');
+const carService = require('./car.service');
 var {
     BadRequestError,
     UnAuthorizedError,
@@ -140,7 +141,14 @@ const orderServices = {
 
     getAllUserOrders: async (
         { limit = 12, page = 1 },
-        { user_id, sort = { start_date_time: -1 }, start_date_time, end_date_time, historyOrders }
+        {
+            user_id,
+            car_owner_id,
+            sort = { start_date_time: -1 },
+            start_date_time,
+            end_date_time,
+            historyOrders
+        }
     ) => {
         try {
             const skip = (page - 1) * parseInt(limit);
@@ -174,7 +182,8 @@ const orderServices = {
                         start_date_time,
                         end_date_time,
                         historyOrders,
-                        user_id
+                        user_id,
+                        car_owner_id
                     )
                 },
                 { $sort: sort },
@@ -230,9 +239,41 @@ const orderServices = {
     },
 
     deleteOrderById: async (orderId) => {
+        const orderExist = await orderModel.findById(orderId);
+        if (!orderExist) {
+            throw new BadRequestError('can not found order');
+        }
+
         await orderModel.findByIdAndDelete(orderId).catch((err) => {
-            throw new InternalServerError(err.message);
+            throw new BadRequestError(err.message);
         });
+    },
+    reviewOrderById: async (orderId, { carId, userAvatar, userName, rate, comment }) => {
+        try {
+            console.log({ carId, userAvatar, userName, rate, comment });
+            const orderExist = await orderModel.findById(orderId);
+            if (!orderExist) {
+                throw new BadRequestError('can not found order');
+            }
+            const date_created = new Date();
+            carService
+                .addCarReviewByCarId(carId, { userAvatar, userName, rate, comment, date_created })
+                .catch((err) => {
+                    throw new BadRequestError(err.message);
+                });
+
+            orderExist.reviewed = true;
+            orderExist.review = {
+                user_avatar: userAvatar,
+                user_name: userName,
+                rate: parseInt(rate),
+                comment,
+                date_created
+            };
+            orderExist.save();
+        } catch (error) {
+            throw new BadRequestError(error.message);
+        }
     }
 };
 

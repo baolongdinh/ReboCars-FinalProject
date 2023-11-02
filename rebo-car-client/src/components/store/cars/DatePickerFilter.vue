@@ -26,8 +26,8 @@
                         </label>
 
                     </span>
-                    <VueDatePicker v-model="dateRange" range @update:model-value="handleSubmitUpdateDateRange"
-                        :partial-range="false" />
+                    <VueDatePicker v-model="dateRange" range :min-date="new Date()"
+                        @update:model-value="handleSubmitUpdateDateRange" :partial-range="false" />
                 </div>
 
                 <div class="mt-6">
@@ -78,8 +78,7 @@ const store = useStore()
 const router = useRouter()
 const dateRange = ref();
 
-const location = ref(store.getters.getLocation.description) ? "Hồ Chí Minh" : ref(store.getters.getLocation.description)
-console.log({ location })
+const location = ref(store.getters.getLocation.description ? store.getters.getLocation.description : "Hồ Chí Minh")
 const startDateTime = store.getters.getStartDateTime
 const endDateTime = store.getters.getEndDateTime
 

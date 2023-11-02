@@ -7,12 +7,11 @@
                 </path>
             </svg>
             <div class="text-center">
-                <h3 class="md:text-2xl text-base text-gray-900 font-semibold text-center">Thanh toán cho đơn hàng thành công
+                <h3 class="md:text-2xl text-base text-gray-900 font-semibold text-center">Xóa đơn hàng thành công
                 </h3>
-                <p class="text-gray-600 my-2">Cảm ơn bạn vì đã tin tưởng dịch vụ của chúng tôi!</p>
-                <p> Mọi thông tin chi tiết về đơn hàng sẽ được lưu ở phần quản lý đơn hàng </p>
-                <div class="py-10 text-center" @click="this.$emit('logout')">
-                    <button class="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-lg">
+                <div class="py-10 text-center">
+                    <button @click="handleBtnBack"
+                        class="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-lg">
                         Quay trở lại
                     </button>
                 </div>
@@ -22,7 +21,13 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
+
+function handleBtnBack() {
+    router.go()
+}
 
 </script>
 

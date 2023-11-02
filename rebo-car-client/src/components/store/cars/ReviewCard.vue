@@ -1,7 +1,7 @@
 <template>
     <div class="relative p-4 mt-3 rounded-lg border border-gray-300 shadow-sm">
         <div>
-            <div class="grid grid-rows-2 gap-4">
+            <div class="flex flex-col space-x-4">
                 <div class="flex">
                     <div class="">
                         <img class="rounded-full w-20 h-20" loading="lazy"
@@ -10,30 +10,25 @@
 
                     <div class="grid grid-row-2 gap-1 pl-2 absolute top-ne5 left-24   ">
                         <div class="font-medium text-xl pt-6">
-                            Nguyễn Đăng
+                            {{ review.user_name }}
                         </div>
                         <div class="flex text-sm ">
                             <div class="grid grid-flow-col gap-1">
-                                <font-awesome-icon :icon="['fas', 'star']" style="color: #f7fb32;" />
-                                <font-awesome-icon :icon="['fas', 'star']" style="color: #f7fb32;" />
-                                <font-awesome-icon :icon="['fas', 'star']" style="color: #f7fb32;" />
-                                <font-awesome-icon :icon="['fas', 'star']" style="color: #f7fb32;" />
-                                <font-awesome-icon :icon="['fas', 'star']" style="color: #f7fb32;" />
+                                <div v-for="star in review.rate" :key="star">
+                                    <font-awesome-icon :icon="['fas', 'star']" style="color: #f7fb32;" />
+                                </div>
                             </div>
-
                         </div>
                     </div>
 
                 </div>
 
-                <div class="text-base font-normal text-gray-500">
-                    chủ xe nhiệt tình thân thiện
-                    xe sạch đẹp ga nhẹ côn số mượt
-
+                <div v-if="review.comment" class="text-base font-normal text-gray-500 py-4">
+                    {{ review.comment }}
                 </div>
 
-                <div class="absolute top-2 right-4 text-base font-normal text-gray-500 ">
-                    10/10/2023
+                <div v-if="review.date_created" class="absolute top-2 right-4 text-base font-normal text-gray-500 ">
+                    {{ review.date_created }}
                 </div>
 
 
@@ -44,14 +39,19 @@
     </div>
 </template>
 
-<script>
-export default {
-    setup() {
+
+<script setup>
+import { ref, onMounted } from "vue";
+
+const props = defineProps({
+    review: Object
+})
+
+onMounted(() => {
+    console.log({ props })
+})
 
 
-        return {}
-    }
-}
 </script>
 
 <style lang="scss" scoped></style>

@@ -26,22 +26,7 @@
 
                         </li>
                         <li>
-                            <router-link to="/userdashboard/myfavs"
-                                class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg  hover:bg-gray-100 ">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M21.25 8.7196C21.25 9.8796 20.81 11.0496 19.92 11.9396L18.44 13.4196L12.07 19.7896C12.04 19.8196 12.03 19.8296 12 19.8496C11.97 19.8296 11.96 19.8196 11.93 19.7896L4.08 11.9396C3.19 11.0496 2.75 9.8896 2.75 8.7196C2.75 7.54961 3.19 6.37961 4.08 5.48961C5.86 3.71961 8.74 3.71961 10.52 5.48961L11.99 6.9696L13.47 5.48961C15.25 3.71961 18.12 3.71961 19.9 5.48961C20.81 6.37961 21.25 7.53961 21.25 8.7196Z"
-                                        stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                </svg>
-                                <span class="flex-1 ml-3 whitespace-nowrap">Xe yêu thích</span>
-
-                            </router-link>
-
-                        </li>
-                        <li>
-                            <router-link to="/usercarsdashboard"
+                            <router-link to="/usercarsdashboard/mylistcars"
                                 class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg  hover:bg-gray-100 ">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -92,7 +77,7 @@
                             </router-link>
                         </li>
                         <li>
-                            <router-link to="/userdashboard/mytrips"
+                            <router-link to="/userdashboard/historytrips"
                                 class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg  hover:bg-gray-100 ">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">

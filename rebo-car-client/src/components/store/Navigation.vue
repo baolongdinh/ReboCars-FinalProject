@@ -48,8 +48,12 @@
 
                 <button type="button" class="flex mr-3 mt-3 text-sm bg-gray-800 rounded-full md:mr-0 "
                     @click="pushToUserDashBoard">
-                    <img class="w-8 h-8 rounded-full"
+
+                    <img v-if="user.avatar" class="w-8 h-8 rounded-full" :src="getImage(user.avatar)">
+
+                    <img v-else class="w-8 h-8 rounded-full"
                         src="https://upload.wikimedia.org/wikipedia/commons/5/59/User-avatar.svg" alt="user photo">
+
                 </button>
             </div>
 
@@ -78,7 +82,7 @@
 
 import LoginDialog from './auths/LoginDialog.vue';
 import SignUpDialog from './auths/SignUpDialog.vue';
-import { ref, onMounted, onUpdated, computed, watch } from 'vue';
+import { ref, onMounted, onUpdated, computed, watch, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
@@ -109,6 +113,11 @@ function pushToHome() {
 
 function pushToUserDashBoard() {
     router.push({ path: "/userdashboard/account" })
+}
+
+const base_url = inject('base_url')
+function getImage(url) {
+    return base_url + url
 }
 
 onMounted(async () => {

@@ -23,11 +23,11 @@
             <div class="flex-col space-x-1">
 
                 <div class="font-semibold text-base font-sans">
-                    {{ promotion.discount_name }}
+                    {{ promotion.discount_code }}
                 </div>
 
                 <div class="font-normal text-sm">
-                    {{ promotion.discount_description }}
+                    {{ promotion.discount_name }}
                 </div>
 
             </div>

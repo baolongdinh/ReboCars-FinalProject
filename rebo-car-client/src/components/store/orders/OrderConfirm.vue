@@ -17,22 +17,22 @@
             </div>
 
             <div class="text-4xl font-bold font-sans ml-8 text-center ">
-                SUZUKI K9 XLZ
+                {{ car.name }}
             </div>
 
-            <div class="grid-cols-3 space-y-2 lg:space-y-0 lg:grid lg:gap-3 lg:grid-rows-2 ">
+            <div v-if="car.images" class="grid-cols-3 space-y-2 lg:space-y-0 lg:grid lg:gap-3 lg:grid-rows-2 ">
                 <div class="w-full col-span-2 row-span-3  ">
                     <img class="rounded-xl" loading="lazy" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mercedes_maybach_s450_4matic_2018/p/g/2023/06/04/18/O-2NoKB4uroktdmQpNgu1A.jpg">
+                        :src="getImage(car.images[0])">
                 </div>
                 <div class="w-full rounded-xl">
                     <img class="rounded-xl" loading="lazy" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mercedes_maybach_s450_4matic_2018/p/g/2023/06/04/18/O-2NoKB4uroktdmQpNgu1A.jpg">
+                        :src="getImage(car.images[1])">
                 </div>
 
                 <div class="w-full rounded-xl">
                     <img class="rounded-xl" loading="lazy" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mercedes_maybach_s450_4matic_2018/p/g/2023/06/04/18/O-2NoKB4uroktdmQpNgu1A.jpg">
+                        :src="getImage(car.images[2])">
                 </div>
             </div>
 
@@ -416,6 +416,11 @@ function fixedPrice(price) {
     return price.toFixed()
 }
 
+
+const base_url = inject('base_url')
+function getImage(url) {
+    return base_url + url
+}
 
 onMounted(async () => {
     map.value = await gongAPI.loadMap(105.83991, 21.028, mapContainer.value, 12)

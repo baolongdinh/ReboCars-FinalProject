@@ -22,12 +22,12 @@
 
             <div class="flex-col space-x-1">
 
-                <div v-if="promotion?.discount_name" class="font-semibold text-base font-sans">
-                    {{ promotion.discount_name }}
+                <div v-if="promotion?.discount_code" class="font-semibold text-base font-sans">
+                    {{ promotion.discount_code }}
                 </div>
 
-                <div v-if="promotion?.discount_description" class="font-normal text-sm">
-                    {{ promotion.discount_description }}
+                <div v-if="promotion?.discount_name" class="font-normal text-sm">
+                    {{ promotion.discount_name }}
                 </div>
 
             </div>

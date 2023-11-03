@@ -3,8 +3,7 @@
         <div class="w-305 h-415 bg-white rounded-2xl shadow-xl ">
             <div class="p-4 relative">
                 <div class="relative">
-                    <img class="h-auto w-full rounded-2xl object-cover"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/morris_garages_mg5_luxury_2022/p/g/2023/03/14/12/0qunI422EmCFfaB-Fhk2UQ.jpg">
+                    <img class="h-auto w-full rounded-2xl object-cover" :src="getImage(car.images[0])">
 
                     <div v-if="car.discount"
                         class="absolute w-20 h-8 bg-orange-500 text-white font-semibold text-sm  rounded-3xl bottom-ne16 right-5 text-center p-de5">
@@ -104,20 +103,21 @@
     </div>
 </template>
 
-<script>
-import { ref, onMounted } from "vue"
+<script setup>
+import { ref, onMounted, inject } from "vue"
 import activeIcon from "../../../assets/icons/active.svg"
-export default {
-    props: {
-        car: Object
-    },
 
-    setup(props) {
-        return {
-            activeIcon
-        }
-    }
+const base_url = inject('base_url')
+
+function getImage(url) {
+    return base_url + url
 }
+
+const props = defineProps({
+    car: Object
+})
+
+
 </script>
 
 <style lang="scss" scoped></style>

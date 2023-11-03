@@ -8,8 +8,7 @@
 
             <div class="flex mt-2">
                 <div>
-                    <img class=" max-w-xs w-48 h-150 rounded-lg"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mitsubishi_xpander_2021/p/g/2023/07/22/17/Jx-BZ9TvayCUDVOjSJ10Mw.jpg">
+                    <img class=" max-w-xs w-48 h-150 rounded-lg" :src="getImage(userCar.images[0])">
                 </div>
 
                 <div class=" max-w-md ml-8 flex-col space-y-1 text-base font-normal text-gray-800">
@@ -83,8 +82,12 @@
 import activeIcon from "../../../../assets/icons/active.svg"
 import redCumulus from "../../../../assets/icons/redCumulus.svg"
 
-import { onMounted } from "vue";
+import { onMounted, inject } from "vue";
 
+const base_url = inject('base_url')
+function getImage(url) {
+    return base_url + url
+}
 
 const props = defineProps({
     userCar: Object

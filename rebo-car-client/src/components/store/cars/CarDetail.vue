@@ -1,19 +1,19 @@
 <template>
     <div class="container  mx-auto">
         <div class="px-28 pb-8">
-            <div class="grid-cols-3 space-y-2 lg:space-y-0 lg:grid lg:gap-3 lg:grid-rows-2">
-                <div class="w-full col-span-2 row-span-3 rounded-xl ">
-                    <img loading="lazy" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mercedes_maybach_s450_4matic_2018/p/g/2023/06/04/18/O-2NoKB4uroktdmQpNgu1A.jpg">
+            <div v-if="car.images" class="grid-cols-3 space-y-2 lg:space-y-0 lg:grid lg:gap-3 lg:grid-rows-2">
+                <div class="w-full col-span-2 row-span-3  ">
+                    <img class="rounded-xl" loading="lazy" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
+                        :src="getImage(car.images[0])">
                 </div>
                 <div class="w-full rounded-xl">
-                    <img loading="lazy" class="" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mercedes_maybach_s450_4matic_2018/p/g/2023/06/04/18/O-2NoKB4uroktdmQpNgu1A.jpg">
+                    <img class="rounded-xl" loading="lazy" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
+                        :src="getImage(car.images[1])">
                 </div>
 
                 <div class="w-full rounded-xl">
-                    <img loading="lazy" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mercedes_maybach_s450_4matic_2018/p/g/2023/06/04/18/O-2NoKB4uroktdmQpNgu1A.jpg">
+                    <img class="rounded-xl" loading="lazy" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
+                        :src="getImage(car.images[2])">
                 </div>
             </div>
 
@@ -259,7 +259,7 @@
                             <div class="flex">
                                 <div class="">
                                     <img class="rounded-full w-20 h-20" loading="lazy"
-                                        src="https://n1-astg.mioto.vn/g/2022/01/11/08/QnTonJtJSUHkXkf0B8NTyA.jpg">
+                                        :src="getImage(car.carOwner[0].avatar)">
                                 </div>
 
                                 <div class="grid grid-row-2 gap-1 pl-2 absolute top-ne24 left-20   ">
@@ -345,7 +345,10 @@
                             </div>
 
                             <div>
-                                <ReviewCard />
+                                <div v-for="review in car.reviews" :key="review">
+                                    <ReviewCard :review="review" />
+                                </div>
+
                             </div>
                         </div>
 
@@ -384,7 +387,7 @@ import Cart from "./Cart.vue"
 import infoIcon from "../../../assets/icons/info.svg"
 import ReviewCard from "./ReviewCard.vue"
 import { useRouter, useRoute } from 'vue-router'
-import { ref, onMounted, shallowRef, provide } from "vue"
+import { ref, onMounted, shallowRef, provide, inject } from "vue"
 import gongAPI from "../../../apis/goongMapAPI/api"
 import goongAPIKey from "../../../configs/apikey.config"
 import { useStore, mapGetters } from 'vuex'
@@ -398,6 +401,10 @@ provide('car', car)
 const startDateTime = route.query.startDateTime ? route.query.startDateTime : store.getters.getStartDateTime
 const endDateTime = route.query.endDateTime ? route.query.endDateTime : store.getters.getEndDateTime
 
+const base_url = inject('base_url')
+function getImage(url) {
+    return base_url + url
+}
 
 const mapContainer = shallowRef(null)
 const map = shallowRef(null)

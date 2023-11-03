@@ -1,6 +1,7 @@
 <template>
-    <VueFinalModal class="font-sans" content-class="">
-        <div class="relative p-5 bg-white">
+    <VueFinalModal class="justify-center items-center absolute overflow-y-auto font-sans "
+        content-class="flex flex-col bg-gray-100 text-black rounded-lg space-y-2 p-8 ">
+        <div class="relative ">
             <button @click="this.$emit('logout')">
                 <span
                     class="absolute right-2 top-2 p-1 font-light border border-gray-400 hover:bg-gray-500  rounded-full leading-5">
@@ -44,4 +45,8 @@ onMounted(() => {
 
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="css" scoped>
+.modal-open {
+    overflow: initial;
+}
+</style>

@@ -17,22 +17,22 @@
             </div>
 
             <div class="text-4xl font-bold font-sans ml-8 text-center ">
-                SUZUKI K9 XLZ
+                {{ order.car_info[0].name }}
             </div>
 
             <div class="grid-cols-3 space-y-2 lg:space-y-0 lg:grid lg:gap-3 lg:grid-rows-2 ">
                 <div class="w-full col-span-2 row-span-3  ">
                     <img class="rounded-xl" loading="lazy" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mercedes_maybach_s450_4matic_2018/p/g/2023/06/04/18/O-2NoKB4uroktdmQpNgu1A.jpg">
+                        :src="getImage(order.car_info[0].images[0])">
                 </div>
                 <div class="w-full rounded-xl">
                     <img class="rounded-xl" loading="lazy" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mercedes_maybach_s450_4matic_2018/p/g/2023/06/04/18/O-2NoKB4uroktdmQpNgu1A.jpg">
+                        :src="getImage(order.car_info[0].images[1])">
                 </div>
 
                 <div class="w-full rounded-xl">
                     <img class="rounded-xl" loading="lazy" alt="Cho thuê xe tự lái MERCEDES MAYBACH S450 4MATIC 2018"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mercedes_maybach_s450_4matic_2018/p/g/2023/06/04/18/O-2NoKB4uroktdmQpNgu1A.jpg">
+                        :src="getImage(order.car_info[0].images[2])">
                 </div>
             </div>
 
@@ -455,8 +455,9 @@
 
                 </button>
             </div>
-            <div v-else>
-                <button v-if="!carOwnerOrder && !order.reviewed" @click="showReviewOrderDialog"
+
+            <div v-if="!carOwnerOrder && !order.reviewed && date_now >= end_date_time">
+                <button @click="showReviewOrderDialog"
                     class="bg-green-400 hover:bg-green-600 p-3 rounded-lg absolute bottom-0 right-2 ">
                     <div class="text-white font-sans font-semibold text-lg">
                         Đánh giá đơn hàng
@@ -502,7 +503,7 @@ import infoIcon from '../../../assets/icons/info.svg'
 import redCumulus from '../../../assets/icons/redCumulus.svg'
 import greenCumulus from '../../../assets/icons/greenCumulus.svg'
 import gongAPI from "../../../apis/goongMapAPI/api"
-import { ref, onMounted, onUpdated, shallowRef, provide } from 'vue'
+import { ref, onMounted, onUpdated, shallowRef, provide, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import DeleteOrderConfirmModal from '../orders/DeleteOrderConfirmModal.vue'
 import CarOwnerDeleteOrderConfirmModal from "../orders/CarOwnerDeleteOrderConfirmModal.vue"
@@ -530,7 +531,7 @@ const startDateTimeString = new Date(props.order.start_date_time).toLocaleString
 const endDateTimeString = new Date(props.order.end_date_time).toLocaleString()
 const date_now = new Date()
 const start_date_time = new Date(props.order.start_date_time)
-
+const end_date_time = new Date(props.order.end_date_time)
 //userinfo
 const userAvatar = props.order.user_info[0].avatar
 const userName = props.order.user_info[0].name
@@ -576,6 +577,12 @@ function handleConfirmSubmitReviewBtn() {
     console.log('success reviewed')
     showReviewOrderModal.value = false
     router.go()
+}
+
+// handle image src
+const base_url = inject('base_url')
+function getImage(url) {
+    return base_url + url
 }
 
 async function loadMap() {

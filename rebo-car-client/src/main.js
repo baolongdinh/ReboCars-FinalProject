@@ -55,9 +55,9 @@ library.add(
 );
 
 const app = createApp(App);
+app.provide("base_url", "http://localhost:3000");
 app.use(store);
 app.use(vueBraintree);
-
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.component("VueDatePicker", VueDatePicker);
 app.use(ElementPlus);

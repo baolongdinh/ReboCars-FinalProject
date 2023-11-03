@@ -10,12 +10,12 @@
                     src="https://www.mioto.vn/static/media/empty-register-car.b13d058f.svg">
             </div>
 
-            <button class="bg-green-400 hover:bg-green-500 w-2/3 h-12 p-2 rounded-lg mx-auto ">
-                <div class="text-white font-sans font-semibold text-lg">
+            <router-link to="/registerstep" class="bg-green-400 hover:bg-green-500 px-8 py-3 rounded-lg mx-auto ">
+                <div class="text-white text-center font-sans font-semibold text-lg">
                     Đăng ký xe tự lái
                 </div>
 
-            </button>
+            </router-link>
 
             <div class="mx-auto">
                 <div class="font-semibold text-xl text-center">
@@ -30,6 +30,7 @@
 
 <script setup>
 
+
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="css" scoped></style>

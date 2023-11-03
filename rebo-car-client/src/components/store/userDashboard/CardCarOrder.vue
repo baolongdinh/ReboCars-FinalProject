@@ -7,8 +7,7 @@
 
             <div class="flex mt-2">
                 <div>
-                    <img class="max-w-xs w-48 h-150 rounded-lg"
-                        src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/mitsubishi_xpander_2021/p/g/2023/07/22/17/Jx-BZ9TvayCUDVOjSJ10Mw.jpg">
+                    <img class="max-w-xs w-48 h-150 rounded-lg" :src="getImage(order.car_info[0].images[0])">
                 </div>
 
                 <div class=" max-w-md ml-8 p-1 flex-col space-y-1 text-base font-normal text-gray-800">
@@ -74,12 +73,18 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, inject } from 'vue';
 const emit = defineEmits(['handleInfoDetailBtn'])
 const props = defineProps({
     order: Object,
     orderHistory: Boolean
 })
+
+
+const base_url = inject('base_url')
+function getImage(url) {
+    return base_url + url
+}
 
 const startDateTimeString = new Date(props.order.start_date_time).toLocaleString()
 const endDateTimeString = new Date(props.order.end_date_time).toLocaleString()

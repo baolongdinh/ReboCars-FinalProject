@@ -49,11 +49,12 @@ const store = useStore()
 
 const locationSelected = ref('')
 
-
 const dateRange = ref();
+const today = new Date();
+const tomorrow = new Date(today.setDate(today.getDate() + 1));
 
 onMounted(() => {
-    const startDate = new Date();
+    const startDate = tomorrow
     const endDate = new Date(new Date().setDate(startDate.getDate() + 7));
     dateRange.value = [startDate, endDate];
 })

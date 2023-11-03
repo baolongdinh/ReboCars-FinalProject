@@ -13,7 +13,7 @@
         </div>
 
         <div class="">
-            <promotions class="w-full"></promotions>
+            <promotions @handleSelectDiscount="handleSelectDiscount" class="w-full"></promotions>
         </div>
 
         <div class="mt-24 bg-gray-100">
@@ -23,60 +23,86 @@
             <listCars :listCars=cars @handleUserClickCarCard="handleUserClickCarCard"> </listCars>
         </div>
 
+        <div class="opacity-80 bg-gray-800 fixed z-200 inset-0" v-if="showPromotionDetailModal">
+            <PromotionDetailModal ref="promotionModal" v-if="promotionSelected" :promotion="promotionSelected"
+                class=" overflow-y-auto h-11/12 px-465 py-32 absolute top-3/4  " v-model="showPromotionDetailModal"
+                @logout="hidePromotionDetailDialog">
+            </PromotionDetailModal>
+        </div>
+
 
     </div>
 </template>
 
-
-<script>
+<script setup>
 import DatePicker from './DatePicker.vue'
 import Promotions from './Promotions.vue'
 import listCars from './cars/ListCars.vue'
 import { useStore, mapGetters } from 'vuex'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-export default {
-    components: { DatePicker, Promotions, listCars },
-    setup() {
-        const carStore = useStore()
-        const router = useRouter()
-        var cars = ref([])
-        const today = new Date();
-        const sevenDateLater = new Date(today.setDate(today.getDate() + 7));
-        const startDateTime = new Date()
-        const endDateTime = sevenDateLater
-        const location = {
-            compound: {
-                province: "Hồ Chí Minh",
-            },
-        }
-        var page = 1
-        var limit = 12
-        const filterPayload = {
-            startDateTime, endDateTime, location
-        }
 
-        async function updateListCars(page, limit, filterPayload) {
-            cars.value = await carStore.dispatch('findCarsFilter', { page, limit, filterPayload })
-        }
-
-        function handleUserClickCarCard(carId) {
-            router.push({
-                name: "car", params: { id: carId },
-                query: {
-                    startDateTime,
-                    endDateTime
-                }
-            })
-        }
-
-
-        onMounted(() => {
-            updateListCars(page, limit, filterPayload)
-        })
-        return { cars, handleUserClickCarCard }
-    }
+const carStore = useStore()
+const router = useRouter()
+var cars = ref([])
+const today = new Date();
+const sevenDateLater = new Date(today.setDate(today.getDate() + 7));
+const startDateTime = new Date()
+const endDateTime = sevenDateLater
+const location = {
+    compound: {
+        province: "Hồ Chí Minh",
+    },
 }
+var page = 1
+var limit = 12
+const filterPayload = {
+    startDateTime, endDateTime, location
+}
+
+async function updateListCars(page, limit, filterPayload) {
+    cars.value = await carStore.dispatch('findCarsFilter', { page, limit, filterPayload })
+}
+
+function handleUserClickCarCard(carId) {
+    router.push({
+        name: "car", params: { id: carId },
+        query: {
+            startDateTime,
+            endDateTime
+        }
+    })
+}
+
+//handle btn show promotion detail
+const promotionSelected = ref()
+const showPromotionDetailModal = ref(false)
+
+function showPromotionDetailDialog() {
+    showPromotionDetailModal.value = true
+}
+
+function hidePromotionDetailDialog() {
+    showPromotionDetailModal.value = false
+}
+
+function handleSelectDiscount(promotion) {
+    console.log({ promotion })
+    promotionSelected.value = promotion
+    showPromotionDetailDialog()
+}
+
+
+onMounted(() => {
+    updateListCars(page, limit, filterPayload)
+})
+
+
 </script>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.modal-open {
+    overflow: initial;
+    align-self: flex-end;
+}
+</style>

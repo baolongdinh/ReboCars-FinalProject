@@ -45,8 +45,4 @@ onMounted(() => {
 
 </script>
 
-<style lang="css" scoped>
-.modal-open {
-    overflow: initial;
-}
-</style>
+<style lang="css" scoped></style>

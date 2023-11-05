@@ -10,7 +10,7 @@
 
 
                 <div class="w-full flex" id="navbar-user">
-                    <ul class="flex space-x-6 font-medium font-sans text-base p-4 mt-4 rounded-lg">
+                    <ul class="flex space-x-6 font-medium font-sans text-base p-4  rounded-lg">
                         <li>
                             <a href="#" class="block py-2   text-gray-900 rounded" aria-current="page">Về Rebocars</a>
                         </li>
@@ -18,11 +18,9 @@
                             <router-link to="/carregister" class="block py-2  text-gray-900 rounded">Trở thành chủ
                                 xe</router-link>
                         </li>
-
-
                     </ul>
 
-                    <ul class="flex space-x-4 font-medium font-sans text-base p-4 mt-4 border-l-[1px]">
+                    <ul class="flex space-x-4 font-medium font-sans text-base p-4  border-l-[1px]">
                         <li v-if="!user">
                             <button href="#" class="block py-2  text-gray-900 rounded" @click="popUpSignUpDialog">Đăng
                                 kí</button>

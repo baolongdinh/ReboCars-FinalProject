@@ -50,10 +50,13 @@
                             <div class="opacity-80 bg-gray-800 fixed z-40 inset-0 " v-if="show">
                                 <!-- OVERLAY SCREEN WHEN POP UP DIALOG MODAL -->
 
-                                <FilterModal class="overflow-y-auto h-650 w-580 absolute m-auto inset-0 " v-model="show"
-                                    @handleUpdateFilterChanged="handleUpdateFilterChanged" @confirm="() => confirm()">
+                                <KeepAlive>
+                                    <FilterModal class="overflow-y-auto h-650 w-580 absolute m-auto inset-0 " v-model="show"
+                                        :key="keyReload" @handleUpdateFilterChanged="handleUpdateFilterChanged"
+                                        @handleDeleteFilterState="handleDeleteFilterState" @confirm="() => confirm()">
+                                    </FilterModal>
+                                </KeepAlive>
 
-                                </FilterModal>
                             </div>
                         </div>
 
@@ -72,11 +75,12 @@ import FilterModal from "./FilterModal.vue"
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 
-const emit = defineEmits(['handleUpdateFilterChanged', 'handleUpdateLocation', 'handleUpdateDateRange'])
+const emit = defineEmits(['handleUpdateFilterChanged', 'handleUpdateLocation', 'handleUpdateDateRange', 'handleDeleteFilterState'])
 
 const store = useStore()
 const router = useRouter()
 const dateRange = ref();
+const keyReload = ref(0)
 
 const location = ref(store.getters.getLocation.description ? store.getters.getLocation.description : "Hồ Chí Minh")
 const startDateTime = store.getters.getStartDateTime
@@ -102,6 +106,11 @@ const handleSelectedLocation = (data) => {
     emit('handleUpdateLocation', data)
 }
 
+function handleDeleteFilterState() {
+    keyReload.value = keyReload.value + 1  // update key to reload filter state
+    emit('handleDeleteFilterState')
+
+}
 
 
 

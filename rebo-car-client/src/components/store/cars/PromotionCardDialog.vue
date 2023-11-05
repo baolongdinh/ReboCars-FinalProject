@@ -40,7 +40,6 @@
                 <div class="text-white font-sans font-semibold text-base">
                     Áp dụng
                 </div>
-
             </button>
 
         </div>

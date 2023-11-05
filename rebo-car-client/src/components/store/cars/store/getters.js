@@ -35,4 +35,10 @@ export default {
   getFilters(state) {
     return state.filters;
   },
+  getTransmissions(state) {
+    return state.transmissions;
+  },
+  getFilterState(state) {
+    return state.filterState;
+  },
 };

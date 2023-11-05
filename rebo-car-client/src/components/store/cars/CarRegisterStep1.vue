@@ -50,7 +50,7 @@
                     <div class="font-normal text-gray-600 text-base pb-2">Số ghế</div>
 
                     <select class="w-305 h-11 rounded-lg border-gray-300" v-model="selected">
-                        <option disabled value="">Please select one</option>
+                        <option disabled value="">Vui lòng chjo123</option>
                         <option>A</option>
                         <option>B</option>
                         <option>C</option>
@@ -60,33 +60,33 @@
                 <div>
                     <div class="font-normal text-gray-600 text-base pb-2">Năm sản suất</div>
 
-                    <select class="w-305 h-11 rounded-lg border-gray-300" v-model="selected">
-                        <option disabled value="">Please select one</option>
-                        <option>A</option>
-                        <option>B</option>
-                        <option>C</option>
+                    <select class="w-305 h-11 rounded-lg border-gray-300" v-model="sortOptionsSelected">
+                        <option disabled selected value="">Chọn loại truyền động</option>
+                        <option v-for="(transmission, index) in transmissions" :value="transmission" :key="index">
+                            {{ transmission }}
+                        </option>
                     </select>
                 </div>
 
                 <div>
                     <div class="font-normal text-gray-600 text-base pb-2">Truyền động</div>
 
-                    <select class="w-305 h-11 rounded-lg border-gray-300" v-model="selected">
-                        <option disabled value="">Please select one</option>
-                        <option>A</option>
-                        <option>B</option>
-                        <option>C</option>
+                    <select class="w-305 h-11 rounded-lg border-gray-300" v-model="sortOptionsSelected">
+                        <option disabled selected value="">Chọn loại truyền động</option>
+                        <option v-for="(transmission, index) in transmissions" :value="transmission" :key="index">
+                            {{ transmission }}
+                        </option>
                     </select>
                 </div>
 
                 <div>
                     <div class="font-normal text-gray-600 text-base pb-2">Loại nhiên liệu</div>
 
-                    <select class="w-305 h-11 rounded-lg border-gray-300" v-model="selected">
-                        <option disabled value="">Please select one</option>
-                        <option>A</option>
-                        <option>B</option>
-                        <option>C</option>
+                    <select class="w-305 h-11 rounded-lg border-gray-300" v-model="sortOptionsSelected">
+                        <option disabled selected value="">Chọn loại nhiên liệu</option>
+                        <option v-for="(fuel, index) in fuels" :value="fuel" :key="index">
+                            {{ fuel }}
+                        </option>
                     </select>
                 </div>
 
@@ -134,7 +134,7 @@
 </template>
 
 <script setup>
-import { onMounted, defineEmits } from 'vue';
+import { onMounted, defineEmits, ref } from 'vue';
 import { useStore } from 'vuex';
 
 
@@ -142,6 +142,18 @@ const carStore = useStore()
 const emit = defineEmits(['can-continue'])
 
 const features = carStore.getters.getFeatures
+const fuels = carStore.getters.getFuels
+const transmissions = carStore.getters.getTransmissions
+const sortOptions = carStore.getters.getSortOptions
+const typeOfCars = carStore.getters.getListTypeOfCars
+const autoMakers = carStore.getters.getAutoMakers
+const checkedFeatures = ref([])
+const checkedFuels = ref([])
+
+const sortOptionsSelected = ""
+const typeOfCarsSelected = ""
+const autoMakersSelected = ""
+const transmissionsSelected = ""
 
 
 onMounted(() => {

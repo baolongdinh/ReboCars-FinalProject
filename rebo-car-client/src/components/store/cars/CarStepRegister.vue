@@ -8,14 +8,12 @@
         <div class=" w-735 mx-auto mt-12">
             <div class="columns">
                 <div class="column is-8 is-offset-2">
-                    <HorizontalStepper :steps="demoSteps" @completed-step="completeStep" :top-buttons="true"
-                        @active-step="isStepActive" @stepper-finished="alert">
+                    <HorizontalStepper :steps="carRegisterSteps" @completed-step="completeStep" :top-buttons="true"
+                        @active-step="isStepActive" @stepper-finished="finishedCarRegistrationStep">
                     </HorizontalStepper>
                 </div>
             </div>
         </div>
-
-
 
     </div>
 </template>
@@ -27,7 +25,7 @@ import CarRegisterStep3 from './CarRegisterStep3.vue';
 import { ref } from 'vue';
 import HorizontalStepper from '../../../helpers/components/stepper/HorizontalStepper.vue';
 
-const demoSteps = ref([
+const carRegisterSteps = ref([
     {
         icon: 'directions_car',
         name: 'first',
@@ -52,7 +50,7 @@ const demoSteps = ref([
 ])
 
 function completeStep(payload) {
-    demoSteps.value.forEach((step) => {
+    carRegisterSteps.value.forEach((step) => {
         if (step.name === payload.name) {
             step.completed = true;
         }
@@ -60,13 +58,17 @@ function completeStep(payload) {
 }
 
 function isStepActive(payload) {
-    demoSteps.value.forEach((step) => {
+    carRegisterSteps.value.forEach((step) => {
         if (step.name === payload.name) {
             if (step.completed === true) {
                 step.completed = false;
             }
         }
     })
+}
+
+function finishedCarRegistrationStep(payload) {
+    console.log({ payload })
 }
 
 

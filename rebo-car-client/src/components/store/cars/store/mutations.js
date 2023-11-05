@@ -20,4 +20,7 @@ export default {
   setFilters(state, filters) {
     state.filters = filters;
   },
+  setFilterState(state, filterState) {
+    state.filterState = filterState;
+  },
 };

@@ -2,12 +2,20 @@
     <div class="bg-gray-100">
         <div class="sticky top-0 z-50">
             <date-picker-filter @handleUpdateLocation="handleUpdateLocation" @handleUpdateDateRange="handleUpdateDateRange"
-                @handleUpdateFilterChanged="findCarsByFilter">
+                @handleUpdateFilterChanged="findCarsByFilter" @handleDeleteFilterState="handleDeleteFilterState">
             </date-picker-filter>
         </div>
 
+
+        <div v-if="!cars.length > 0 && listCarLoaded">
+            <div class=" w-335 mx-auto ">
+                <img class=" w-full" loading="lazy" src="https://www.mioto.vn/static/media/empty-mycar.e023e681.svg" alt="">
+
+                <div class=" w-fit mx-auto font-sans text-xl text-gray-600 "> Không tìm thấy xe nào </div>
+            </div>
+        </div>
         <!-- <list-cars /> -->
-        <div>
+        <div v-else>
             <ListCars :listCars=cars @handleUserClickCarCard="handleUserClickCarCard" />
         </div>
 
@@ -28,17 +36,25 @@ var cars = ref([])
 const startDateTime = carStore.getters.getStartDateTime
 const endDateTime = carStore.getters.getEndDateTime
 const location = carStore.getters.getLocation
+const listCarLoaded = ref(false)
 const filters = ref({
     startDateTime,
     endDateTime,
     location
 })
+const reloadStateFilters = ref({
+    startDateTime,
+    endDateTime,
+    location
+})
+
 var page = 1
 var limit = 12
 
 
 async function updateListCars(page, limit, filterPayload) {
     cars.value = await carStore.dispatch('findCarsFilter', { page, limit, filterPayload })
+    listCarLoaded.value = true
 }
 
 
@@ -99,6 +115,11 @@ function handleUserClickCarCard(carId) {
 
 }
 
+
+async function handleDeleteFilterState() {
+    const filterPayload = reloadStateFilters.value
+    await updateListCars(page, limit, filterPayload)
+}
 
 
 //// handle user scroll

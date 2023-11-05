@@ -47,12 +47,13 @@ const props = defineProps({
     review: Object
 })
 
-const base_url = inject('base_url')
+
 
 const userAvatar = props.review.userAvatar || props.review.user_avatar
 
 const date_string = new Date(props.review.date_created).toLocaleDateString();
 
+const base_url = inject('base_url')
 function getImage(url) {
     return base_url + url
 }

@@ -16,8 +16,8 @@
 
                         <select
                             class="bg-gray-50 mt-3 border border-gray-6500 font-sans text-lg text-gray-900  rounded-lg block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-black dark:focus:border-black"
-                            @change="handleSortSelected">
-                            <option selected value="">Tối ưu</option>
+                            @change="handleSortSelected" v-model="sortSelected">
+                            <option value="">Tối ưu</option>
                             <option v-for="(sortOption, index) in sortOptions" :value="sortOption" :key="index">
                                 {{ sortOption }}
                             </option>
@@ -30,8 +30,8 @@
 
                         <select
                             class="bg-gray-50 mt-3 border border-gray-6500 font-sans text-lg text-gray-900  rounded-lg block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-black dark:focus:border-black"
-                            @change="handleTypeOfCarSelected">
-                            <option selected>Tất cả</option>
+                            @change="handleTypeOfCarSelected" v-model="typeOfCarSelected">
+                            <option value="">Tất cả</option>
 
                             <option v-for="(typeOfCar, index) in typeOfCars" :value="typeOfCar" :key="index">
                                 {{ typeOfCar }}
@@ -46,8 +46,8 @@
 
                         <select
                             class="bg-gray-50 mt-3 border border-gray-6500 font-sans text-lg text-gray-900  rounded-lg block w-full p-2.5 dark:placeholder-gray-400 dark:text-black dark:focus:ring-black dark:focus:border-black"
-                            @change="handleAutoMakerSelected">
-                            <option selected>Tất cả</option>
+                            @change="handleAutoMakerSelected" v-model="autoMakerSelected">
+                            <option value="">Tất cả</option>
                             <option v-for="(autoMaker, index) in autoMakers" :value="autoMaker" :key="index">
                                 {{ autoMaker }}
                             </option>
@@ -143,7 +143,7 @@
             <div class="border-top border-gray-200 mt-2 w-full h-16 bg-white shadow-md sticky z-40 left-0 bottom-0 py-auto">
                 <div class="flex gap-2 mt-3 h-10 absolute right-5">
                     <button class=" ml-auto px-auto border w-24 rounded-lg bg-gray-400 hover:bg-gray-700 "
-                        @click="this.$emit('confirm')">
+                        @click="handleDeleteFilterState">
                         Xóa bộ lọc
                     </button>
                     <button class=" ml-auto px-auto border w-24 rounded-lg bg-green-500 hover:bg-green-700"
@@ -165,37 +165,38 @@
 import { VueFinalModal } from 'vue-final-modal'
 import Slider from '@vueform/slider'
 import { useStore } from 'vuex'
-import { ref, onUpdated } from 'vue'
+import { ref, onUpdated, onBeforeUnmount } from 'vue'
 
 const carStore = useStore()
+const filterState = carStore.getters.getFilterState
 
-
-const priceRangeValue = ref([200, 5000])
-const seatRangeValue = ref([2, 10])
-const yearRangeValue = ref([2005, 2023])
-const oilConsumedValue = ref(100)
+const priceRangeValue = filterState.priceRangeValue || ref([200, 5000])
+const seatRangeValue = filterState.seatRangeValue || ref([2, 10])
+const yearRangeValue = filterState.yearRangeValue || ref([2005, 2023])
+const oilConsumedValue = filterState.oilConsumedValue || ref(100)
 
 
 const features = carStore.getters.getFeatures
+
 const fuels = carStore.getters.getFuels
+
 const sortOptions = carStore.getters.getSortOptions
 const typeOfCars = carStore.getters.getListTypeOfCars
 const autoMakers = carStore.getters.getAutoMakers
-const checkedFeatures = ref([])
-const checkedFuels = ref([])
+const checkedFeatures = filterState.checkedFeatures || ref([])
+const checkedFuels = filterState.checkedFuels || ref([])
 
+const sortSelected = filterState.sortSelected || ref("")
+const typeOfCarSelected = filterState.typeOfCarSelected || ref("")
+const autoMakerSelected = filterState.autoMakerSelected || ref("")
 
-//
-
-
-
-console.log('sort', sortOptions)
 
 const filter = {}
 
-const emit = defineEmits(['handleUpdateFilterChanged'])
+const emit = defineEmits(['handleUpdateFilterChanged', 'handleDeleteFilterState'])
 
 function handleUpdatePriceRangeChanged(priceRange) {
+    priceRangeValue.value = priceRange
     filter.priceRange = {
         min: priceRange[0],
         max: priceRange[1],
@@ -204,6 +205,7 @@ function handleUpdatePriceRangeChanged(priceRange) {
 }
 
 function handleUpdateSeatsRangeChanged(seatsRange) {
+    seatRangeValue.value = seatsRange
     filter.seatsRange = {
         min: seatsRange[0],
         max: seatsRange[1],
@@ -212,6 +214,7 @@ function handleUpdateSeatsRangeChanged(seatsRange) {
 }
 
 function handleUpdateYearRangeChanged(yearsRange) {
+    yearRangeValue.value = yearsRange
     filter.manufactureYearRange = {
         min: yearsRange[0],
         max: yearsRange[1],
@@ -220,6 +223,7 @@ function handleUpdateYearRangeChanged(yearsRange) {
 }
 
 function handleUpdateSFCChanged(sfc_100km) {
+    oilConsumedValue.value = sfc_100km
     filter.sfc_100km = sfc_100km
     emit('handleUpdateFilterChanged', filter)
 }
@@ -252,8 +256,33 @@ function handleAutoMakerSelected(event) {
 }
 
 
+function handleDeleteFilterState() {
+    carStore.commit('setFilterState', {})
+    emit('handleDeleteFilterState')
+
+
+}
+
 onUpdated(async () => {
 
+})
+
+onBeforeUnmount(() => {
+    const filterState = {
+        priceRangeValue: priceRangeValue.value,
+        seatRangeValue: seatRangeValue.value,
+        yearRangeValue: yearRangeValue.value,
+        oilConsumedValue: oilConsumedValue.value,
+        sortSelected,
+        typeOfCarSelected,
+        autoMakerSelected,
+        checkedFeatures,
+        checkedFuels
+    }
+
+    carStore.commit('setFilterState', filterState)
+    console.log(filterState)
+    console.log('unmounted')
 })
 </script>
 

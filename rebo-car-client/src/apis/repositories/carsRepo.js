@@ -18,7 +18,11 @@ export default {
     return repository.get(`${resource}/${id}`);
   },
   addCar(payload) {
-    return repository.post(`${resource}`, payload);
+    return repository.post(`${resource}`, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
   updatedCar(id, payload) {
     return repository.put(`${resource}/${id}`, payload);

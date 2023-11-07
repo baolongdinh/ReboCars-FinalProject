@@ -6,7 +6,16 @@ export default {
   limit: 12,
   startDateTime: new Date(),
   endDateTime: sevenDateLater,
-  typeOfCars: ["Mini", "Sedan", "Hatchback", "Gầm cao"],
+  typeOfCars: [
+    "Mini",
+    "Sedan",
+    "Hatchback",
+    "Convertible",
+    "Jeep",
+    "Limousine ",
+    "Minivan",
+    "Sports ",
+  ],
   filters: {},
   autoMakers: [
     "BMW",
@@ -56,4 +65,5 @@ export default {
     2017, 2018, 2019, 2020, 2021, 2022, 2023,
   ],
   filterState: {},
+  carRegistration: {},
 };

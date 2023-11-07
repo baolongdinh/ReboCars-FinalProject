@@ -27,15 +27,40 @@ const store = useStore()
 const userCars = ref([])
 const user_id = store.state.authStore.user._id
 
-async function loadListUserCars(user_id) {
-    const filter = JSON.stringify({ user_id: user_id })
-    const result = await carsRepo.getCars({ filter })
+const filter = JSON.stringify({ user_id: user_id })
+var limit = 6
+var page = 1
+
+async function loadListUserCars() {
+    const result = await carsRepo.getCars({ page, limit, filter })
     userCars.value = result.data.metadata.cars
     console.log(userCars.value)
 }
 
+async function loadMoreCars() {
+    page = page + 1
+    const result = await carsRepo.getCars({ limit, page, filter })
+    const moreCars = result.data.metadata.cars
+    userCars.value = userCars.value.concat(moreCars)
+}
+
+const handleUserScrollBottom = async (e) => {
+
+    const clientHeight = e.target.documentElement.clientHeight
+    const scrollHeight = e.target.documentElement.scrollHeight
+    const scrollTop = e.target.documentElement.scrollTop
+
+    if (scrollTop + clientHeight >= scrollHeight) {
+        console.log('bottom!')
+        await loadMoreCars()
+        console.log(userCars.value)
+    }
+}
+
+
 onMounted(() => {
-    loadListUserCars(user_id)
+    window.addEventListener("scroll", handleUserScrollBottom)
+    loadListUserCars()
 })
 
 

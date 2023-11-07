@@ -7,7 +7,6 @@ const carSchema = new mongoose.Schema(
         images: { type: Array, default: [] },
         price: { type: Number, require: true },
         discount: { type: Number, default: 0 },
-        delivery_price_1km: { type: Number },
         description: { type: String, require: true },
         location: { type: Schema.Types.Mixed, require: true },
         characteristics: {
@@ -25,6 +24,11 @@ const carSchema = new mongoose.Schema(
         car_delivery: { type: Boolean, default: false }, //giao nhận xe
         mortgage: { type: Boolean, default: false }, //thế chấp
         bookedNumber: { type: Number, default: 0 },
+        max_distance_delivery: { type: Number },
+        delivery_price_1km: { type: Number },
+        max_delivery_free_price: { type: Number },
+        max_distance_per_day: { type: Number },
+        over_distance_per_km_price: { type: Number },
         status: { type: Boolean, default: true },
         user_id: {
             type: mongoose.Schema.Types.ObjectId,

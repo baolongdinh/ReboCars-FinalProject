@@ -41,4 +41,7 @@ export default {
   getFilterState(state) {
     return state.filterState;
   },
+  getCarRegistration(state) {
+    return state.carRegistration;
+  },
 };

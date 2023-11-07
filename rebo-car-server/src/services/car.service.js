@@ -69,6 +69,7 @@ const carService = {
     getAllCars: async ({
         limit = 12,
         sort = {
+            createdAt: -1,
             discount: -1,
             price: 1,
             reviewRateAvg: -1
@@ -250,63 +251,70 @@ const carService = {
 
     addCar: async (req, res) => {
         uploadCarImageFormData(req, res, async function (err) {
-            if (err instanceof multer.MulterError) {
-                return respondFailure(res, 'Multer error occurred when uploading', 401);
-                // A Multer error occurred when uploading.
-            } else if (err) {
-                return respondFailure(res, 'Internal error', 500);
+            console.log(req.body, req.files);
+            try {
+                if (err instanceof multer.MulterError) {
+                    return respondFailure(res, 'Multer error occurred when uploading', 401);
+                    // A Multer error occurred when uploading.
+                } else if (err) {
+                    return respondFailure(res, 'Internal error', 500);
+                }
+                // Everything went fine.
+
+                if (!req.files) {
+                    return respondFailure(res, 'can not found file upload', 500);
+                }
+
+                let {
+                    name,
+                    identifyNumber,
+                    carType,
+                    price,
+                    description,
+                    location,
+                    discount,
+                    characteristics,
+                    features,
+                    vehicle_handling,
+                    user_id
+                } = req.body;
+
+                if (!name) {
+                    return respondFailure(res, 'invalid value', 403);
+                }
+
+                // -------------------------- //
+                features = features.split(',');
+                location = JSON.parse(location);
+                characteristics = JSON.parse(characteristics);
+                //----------------------------- //
+
+                const carImagesPath = cloneImagesPathOfFileToArray(req.files);
+
+                const newCar = await carModel.create({
+                    name,
+                    identifyNumber,
+                    carType,
+                    images: carImagesPath,
+                    price,
+                    description,
+                    location,
+                    discount,
+                    characteristics,
+                    features,
+                    vehicle_handling,
+                    user_id
+                });
+
+                if (!newCar) {
+                    return respondFailure(res, 'Mongoose create new car got Error', 500);
+                }
+
+                return respondOK(res, { newCar }, 'user added successfully', 201);
+            } catch (error) {
+                console.log(error);
+                return respondFailure(res, error.message, 500);
             }
-            // Everything went fine.
-
-            if (!req.files) {
-                return respondFailure(res, 'can not found file upload', 500);
-            }
-
-            let {
-                name,
-                identifyNumber,
-                carType,
-                price,
-                description,
-                location,
-                discount,
-                characteristics,
-                features,
-                vehicle_handling,
-                user_id
-            } = req.body;
-
-            if (!name) {
-                return respondFailure(res, 'invalid value', 403);
-            }
-
-            // -------------------------- //
-            features = features.split(',');
-            location = JSON.parse(location);
-            //----------------------------- //
-
-            const carImagesPath = cloneImagesPathOfFileToArray(req.files);
-
-            const newCar = await carModel.create({
-                name,
-                identifyNumber,
-                carType,
-                images: carImagesPath,
-                price,
-                description,
-                location,
-                discount,
-                characteristics: JSON.parse(characteristics),
-                features,
-                vehicle_handling,
-                user_id
-            });
-
-            if (!newCar) {
-                return respondFailure(res, 'Mongoose create new car got Error', 500);
-            }
-
-            return respondOK(res, { newCar }, 'user added successfully', 201);
         });
     },
 

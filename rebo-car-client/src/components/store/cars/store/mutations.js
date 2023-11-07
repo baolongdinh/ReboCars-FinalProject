@@ -23,4 +23,7 @@ export default {
   setFilterState(state, filterState) {
     state.filterState = filterState;
   },
+  setCarRegistration(state, carRegistration) {
+    state.carRegistration = carRegistration;
+  },
 };

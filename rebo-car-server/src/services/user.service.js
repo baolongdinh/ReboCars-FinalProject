@@ -7,6 +7,7 @@ const multer = require('multer');
 const bcrypt = require('bcrypt');
 const { deleteFileWithPath, bcryptCompareValue, checkUserPermission } = require('../helpers/helperFunc');
 var { BadRequestError, UnAuthorizedError, ForbiddenError, NotfoundError } = require('../core/error.response');
+const { error } = require('winston');
 
 // email: {
 //   type: String,
@@ -133,29 +134,58 @@ const userService = {
             });
     },
 
-    updateUserById: async (req, id, { name, phone, driving_license }) => {
-        if (req.user.id !== id) {
-            throw new UnAuthorizedError('permission denied');
-        }
+    updateUserById: async (req, res, id) => {
+        uploadUserFormData(req, res, async function (err) {
+            if (err instanceof multer.MulterError) {
+                return respondFailure(res, 'Multer error occurred when uploading', 401);
+                // A Multer error occurred when uploading.
+            } else if (err) {
+                return respondFailure(res, 'Internal error', 500);
+            }
 
-        const updatedUser = await userModel
-            .findByIdAndUpdate(
-                id,
-                {
-                    name,
-                    phone,
-                    driving_license
-                },
-                {
-                    new: true
+            //Everything went fine.
+            if (req.user.id !== id) {
+                throw new UnAuthorizedError('permission denied');
+            }
+            try {
+                console.log({ id });
+                const { name, phone, dateOfBirth } = req.body;
+                console.log(req.body, req.file);
+                console.log({ name, phone, dateOfBirth });
+                console.log(id);
+                const userExist = await userModel.findById(id);
+
+                if (!userExist) {
+                    throw new NotfoundError('Can not found user ID');
                 }
-            )
-            .catch((err) => {
-                throw new NotfoundError(err.message);
-            });
+                //delete user avt-image
+                if (userExist.avatar && req.file) {
+                    const userAvtImagePath = userExist.avatar.replace('static', 'public');
+                    deleteFileWithPath(userAvtImagePath);
+                }
 
-        delete updatedUser._doc.password;
-        return updatedUser;
+                if (req.file) {
+                    const new_avatar_path = `/static/images/users/${req.file.filename}`;
+                    userExist.avatar = new_avatar_path;
+                }
+
+                userExist.name = name;
+                userExist.phone = phone;
+                userExist.dateOfBirth = dateOfBirth;
+
+                userExist
+                    .save()
+                    .then(() => {
+                        return respondOK(res, { userUpdated: userExist }, 'update avatar successfully', 202);
+                    })
+                    .catch((err) => {
+                        console.error(err.message);
+                        return respondFailure(res, err.message, 500);
+                    });
+            } catch (error) {
+                console.log(error);
+            }
+        });
     },
 
     updateUserByIdByAdmin: async (req, id, { name, phone, driving_license, active, role }) => {

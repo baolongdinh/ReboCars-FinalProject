@@ -11,9 +11,9 @@
                 </h3>
                 <p class="text-gray-600 my-2">Cảm ơn bạn vì đã tin tưởng dịch vụ của chúng tôi!</p>
                 <p> Mọi thông tin chi tiết về đơn hàng sẽ được lưu ở phần quản lý đơn hàng </p>
-                <div class="py-10 text-center" @click="this.$emit('logout')">
+                <div class="py-10 text-center" @click="handleBtnGotoOrderDashboard">
                     <button class="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-lg">
-                        Quay trở lại
+                        Đi đến trang quản lý đơn hàng
                     </button>
                 </div>
             </div>
@@ -23,6 +23,13 @@
 
 <script setup>
 
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+
+function handleBtnGotoOrderDashboard() {
+    router.push({ path: '/userdashboard/myorders' })
+}
 
 </script>
 

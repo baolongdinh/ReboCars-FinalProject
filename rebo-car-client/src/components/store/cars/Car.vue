@@ -113,6 +113,10 @@ function getImage(url) {
     return base_url + url
 }
 
+function convertNumToPrice(num) {
+    return parseInt(num).toLocaleString().replaceAll(',', ' ')
+}
+
 const props = defineProps({
     car: Object
 })

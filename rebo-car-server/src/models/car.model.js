@@ -7,7 +7,7 @@ const carSchema = new mongoose.Schema(
         images: { type: Array, default: [] },
         price: { type: Number, require: true },
         discount: { type: Number, default: 0 },
-        description: { type: String, require: true },
+        description: { type: String },
         location: { type: Schema.Types.Mixed, require: true },
         characteristics: {
             // đặc điểm xe
@@ -22,13 +22,14 @@ const carSchema = new mongoose.Schema(
         features: { type: Array, default: [] },
         reviews: { type: Array, default: [] },
         car_delivery: { type: Boolean, default: false }, //giao nhận xe
+        max_km_per_day: { type: Boolean, default: false }, //áp dụng phí vượt quá giới hạn
         mortgage: { type: Boolean, default: false }, //thế chấp
         bookedNumber: { type: Number, default: 0 },
-        max_distance_delivery: { type: Number },
-        delivery_price_1km: { type: Number },
-        max_delivery_free_price: { type: Number },
-        max_distance_per_day: { type: Number },
-        over_distance_per_km_price: { type: Number },
+        max_distance_delivery: { type: Number }, // số km tối đa có thể giao xe
+        delivery_price_1km: { type: Number }, // chi phí giao xe trên 1 km
+        max_delivery_free_price: { type: Number }, // miễn phí giao xe trong vòng
+        max_distance_per_day: { type: Number }, // số km tối đa được chạy trên 1 ngày
+        over_distance_per_km_price: { type: Number }, // phí vượt giới hạn
         status: { type: Boolean, default: true },
         user_id: {
             type: mongoose.Schema.Types.ObjectId,

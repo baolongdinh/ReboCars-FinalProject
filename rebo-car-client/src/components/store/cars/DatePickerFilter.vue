@@ -112,7 +112,10 @@ function handleDeleteFilterState() {
 
 }
 
+onMounted(() => {
 
+    console.log('datePickerFilter', location, store.getters.getLocation.description)
+})
 
 const show = ref(false)
 

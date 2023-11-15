@@ -75,14 +75,10 @@ const userController = {
     },
 
     updateCarById: async (req, res, next) => {
-        await carService
-            .updateCarById(req, req.params.id, req.body)
-            .then((updateCar) => {
-                respondOK(res, { updateCar }, 'update car successfully', 200);
-            })
-            .catch((err) => {
-                next(err);
-            });
+        console.log('body', req.body);
+        await carService.updateCarById(req, res, req.params.id).catch((err) => {
+            next(err);
+        });
     },
 
     updateCarImagesById: async (req, res, next) => {

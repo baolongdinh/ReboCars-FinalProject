@@ -276,7 +276,14 @@ const carService = {
                     characteristics,
                     features,
                     vehicle_handling,
-                    user_id
+                    user_id,
+                    car_delivery,
+                    max_distance_delivery,
+                    delivery_price_1km,
+                    max_delivery_free_price,
+                    max_distance_per_day,
+                    over_distance_per_km_price,
+                    max_km_per_day
                 } = req.body;
 
                 if (!name) {
@@ -303,7 +310,14 @@ const carService = {
                     characteristics,
                     features,
                     vehicle_handling,
-                    user_id
+                    user_id,
+                    car_delivery,
+                    max_distance_delivery,
+                    delivery_price_1km,
+                    max_delivery_free_price,
+                    max_distance_per_day,
+                    over_distance_per_km_price,
+                    max_km_per_day
                 });
 
                 if (!newCar) {
@@ -377,51 +391,65 @@ const carService = {
             });
     },
 
-    updateCarById: async (
-        carId,
-        {
-            name,
-            identifyNumber,
-            carType,
-            price,
-            description,
-            location,
-            characteristic,
-            feature,
-            vehicle_handling
-        }
-    ) => {
-        const existedCar = await carModel.findById(id);
+    updateCarById: async (req, res, carId) => {
+        try {
+            let {
+                features,
+                price,
+                location,
+                discount,
+                description,
+                car_delivery,
+                max_km_per_day,
+                max_distance_delivery,
+                delivery_price_1km,
+                freeDeliverDistanceValue,
+                max_distance_per_day,
+                over_distance_per_km_price
+            } = req.body;
 
-        if (
-            !checkUserPermission(req.user.role, req.endpoint, req.method) && // check permissions of user own car or role permission to delete car
-            existedCar.user_id !== req.user.id
-        ) {
-            throw new UnAuthorizedError('permission denied');
-        }
+            console.log(req.body);
 
-        const updatedCar = await carModel
-            .findByIdAndUpdate(
-                carId,
-                {
-                    name,
-                    identifyNumber,
-                    carType,
-                    price,
-                    description,
-                    location,
-                    characteristic,
-                    feature,
-                    vehicle_handling
-                },
-                {
-                    new: true
-                }
-            )
-            .catch((err) => {
-                throw new BadRequestError(err.message);
-            });
-        return updatedCar;
+            const existedCar = await carModel.findById(carId);
+
+            if (!existedCar) {
+                return respondFailure(res, 'can not find car id', 403);
+            }
+
+            // -------------------------- //
+            features = features.split(',');
+            location = JSON.parse(location);
+            // -------------------------- //
+
+            const updatedCar = await carModel
+                .findByIdAndUpdate(
+                    carId,
+                    {
+                        features,
+                        price,
+                        location,
+                        discount,
+                        description,
+                        car_delivery,
+                        max_km_per_day,
+                        max_distance_delivery,
+                        delivery_price_1km,
+                        freeDeliverDistanceValue,
+                        max_distance_per_day,
+                        over_distance_per_km_price
+                    },
+                    {
+                        new: true
+                    }
+                )
+                .catch((err) => {
+                    return respondFailure(res, 'updated error', 400);
+                });
+            respondOK(res, { updatedCar }, 'updated car successfully', 200);
+        } catch (error) {
+            console.error(error);
+            return respondFailure(res, error.message, 400);
+        }
     },
 
     updateCarImagesById: async (req, res, carId) => {
@@ -434,41 +462,41 @@ const carService = {
             }
             // Everything went fine.
 
-            if (!req.files) {
-                return respondFailure(res, 'can not found file upload', 500);
+            try {
+                console.log(carId);
+                if (!req.files) {
+                    return respondFailure(res, 'can not found file upload', 500);
+                }
+                console.log(req.files);
+                const existCar = await carModel.findById(carId).lean();
+
+                if (!existCar) {
+                    return respondFailure(res, 'can not found car with id', 403);
+                }
+
+                deleteAllImagesOfCar(existCar);
+
+                const carImagesPath = cloneImagesPathOfFileToArray(req.files);
+
+                const updateImagesCar = await carModel
+                    .findByIdAndUpdate(
+                        carId,
+                        {
+                            images: carImagesPath
+                        },
+                        {
+                            new: true
+                        }
+                    )
+                    .catch((err) => {
+                        return respondFailure(res, 'updated error', 400);
+                    });
+
+                respondOK(res, { updateImagesCar }, 'updated car images successfully', 200);
+            } catch (error) {
+                console.error(error.message);
+                return respondFailure(res, error.message, 400);
             }
-
-            const existCar = await carModel.findById(carId).lean();
-            console.log(existCar);
-            if (
-                !checkUserPermission(req.user.role, req.endpoint, req.method) && // check permissions of user own car or role permission to delete car
-                existCar.user_id !== req.user.id
-            ) {
-                throw new UnAuthorizedError('permission denied');
-            }
-            if (!existCar) {
-                return respondFailure(res, 'can not found car with id', 403);
-            }
-
-            deleteAllImagesOfCar(existCar);
-
-            const carImagesPath = cloneImagesPathOfFileToArray(req.files);
-
-            const updateImagesCar = await carModel
-                .findByIdAndUpdate(
-                    carId,
-                    {
-                        images: carImagesPath
-                    },
-                    {
-                        new: true
-                    }
-                )
-                .catch((err) => {
-                    throw new BadRequestError(err.message);
-                });
-
-            respondOK(res, { updateImagesCar }, 'updated car images successfully', 200);
         });
     },
     addCarReviewByCarId: async (carId, review) => {

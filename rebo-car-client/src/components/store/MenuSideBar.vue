@@ -173,7 +173,7 @@
                         </li>
 
                         <li>
-                            <router-link to="/userdashboard/myrewards"
+                            <button @click="handleBtnLogout"
                                 class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg  hover:bg-gray-100 ">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -190,7 +190,7 @@
                                 </svg>
                                 <span class="flex-1 ml-3 whitespace-nowrap">Đăng xuất</span>
 
-                            </router-link>
+                            </button>
                         </li>
 
 
@@ -204,6 +204,18 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router"
+import { useStore } from "vuex";
+
+const store = useStore()
+const router = useRouter()
+
+
+function handleBtnLogout() {
+    store.dispatch('logOut')
+    router.push('/')
+}
 
 </script>
 

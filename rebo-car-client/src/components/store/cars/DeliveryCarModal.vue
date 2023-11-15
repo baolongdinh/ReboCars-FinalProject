@@ -19,7 +19,8 @@
                 <InputAutoCompletePlace @selectedValue="handleDeliveryAddressSelected" />
 
                 <div class="text-gray-600 text-sm font-normal">
-                    Chủ xe có hỗ trợ giao nhận xe tận nơi với chi phí 15k/km, nếu bạn không sử dụng dịch vụ này thì có thể
+                    Chủ xe có hỗ trợ giao nhận xe tận nơi với chi phí {{ deliveryPerKm }}k/km, nếu bạn không sử dụng dịch vụ
+                    này thì có thể
                     nhận xe tại địa chỉ mặc định
                 </div>
             </div>
@@ -28,6 +29,11 @@
             <div class="font-semibold text-lg text-gray-600 pt-5">
                 Chi phí giao xe trên km:
                 <span class="text-black font-bold text-lg"> {{ deliveryPerKm }}k/km</span>
+            </div>
+
+            <div class="font-semibold text-lg text-gray-600 pt-1">
+                Khoảng cách giao xe tối đa:
+                <span class="text-black font-bold text-lg"> {{ car.max_distance_delivery }}km</span>
             </div>
 
             <div v-if="distance?.distance" class="font-semibold text-lg text-gray-600">
@@ -46,7 +52,7 @@
                     Hủy
                 </button>
                 <button v-if="errorMessage === ''" class=" p-2 w-24  rounded-lg bg-green-500 hover:bg-green-700"
-                    @click="this.$emit('confirm', deliveryPrice)">
+                    @click="this.$emit('confirm', { deliveryPrice, delivery_receipt_address })">
                     Áp dụng
                 </button>
             </div>
@@ -65,27 +71,33 @@ import gongAPI from "../../../apis/goongMapAPI/api"
 
 
 const car = inject('car')
-const deliveryAddress = inject('deliveryAddress')
-const deliveryPerKm = car.value.deliveryPerKm || 15
+const deliveryPerKm = car.value.delivery_price_1km || 15
 const origins = ref(car.value.location.geometry)
 const destinations = ref({})
 const distance = ref()
 const deliveryPrice = ref()
 const errorMessage = ref("")
+const delivery_receipt_address = ref()
 
 function fixedPrice(price) {
     return price.toFixed()
 }
 
-
-
 async function handleDeliveryAddressSelected(value) {
+
     const data = await gongAPI.getPlaceDetailById(value.place_id)
+    console.log(value, data)
     destinations.value = data.result.geometry.location
     distance.value = await gongAPI.getDistanceMatrix(origins.value, destinations.value)
-    if (distance.value.distance.value > 20000) {
+    if (distance.value.distance.value > car.value.max_distance_delivery * 1000) {
         errorMessage.value = `Khảng cách giao xe vượt quá khoảng cách tối đa chủ xe chấp nhận giao xe, vui lòng chọn địa điểm khác`
     } else {
+
+        delivery_receipt_address.value = {
+            ...value,
+            geometry: data.result.geometry.location
+        }
+
         errorMessage.value = ""
         deliveryPrice.value = deliveryPerKm * distance.value.distance.value / 1000
         deliveryPrice.value = fixedPrice(deliveryPrice.value)
@@ -95,7 +107,7 @@ async function handleDeliveryAddressSelected(value) {
 }
 
 onMounted(async () => {
-    console.log({ car, deliveryAddress, origins })
+    console.log({ car, origins })
 })
 
 

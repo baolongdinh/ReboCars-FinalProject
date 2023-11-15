@@ -67,7 +67,7 @@
         </div>
 
         <div class="absolute bottom-5 right-8">
-            <button class="bg-green-400 hover:bg-green-500 w-32 h-12 rounded-lg ">
+            <button @click="handleClickCarInfo" class="bg-green-400 hover:bg-green-500 w-32 h-12 rounded-lg ">
                 <div class="text-white font-sans font-semibold text-base">
                     Xem chi tiết
                 </div>
@@ -84,6 +84,8 @@ import redCumulus from "../../../../assets/icons/redCumulus.svg"
 
 import { onMounted, inject } from "vue";
 
+const emit = defineEmits(['handleClickCarInfo'])
+
 const base_url = inject('base_url')
 function getImage(url) {
     return base_url + url
@@ -92,6 +94,10 @@ function getImage(url) {
 const props = defineProps({
     userCar: Object
 })
+
+function handleClickCarInfo() {
+    emit('handleClickCarInfo', props.userCar)
+}
 
 onMounted(() => {
     console.log({ props })

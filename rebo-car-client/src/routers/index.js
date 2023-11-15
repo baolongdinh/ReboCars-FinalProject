@@ -16,6 +16,7 @@ import Contracts from "../components/store/userDashboard/userCarsDashboard/Contr
 import CarRegistration from "../components/store/cars/CarRegistration.Vue";
 import CarStepRegister from "../components/store/cars/CarStepRegister.Vue";
 import MyHistoryOrders from "../components/store/userDashboard/MyHistoryOrders.Vue";
+import MyCar from "../components/store/userDashboard/userCarsDashboard/CarInfoDetail.Vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -47,7 +48,11 @@ export const router = createRouter({
       component: CarDetail,
       name: "car",
     },
-
+    {
+      path: "/mycar/:id",
+      component: MyCar,
+      name: "MyCar",
+    },
     {
       path: "/userdashboard",
       component: userDashboard,

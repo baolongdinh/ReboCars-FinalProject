@@ -59,11 +59,11 @@
 
                                 <span class=" font-medium text-gray-700">Bắt đầu:</span>
 
-                                {{ startDate }}, {{ startTime }}
+                                {{ startDateTimeObj.toLocaleString() }}
                             </div>
                             <div class="text-base font-normal">
                                 <span class=" font-medium text-gray-700">Kết thúc:</span>
-                                {{ endDate }}, {{ endTime }}
+                                {{ endDateTimeObj.toLocaleString() }}
                             </div>
                         </div>
 
@@ -79,7 +79,7 @@
                         </div>
 
                         <div class="ml-4 pt-4 font-normal">
-                            Chung Cư Gia Phúc, 94 Tô Vĩnh Diện, Kp 5, Thủ Đức, Thành phố Hồ Chí Minh 700000
+                            {{ delivery_receipt_address?.description || car?.location?.description }}
                         </div>
 
                     </div>
@@ -112,7 +112,7 @@
                                 Đơn giá thuê
                             </div>
                             <div class="text-black font-medium">
-                                {{ discountPrice }} 000đ/ngày
+                                {{ convertNumToPrice(discountPrice) }} 000đ/ngày
                             </div>
                         </div>
 
@@ -121,7 +121,7 @@
                                 Giảm giá
                             </div>
                             <div class="text-black font-medium line-through">
-                                {{ car.price }} 000đ/ngày
+                                {{ convertNumToPrice(car.price) }} 000đ/ngày
                             </div>
                         </div>
 
@@ -130,7 +130,7 @@
                                 Phí dịch vụ
                             </div>
                             <div class="text-black font-medium">
-                                {{ brokerageCost }} 000đ/ngày
+                                {{ convertNumToPrice(brokerageCost) }} 000đ/ngày
                             </div>
                         </div>
 
@@ -141,7 +141,7 @@
                             Tổng phí thuê xe
                         </div>
                         <div class="text-black font-medium">
-                            {{ unitPrice }} 000đ
+                            {{ convertNumToPrice(unitPrice) }} 000đ/ {{ dateBetween }} ngày
                         </div>
                     </div>
 
@@ -150,7 +150,7 @@
                             Khuyến mãi
                         </div>
                         <div class="text-black font-medium line-through">
-                            {{ promotionDiscount }} 000đ
+                            {{ convertNumToPrice(promotionDiscount) }} 000đ
                         </div>
                     </div>
 
@@ -159,7 +159,7 @@
                             Phí giao xe
                         </div>
                         <div class="text-black font-medium line-through">
-                            {{ deliveryPrice }} 000đ
+                            {{ convertNumToPrice(deliveryPrice) }} 000đ
                         </div>
                     </div>
 
@@ -169,7 +169,7 @@
                             Tổng cộng
                         </div>
                         <div class="text-black font-bold">
-                            {{ unitTotalPrice }} 000đ
+                            {{ convertNumToPrice(unitTotalPrice) }} 000đ
                         </div>
                     </div>
 
@@ -178,7 +178,7 @@
                             Số tiền cần cọc trước
                         </div>
                         <div class="text-green-600 font-bold text-xl">
-                            {{ depositPrice }} 000đ
+                            {{ convertNumToPrice(depositPrice) }} 000đ
                         </div>
                     </div>
 
@@ -187,7 +187,7 @@
                             Số tiền thanh toán cho chủ xe khi nhận xe
                         </div>
                         <div class="text-green-600 font-bold text-xl">
-                            {{ payLaterPrice }} 000đ
+                            {{ convertNumToPrice(payLaterPrice) }} 000đ
                         </div>
                     </div>
 
@@ -370,7 +370,7 @@ const startTime = inject('startTime')
 const endTime = inject('endTime')
 const startDateTimeObj = inject('startDateTimeObj')
 const endDateTimeObj = inject('endDateTimeObj')
-
+const dateBetween = inject('dateBetween')
 
 const discountPrice = inject('discountPrice')
 const brokerageCost = inject('brokerageCost')
@@ -378,6 +378,7 @@ const unitPrice = inject('unitPrice')
 const promotionDiscount = inject('promotionDiscount')
 const deliveryPrice = inject('deliveryPrice')
 const unitTotalPrice = inject('unitTotalPrice')
+const delivery_receipt_address = inject('delivery_receipt_address')
 
 //define
 const depositPrice = ref()
@@ -416,15 +417,26 @@ function fixedPrice(price) {
     return price.toFixed()
 }
 
+function convertNumToPrice(num) {
+    return parseInt(num).toLocaleString().replaceAll(',', ' ')
+}
+
 
 const base_url = inject('base_url')
 function getImage(url) {
     return base_url + url
 }
 
-onMounted(async () => {
-    map.value = await gongAPI.loadMap(105.83991, 21.028, mapContainer.value, 12)
+async function loadMap() {
 
+    const { lat, lng } = car.value.location.geometry
+    console.log({ lat, lng })
+    map.value = await gongAPI.loadMap(lng, lat, mapContainer.value, 12)
+}
+
+onMounted(async () => {
+
+    loadMap()
 })
 
 </script>

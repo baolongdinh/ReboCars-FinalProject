@@ -28,8 +28,6 @@
 
             </div>
 
-
-
         </div>
     </div>
 </template>

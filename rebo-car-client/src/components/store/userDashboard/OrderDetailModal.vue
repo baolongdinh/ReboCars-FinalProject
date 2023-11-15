@@ -223,7 +223,8 @@
                                 Đơn giá thuê
                             </div>
                             <div class="text-black font-medium">
-                                {{ order.prices_table.discountPrice || order.prices_table.price }} 000đ/ngày
+                                {{ convertNumToPrice(order.prices_table.discountPrice || order.prices_table.price) }}
+                                000đ/ ngày
                             </div>
                         </div>
 
@@ -232,7 +233,7 @@
                                 Giảm giá
                             </div>
                             <div class="text-black font-medium line-through">
-                                {{ order.prices_table.price }} 000đ/ngày
+                                {{ convertNumToPrice(order.prices_table.price) }} 000đ/ ngày
                             </div>
                         </div>
 
@@ -241,7 +242,7 @@
                                 Phí dịch vụ
                             </div>
                             <div class="text-black font-medium">
-                                {{ order.prices_table.brokerageCost }} 000đ/ngày
+                                {{ convertNumToPrice(order.prices_table.brokerageCost) }} 000đ/ ngày
                             </div>
                         </div>
 
@@ -252,7 +253,18 @@
                             Tổng phí thuê xe
                         </div>
                         <div class="text-black font-medium">
-                            {{ order.prices_table.unitPrice }} 000đ/ngày
+                            {{ convertNumToPrice(order.prices_table.unitPrice) }} 000đ/ {{ order.prices_table.dateBetween }}
+                            ngày
+                        </div>
+                    </div>
+
+                    <div v-if="order.prices_table.deliveryPrice
+                        " class="grid grid-cols-2 relative pl-2 pt-1 pb-2">
+                        <div class="text-gray-700">
+                            Phí giao xe
+                        </div>
+                        <div class="text-black font-medium">
+                            {{ convertNumToPrice(order.prices_table.deliveryPrice) }} 000đ
                         </div>
                     </div>
 
@@ -261,7 +273,7 @@
                             Khuyến mãi
                         </div>
                         <div class="text-black font-medium line-through">
-                            {{ order.prices_table.promotionDiscount }} 000đ
+                            {{ convertNumToPrice(order.prices_table.promotionDiscount) }} 000đ
                         </div>
                     </div>
 
@@ -271,7 +283,7 @@
                             Tổng cộng
                         </div>
                         <div class="text-black font-bold">
-                            {{ order.prices_table.unitTotalPrice }} 000đ
+                            {{ convertNumToPrice(order.prices_table.unitTotalPrice) }} 000đ
                         </div>
                     </div>
 
@@ -281,7 +293,7 @@
                             Số tiền đã cọc
                         </div>
                         <div class="text-green-600 font-bold">
-                            {{ order.prices_table.depositPrice }} 000đ
+                            {{ convertNumToPrice(order.prices_table.depositPrice) }} 000đ
                         </div>
                     </div>
 
@@ -290,7 +302,7 @@
                             Số tiền thanh toán cho chủ xe khi nhận xe
                         </div>
                         <div class="text-green-600 font-bold">
-                            {{ order.prices_table.payLaterPrice }} 000đ
+                            {{ convertNumToPrice(order.prices_table.payLaterPrice) }} 000đ
                         </div>
                     </div>
 
@@ -532,6 +544,7 @@ const endDateTimeString = new Date(props.order.end_date_time).toLocaleString()
 const date_now = new Date()
 const start_date_time = new Date(props.order.start_date_time)
 const end_date_time = new Date(props.order.end_date_time)
+
 //userinfo
 const userAvatar = props.order.user_info[0].avatar
 const userName = props.order.user_info[0].name
@@ -585,9 +598,14 @@ function getImage(url) {
     return base_url + url
 }
 
+function convertNumToPrice(num) {
+    return parseInt(num).toLocaleString().replaceAll(',', ' ')
+}
+
 async function loadMap() {
     const lat = props.order.delivery_receipt_address.geometry.lat
     const lng = props.order.delivery_receipt_address.geometry.lng
+
     map.value = await gongAPI.loadMap(lng, lat, mapContainer.value, 12)
 }
 

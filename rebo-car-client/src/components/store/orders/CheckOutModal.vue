@@ -97,17 +97,18 @@ const startTime = inject('startTime')
 const endTime = inject('endTime')
 const startDateTimeObj = inject('startDateTimeObj')
 const endDateTimeObj = inject('endDateTimeObj')
-
+const dateBetween = inject('dateBetween')
 
 const discountPrice = inject('discountPrice')
 const brokerageCost = inject('brokerageCost')
 const unitPrice = inject('unitPrice')
 const promotionDiscount = inject('promotionDiscount')
 const deliveryPrice = inject('deliveryPrice')
-const deliveryAddress = inject('deliveryAddress')
 const unitTotalPrice = inject('unitTotalPrice')
 const depositPrice = inject('depositPrice')
 const payLaterPrice = inject('payLaterPrice')
+const delivery_receipt_addressInject = inject('delivery_receipt_address')
+
 
 const rate_vnd_usd_exchange = 0.000041
 const usdPrice = ref()
@@ -153,12 +154,13 @@ function handlePurchaseClick() {
                 deliveryPrice: deliveryPrice.value,
                 unitTotalPrice: unitTotalPrice.value,
                 depositPrice: depositPrice.value,
-                payLaterPrice: payLaterPrice.value
+                payLaterPrice: payLaterPrice.value,
+                dateBetween: dateBetween.value
             }
 
             console.log({ transaction_id, prices_table })
 
-            const delivery_receipt_address = deliveryAddress.value || car.value.location
+            const delivery_receipt_address = delivery_receipt_addressInject.value || car.value.location
 
             ordersRepo.createOrder({
                 transaction_id,
@@ -173,7 +175,8 @@ function handlePurchaseClick() {
                 braintreeLoading.value = false
                 showSuccessPaymentGateway.value = true
             }).catch((err) => {
-                errorMessage.value = err.message
+
+                errorMessage.value = err.response.data.message
             })
 
 

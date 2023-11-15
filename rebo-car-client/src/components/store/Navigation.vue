@@ -14,7 +14,7 @@
                         <li>
                             <a href="#" class="block py-2   text-gray-900 rounded" aria-current="page">Về Rebocars</a>
                         </li>
-                        <li>
+                        <li v-if="user">
                             <router-link to="/carregister" class="block py-2  text-gray-900 rounded">Trở thành chủ
                                 xe</router-link>
                         </li>
@@ -44,10 +44,10 @@
 
                 </div>
 
-                <button type="button" class="flex mr-3 mt-3 text-sm bg-gray-800 rounded-full md:mr-0 "
+                <button type="button" class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 "
                     @click="pushToUserDashBoard">
 
-                    <img v-if="user.avatar" class="w-8 h-8 rounded-full" :src="getImage(user.avatar)">
+                    <img v-if="user?.avatar" class="w-8 h-8 rounded-full" :src="getImage(user.avatar)">
 
                     <img v-else class="w-8 h-8 rounded-full"
                         src="https://upload.wikimedia.org/wikipedia/commons/5/59/User-avatar.svg" alt="user photo">

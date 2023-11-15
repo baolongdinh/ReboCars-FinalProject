@@ -240,11 +240,12 @@ function handleNextBtnClick() {
         discount: discountValue.value,
         location: JSON.stringify(carLocation.value),
         car_delivery: showCarDelivery.value,
+        max_km_per_day: showMaxCarDelivery.value,
         max_distance_delivery: deliverDistanceValue.value,
         delivery_price_1km: deliverPriceValue.value,
         max_delivery_free_price: freeDeliverDistanceValue.value,
         max_distance_per_day: maxKmPerDayValue.value,
-        over_distance_per_km_price: overLimitFee.value
+        over_distance_per_km_price: overLimitFee.value,
     }
 
     const carRegistrationPayload = { ...carRegistration, ...addMoreFields }

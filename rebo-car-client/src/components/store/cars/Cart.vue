@@ -1,30 +1,21 @@
 <template>
     <div class="p-8 bg-blue-50 rounded-xl">
         <div v-if="discountPrice" class="font-semibold text-3xl">
-            {{ discountPrice.toLocaleString() }}K/ngày
+            {{ convertNumToPrice(discountPrice) }}K/ngày
         </div>
 
         <div class="flex flex-col gap-4 pt-6 text-gray-700 font-sans">
 
-            <div class="grid grid-cols-2 divide-x divide-slate-300 border border-gray-300 rounded-lg bg-white p-2">
+            <div class=" divide-slate-300 border border-gray-300 rounded-lg bg-white p-2">
 
-                <div class="grid grid-row-2 gap-2 text-center">
-                    <div>
-                        Nhận xe
-                    </div>
-                    <div class="font-semibold">
-                        {{ startDate }} {{ startTime }}
-                    </div>
+
+                <div class="text-center pb-3 font-medium text-gray-700">
+                    Ngày bắt đầu - Ngày kết thúc
                 </div>
 
-                <div class="grid grid-row-2 gap-2  text-center">
-                    <div>
-                        Trả xe
-                    </div>
-                    <div class="font-semibold">
-                        {{ endDate }} {{ endTime }}
-                    </div>
-                </div>
+                <VueDatePicker v-model="dateRange" range :min-date="new Date()" :partial-range="false"
+                    :disabled-dates="disabledDates" @update:model-value="handleSubmitUpdateDateRange" />
+
             </div>
 
             <div class="grid grid-row-2 gap-2 divide-slate-300 border border-gray-300 rounded-lg bg-white p-2">
@@ -35,13 +26,17 @@
                     {{ location.compound.district }}, {{ location.compound.province }}
                 </div>
 
-                <div class="text-gray-600 text-sm font-normal">
+                <div v-if="car.car_delivery" class="text-gray-600 text-sm font-normal">
+                    Bạn sẽ có thể nhận xe tại địa chỉ mặc đinh hoặc chọn địa điểm giao xe và trả một khoản phí giao xe
+                    tính theo khoảng cách giữa địa chỉ giao xe và địa chỉ mặc định
+                </div>
+                <div v-else class="text-gray-600 text-sm font-normal">
                     Bạn sẽ nhận trả xe tại địa chỉ xe do chủ xe không hỗ trợ giao nhận tận nơi. Địa chỉ cụ thể sẽ được hiển
                     thị sau khi đặt cọc
                 </div>
             </div>
 
-            <div>
+            <div v-if="car.car_delivery">
                 <button type="button"
                     class="text-white bg-blue-300 hover:bg-blue-400 w-full focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55 mr-2 mb-2"
                     @click="showDeliveryCarDialog">
@@ -61,7 +56,7 @@
                         Đơn giá thuê
                     </div>
                     <div v-if="discountPrice" class="text-black font-medium">
-                        {{ discountPrice.toLocaleString() }} 000đ/ngày
+                        {{ convertNumToPrice(discountPrice) }} 000đ/ngày
                     </div>
                 </div>
 
@@ -70,7 +65,7 @@
                         Giảm giá
                     </div>
                     <div v-if="price" class="text-black font-medium line-through">
-                        {{ price.toLocaleString() }} 000đ/ngày
+                        {{ convertNumToPrice(price) }} 000đ/ngày
                     </div>
                 </div>
 
@@ -79,7 +74,7 @@
                         Phí dịch vụ
                     </div>
                     <div v-if="brokerageCost" class="text-black font-medium">
-                        {{ brokerageCost.toLocaleString() }} 000đ/ngày
+                        {{ convertNumToPrice(brokerageCost) }} 000đ/ngày
                     </div>
                 </div>
 
@@ -94,7 +89,7 @@
                     Tổng phí thuê xe
                 </div>
                 <div v-if="unitPrice" class="text-black font-medium">
-                    {{ unitPrice.toLocaleString() }} 000đ/ngày
+                    {{ convertNumToPrice(unitPrice) }} 000đ/ {{ dateBetween }} ngày
                 </div>
             </div>
 
@@ -104,7 +99,7 @@
                 </div>
                 <div class="flex justify-between">
                     <div class="text-black font-medium">
-                        {{ deliveryPrice.toLocaleString() }} 000đ/ngày
+                        {{ convertNumToPrice(deliveryPrice) }} 000đ/ngày
                     </div>
                     <div>
                         <button @click="handleDeleteDeliveryCarPrice">
@@ -148,7 +143,7 @@
                     Khuyến mãi
                 </div>
                 <div class="text-black font-medium line-through">
-                    {{ promotionDiscount }} 000đ
+                    {{ convertNumToPrice(promotionDiscount) }} 000đ
                 </div>
             </div>
 
@@ -158,7 +153,7 @@
                     Tổng cộng
                 </div>
                 <div class="">
-                    {{ unitTotalPrice }} 000đ/ngày
+                    {{ convertNumToPrice(unitTotalPrice) }} 000đ/ngày
                 </div>
             </div>
 
@@ -198,11 +193,9 @@ import LocationIcon from "../../../assets/icons/location.svg"
 import PromotionsModal from "./PromotionsModal.vue"
 import OrderConfirm from '../orders/OrderConfirm.vue';
 import DeliveryCarModal from './DeliveryCarModal.vue';
-
-
-import { onMounted, ref, onUpdated, inject, provide } from 'vue';
-
-
+import { RepositoryFactory } from "../../../apis/repositoryFactory";
+const ordersRepo = RepositoryFactory.get("orders");
+import { onMounted, ref, onUpdated, inject, provide, computed } from 'vue';
 
 
 const props = defineProps({
@@ -213,14 +206,17 @@ const props = defineProps({
     discount: Number
 })
 
+const car = inject('car')
+
+const dateRange = ref([props.startDateTime, props.endDateTime])
+
 const startDate = ref()
 const endDate = ref()
 const startTime = ref()
 const endTime = ref()
 const startDateTimeObj = ref()
 const endDateTimeObj = ref()
-const deliveryAddress = ref("")
-
+const dateBetween = ref()
 
 const discountPrice = ref()
 const brokerageCost = ref()
@@ -229,6 +225,8 @@ const unitTotalPrice = ref()
 const unitPriceClone = ref()
 const promotionDiscount = ref(0)
 const deliveryPrice = ref()
+const delivery_receipt_address = ref()
+const disabledDates = ref([])
 
 
 ///// provide value to lower component
@@ -236,10 +234,9 @@ provide('startDate', startDate)
 provide('endDate', endDate)
 provide('startTime', startTime)
 provide('endTime', endTime)
-provide('startDateTimeObj', startDateTimeObj)
-provide('endDateTimeObj', endDateTimeObj)
-provide('deliveryAddress', deliveryAddress)
-
+provide('startDateTimeObj', computed(() => dateRange.value[0]))
+provide('endDateTimeObj', computed(() => dateRange.value[1]))
+provide('dateBetween', dateBetween)
 
 provide('discountPrice', discountPrice)
 provide('brokerageCost', brokerageCost)
@@ -247,8 +244,58 @@ provide('unitPrice', unitPrice)
 provide('promotionDiscount', promotionDiscount)
 provide('deliveryPrice', deliveryPrice)
 provide('unitTotalPrice', unitTotalPrice)
+provide('delivery_receipt_address', delivery_receipt_address)
 
 
+
+function handleSubmitUpdateDateRange() {
+    console.log(dateRange.value)
+}
+
+const filter = ref({ car_id: car.value._id })
+
+async function getCarOrders() {
+    console.log('car', car.value)
+    console.log('filter', filter.value)
+
+    const result = await ordersRepo.getOrders({ filter: filter.value })
+    return result.data.metadata
+}
+
+function getDatesInRange(startDate, endDate) {
+    const date = new Date(startDate.getTime());
+
+    const dates = [];
+
+    while (date <= endDate) {
+        dates.push(new Date(date));
+        date.setDate(date.getDate() + 1);
+    }
+
+    return dates;
+}
+
+
+
+
+async function setDisableDays() {
+
+    const orders = await getCarOrders()
+
+    for (let i = 0; i < orders.length; i++) {
+        const disableDays = getDatesInRange(new Date(orders[i].start_date_time), new Date(orders[i].end_date_time))
+        disabledDates.value = disabledDates.value.concat(disableDays)
+    }
+    disabledDates.value = [...new Set(disabledDates.value.map(date => date.toString()))];
+
+    console.log('disable days', disabledDates.value)
+}
+
+function daysBetween(date_1, date_2) {
+    let difference = date_2.getTime() - date_1.getTime();
+    let TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
+    return TotalDays;
+}
 
 function calculatePriceAndFixedNumber() {
     discountPrice.value = props.price - (props.price * props.discount / 100)
@@ -258,6 +305,10 @@ function calculatePriceAndFixedNumber() {
     brokerageCost.value = brokerageCost.value.toFixed()
 
     unitPrice.value = parseInt(discountPrice.value) + parseInt(brokerageCost.value)
+
+    dateBetween.value = daysBetween(new Date(props.startDateTime), new Date(props.endDateTime))
+    unitPrice.value = unitPrice.value * dateBetween.value
+
     unitTotalPrice.value = unitPrice.value
     unitPriceClone.value = structuredClone(unitPrice.value)
 
@@ -276,6 +327,11 @@ function convertAndFormatDateStringToDate() {
 
 }
 
+function convertNumToPrice(num) {
+    return parseInt(num).toLocaleString().replaceAll(',', ' ')
+}
+
+
 // handle show up dialog
 const show = ref(false)
 const showOrderConfirmModal = ref(false)
@@ -285,12 +341,11 @@ function hiddenDialog() {
     show.value = false
 }
 
-function confirmDeliveryAddress(value) {
+function confirmDeliveryAddress(data) {
     //set unit price to default value 
     unitTotalPrice.value = unitPriceClone.value - promotionDiscount.value
-
-    deliveryPrice.value = value
-
+    deliveryPrice.value = data.deliveryPrice
+    delivery_receipt_address.value = data.delivery_receipt_address
     unitTotalPrice.value = unitTotalPrice.value + parseInt(deliveryPrice.value)
 
     hiddenDeliveryCarDialog()
@@ -341,6 +396,8 @@ function handleSelectDiscount(promotion) {
 onMounted(async () => {
     await convertAndFormatDateStringToDate()
     await calculatePriceAndFixedNumber()
+    await setDisableDays()
+
 
 })
 

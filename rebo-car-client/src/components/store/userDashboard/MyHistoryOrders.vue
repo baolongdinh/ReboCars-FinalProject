@@ -5,6 +5,12 @@
                 Lịch sử đặt xe
             </div>
 
+            <div class="absolute top-0 right-0 flex font-normal">
+
+                <VueDatePicker v-model="dateRange" range :partial-range="false" placeholder="Chọn khoảng thời gian"
+                    @update:model-value="handleSubmitUpdateDateRange" />
+            </div>
+
             <div v-if="!orders.length" class="flex flex-col space-y-2 w-355 h-305 mx-auto mt-4">
 
                 <div>
@@ -56,16 +62,31 @@ var limit = 6
 var page = 1
 const user_id = store.state.authStore.user._id
 const orderSelected = ref({})
-
+const dateRange = ref()
 
 const filter = ref({ user_id, historyOrders: true })
+
+function handleSubmitUpdateDateRange() {
+
+    const addFilterDateRange = {
+        start_date_time: dateRange.value[0].setHours(0, 0, 0, 0),
+        end_date_time: dateRange.value[1].setHours(23, 59, 59, 0),
+    }
+
+    filter.value = {
+        ...filter.value, ...addFilterDateRange
+    }
+    console.log('filterrr', filter.value)
+    loadOrders()
+}
+
 
 
 // logical
 
 async function loadOrders() {
 
-    const result = await ordersRepo.getOrders(limit, page, filter.value)
+    const result = await ordersRepo.getOrders({ limit, page, filter: filter.value })
 
     orders.value = result.data.metadata
 }
@@ -75,7 +96,7 @@ async function loadOrders() {
 
 async function loadMoreOrders() {
     page = page + 1
-    const result = await ordersRepo.getOrders(limit, page, filter.value)
+    const result = await ordersRepo.getOrders({ limit, page, filter: filter.value })
     const moreOrders = result.data.metadata
     orders.value = orders.value.concat(moreOrders)
 }

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="">
         <div class="header relative ml-28 mr-28">
             <img class="h-auto w-full rounded-2xl object-cover" src="https://wallpapers-fenix.eu/full/141205/161554157.jpg"
                 alt="image description">
@@ -16,12 +16,21 @@
             <promotions @handleSelectDiscount="handleSelectDiscount" class="w-full"></promotions>
         </div>
 
-        <div class="mt-24 bg-gray-100">
+        <div class="mt-24 bg-gray-100 pb-16">
             <div class=" font-sans  text-black text-5xl font-medium text-center">
                 Xe Dành Cho Bạn
             </div>
             <listCars :listCars=cars @handleUserClickCarCard="handleUserClickCarCard"> </listCars>
         </div>
+
+        <div class="pb-16">
+
+            <special-places class="w-full" @handleSelectDiscount="handleSelectDiscount">
+
+            </special-places>
+        </div>
+
+
 
         <div class="opacity-80 bg-gray-800 fixed z-200 inset-0" v-if="showPromotionDetailModal">
             <PromotionDetailModal ref="promotionModal" v-if="promotionSelected" :promotion="promotionSelected"
@@ -29,7 +38,6 @@
                 @logout="hidePromotionDetailDialog">
             </PromotionDetailModal>
         </div>
-
 
     </div>
 </template>

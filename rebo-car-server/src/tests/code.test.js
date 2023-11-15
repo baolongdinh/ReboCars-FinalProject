@@ -7,13 +7,17 @@ var { generateToken, paymentProcess, refundPayment } = require('../services/paym
 //     verifyEmailUrl: 'http://localhost:3000/api/cars?page=1&limit=5'
 // }).catch((err) => console.log(err));
 
-// sendEmailOrderConfirm('rebocars3@gmail.com', 'ReboCars - Thông báo đặt thuê xe thành công', {
-//     name: 'Bao Long',
-//     verifyEmailUrl: 'http://localhost:3000/api/cars?page=1&limit=5'
-// }).catch((err) => console.log(err));
+const order = {
+    price: 200,
+    discountPrice: 150
+};
+
+sendEmailOrderConfirm('rebocars3@gmail.com', 'ReboCars - Thông báo đặt thuê xe thành công', {
+    order
+}).catch((err) => console.log(err));
 
 //generateToken();
 
-paymentProcess({ amountTotal: '25.000', paymentMethod: 'nonce-from-the-client' });
+// paymentProcess({ amountTotal: '25.000', paymentMethod: 'nonce-from-the-client' });
 
 //refundPayment('903dpeqb', '13.00');

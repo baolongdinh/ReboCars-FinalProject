@@ -4,6 +4,6 @@ const authMiddleware = require('../middlewares/auth.middleware');
 
 const discountController = require('../controllers/discount.controller');
 
-router.get('/', authMiddleware.isUserLoggedIn, discountController.getAllDiscount);
+router.get('/', discountController.getAllDiscount);
 
 module.exports = router;

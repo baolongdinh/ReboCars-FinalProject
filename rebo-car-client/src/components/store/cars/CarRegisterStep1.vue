@@ -122,6 +122,23 @@
 
         <div class="flex flex-col space-y-1">
             <div class="font-semibold text-xl">
+                Mô tả
+            </div>
+            <div class="font-normal text-gray-500 text-sm">
+                Mô tả thông tin xe
+            </div>
+
+            <div>
+                <textarea class="w-580 h-36 rounded-lg border-gray-300 focus:border-blue-500 text-gray-700" name="" id=""
+                    v-model="description" cols="30" rows="10"
+                    placeholder="Huyndai Elantra số tự động đăng kí tháng 06/2018. Xe gia đình mới đẹp, nội thất nguyên bản, sạch sẽ, bảo dưỡng thường xuyên, rửa xe miễn phí cho khách. Xe rộng rãi, an toàn, tiện nghi, phù hợp cho gia đình du lịch. Xe trang bị hệ thống cảm biến lùi, gạt mưa tự động, đèn pha tự động, camera hành trình, hệ thống giải trí AV cùng nhiều tiện nghi khác..."></textarea>
+
+
+            </div>
+        </div>
+
+        <div class="flex flex-col space-y-1">
+            <div class="font-semibold text-xl">
                 Tính năng
             </div>
 
@@ -142,6 +159,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 
@@ -169,6 +187,7 @@ const carRegistration = carStore.getters.getCarRegistration
 const name = ref("")
 const identifyNumber = ref("")
 const sfc_100km = ref("")
+const description = ref("")
 
 const yearRange = []
 initYearRange()
@@ -205,9 +224,10 @@ function handleNextBtnClick() {
             transmission: transmissionsSelected.value,
             fuel: fuelSelected.value,
             sfc_100km: sfc_100km.value,
-            yearOfManufacture: yearRangeSelected.value
+            yearOfManufacture: yearRangeSelected.value,
         }),
         features: checkedFeatures.value,
+        description: description.value
     }
 
     carStore.commit('setCarRegistration', carRegistrationPayload)

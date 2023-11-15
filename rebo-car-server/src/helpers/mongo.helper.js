@@ -67,7 +67,8 @@ const buildOrderMatchFilterCondition = (
     _end_date_time,
     historyOrders,
     user_id,
-    car_owner_id
+    car_owner_id,
+    car_id
 ) => {
     var matchOrderStage = {};
     const dateNow = new Date();
@@ -102,16 +103,16 @@ const buildOrderMatchFilterCondition = (
         matchOrderStage = { ...matchOrderStage, ...addMatchStage };
     }
 
-    if (_start_date_time) {
+    if (car_id) {
         const addMatchStage = {
-            start_date_time: { $gte: _start_date_time }
+            car_id: new mongoose.Types.ObjectId(car_id)
         };
         matchOrderStage = { ...matchOrderStage, ...addMatchStage };
     }
 
-    if (_end_date_time) {
+    if (_start_date_time && _end_date_time) {
         const addMatchStage = {
-            end_date_time: { $lte: _end_date_time }
+            start_date_time: { $gte: new Date(_start_date_time), $lte: new Date(_end_date_time) }
         };
         matchOrderStage = { ...matchOrderStage, ...addMatchStage };
     }

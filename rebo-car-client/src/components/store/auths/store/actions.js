@@ -13,6 +13,12 @@ export default {
       return user;
     }
   },
+  logOut: async (context) => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    context.commit("setUser", null);
+  },
 
   signUp: async (context, { email, password, rePassword, name, phone }) => {
     await authRepo.signUp(email, password, rePassword, name, phone);

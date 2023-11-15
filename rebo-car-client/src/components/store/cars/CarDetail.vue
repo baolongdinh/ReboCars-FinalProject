@@ -413,12 +413,17 @@ async function findCarByIdAndSetValue(id) {
     car.value = await store.dispatch("findCarById", id)
 }
 
+async function loadMap() {
+
+    const { lat, lng } = car.value.location.geometry
+    console.log({ lat, lng })
+    map.value = await gongAPI.loadMap(lng, lat, mapContainer.value, 12)
+}
+
 onMounted(async () => {
     await findCarByIdAndSetValue(route.params.id)
     console.log(car.value)
-    // const place = await gongAPI.getPlaceDetailById(location.place_id)
-    // console.log(place)
-    map.value = await gongAPI.loadMap(105.83991, 21.028, mapContainer.value, 12)
+    loadMap()
 
 })
 

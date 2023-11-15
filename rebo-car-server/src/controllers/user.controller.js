@@ -1,5 +1,5 @@
-const userServices = require("../services/user.service");
-const { respondOK } = require("../helpers/respond.helper");
+const userServices = require('../services/user.service');
+const { respondOK } = require('../helpers/respond.helper');
 // email: {
 //   type: String,
 //   required: true,
@@ -34,7 +34,7 @@ const userController = {
         await userServices
             .getAllUsers(res, req.query)
             .then((users) => {
-                respondOK(res, users, "get all users successfully", 201);
+                respondOK(res, users, 'get all users successfully', 201);
             })
             .catch((err) => {
                 next(err);
@@ -44,7 +44,7 @@ const userController = {
         await userServices
             .findUserById(req.params.id)
             .then((user) => {
-                respondOK(res, user, "get user successfully", 201);
+                respondOK(res, user, 'get user successfully', 201);
             })
             .catch((err) => {
                 next(err);
@@ -54,7 +54,7 @@ const userController = {
         await userServices
             .deleteUserById(req.params.id)
             .then(() => {
-                respondOK(res, null, "Deleted user successfully", 200);
+                respondOK(res, null, 'Deleted user successfully', 200);
             })
             .catch((err) => {
                 next(err);
@@ -62,15 +62,8 @@ const userController = {
     },
     updateUserById: async (req, res, next) => {
         await userServices
-            .updateUserById(req, req.params.id, req.body)
-            .then((updatedUser) => {
-                respondOK(
-                    res,
-                    { updatedUser },
-                    "Update user password successfully",
-                    200
-                );
-            })
+            .updateUserById(req, res, req.params.id)
+
             .catch((err) => {
                 next(err);
             });
@@ -80,12 +73,7 @@ const userController = {
         await userServices
             .updateUserByIdByAdmin(req, req.params.id, req.body)
             .then((updatedUser) => {
-                respondOK(
-                    res,
-                    { updatedUser },
-                    "Update user password successfully",
-                    200
-                );
+                respondOK(res, { updatedUser }, 'Update user password successfully', 200);
             })
             .catch((err) => {
                 next(err);
@@ -96,7 +84,7 @@ const userController = {
         await userServices
             .resetPwdByUserById(req, req.params.id, req.body)
             .then(() => {
-                respondOK(res, null, "reset user password successfully", 200);
+                respondOK(res, null, 'reset user password successfully', 200);
             })
             .catch((err) => {
                 next(err);
@@ -104,12 +92,10 @@ const userController = {
     },
 
     updateAvatarByUserById: async (req, res, next) => {
-        await userServices
-            .updateUserAvtImageByID(req, res, req.params.id)
-            .catch((err) => {
-                next(err);
-            });
-    },
+        await userServices.updateUserAvtImageByID(req, res, req.params.id).catch((err) => {
+            next(err);
+        });
+    }
 };
 
 module.exports = userController;

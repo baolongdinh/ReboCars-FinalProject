@@ -1,9 +1,11 @@
 var nodemailer = require('nodemailer');
 var handlebars = require('handlebars');
+var path = require('path');
 var fs = require('fs');
 const { OAuth2Client } = require('google-auth-library');
 const ADMIN_EMAIL_ADDRESS = 'highskikes11@gmail.com';
-const dotenv = require('dotenv');
+var dotenvPath = path.join(__dirname, '..', '..', '.env');
+require('dotenv').config({ path: dotenvPath });
 var {
     BadRequestError,
     UnAuthorizedError,
@@ -12,7 +14,6 @@ var {
     InternalServerError
 } = require('../core/error.response');
 const { respondOK } = require('../helpers/respond.helper');
-dotenv.config();
 
 var readHTMLFile = function (path, callback) {
     fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
@@ -35,7 +36,8 @@ myOAuth2Client.setCredentials({
 });
 
 const sendEmailToVerifyAccount = async (email, subject, contentReplacements) => {
-    readHTMLFile('./src/assets/html/emailVerifyAccount.html', async (err, html) => {
+    const htmlTemplatePath = path.join(__dirname, '..', 'assets', 'html', 'emailVerifyAccount.html');
+    readHTMLFile(htmlTemplatePath, async (err, html) => {
         if (err) {
             throw new BadRequestError(err.message);
         }
@@ -48,9 +50,11 @@ const sendEmailToVerifyAccount = async (email, subject, contentReplacements) => 
          * Lấy AccessToken từ RefreshToken (bởi vì Access Token cứ một khoảng thời gian ngắn sẽ bị hết hạn)
          * Vì vậy mỗi lần sử dụng Access Token, chúng ta sẽ generate ra một thằng mới là chắc chắn nhất.
          */
-        const myAccessTokenObject = await myOAuth2Client.getAccessToken();
+        const myAccessTokenObject = await myOAuth2Client.getAccessToken().catch((err) => console.log(err));
         // Access Token sẽ nằm trong property 'token' trong Object mà chúng ta vừa get được ở trên
         const myAccessToken = myAccessTokenObject?.token;
+
+        console.log({ myAccessToken });
 
         // Tạo một biến Transport từ Nodemailer với đầy đủ cấu hình, dùng để gọi hành động gửi mail
         const transport = nodemailer.createTransport({
@@ -84,7 +88,8 @@ const sendEmailToVerifyAccount = async (email, subject, contentReplacements) => 
 };
 
 const sendEmailOrderConfirm = async (email, subject, contentReplacements) => {
-    readHTMLFile('./src/assets/html/emailOrderConfirm.html', async (err, html) => {
+    var htmlTemplatePath = path.join(__dirname, '..', 'assets', 'html', 'emailOrderConfirm.html');
+    readHTMLFile(htmlTemplatePath, async (err, html) => {
         if (err) {
             throw new BadRequestError(err.message);
         }
@@ -97,7 +102,7 @@ const sendEmailOrderConfirm = async (email, subject, contentReplacements) => {
          * Lấy AccessToken từ RefreshToken (bởi vì Access Token cứ một khoảng thời gian ngắn sẽ bị hết hạn)
          * Vì vậy mỗi lần sử dụng Access Token, chúng ta sẽ generate ra một thằng mới là chắc chắn nhất.
          */
-        const myAccessTokenObject = await myOAuth2Client.getAccessToken();
+        const myAccessTokenObject = await myOAuth2Client.getAccessToken().catch((err) => console.log(err));
         // Access Token sẽ nằm trong property 'token' trong Object mà chúng ta vừa get được ở trên
         const myAccessToken = myAccessTokenObject?.token;
 

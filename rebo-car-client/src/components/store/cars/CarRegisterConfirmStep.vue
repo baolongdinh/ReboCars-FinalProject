@@ -120,7 +120,7 @@
                     <div>
                         Phí giao nhận xe cho mỗi km:
                         <span class="font-bold text-lg pl-3">
-                            {{ carRegistration.delivery_price_1km }}km
+                            {{ carRegistration.delivery_price_1km }}K
                         </span>
                     </div>
 

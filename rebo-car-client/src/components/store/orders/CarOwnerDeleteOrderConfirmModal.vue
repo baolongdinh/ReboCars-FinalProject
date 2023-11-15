@@ -37,7 +37,7 @@
                         </button>
                         <button @click="handleConfirmDeleteBtn"
                             class="py-2 px-3 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 ">
-                            Xóa đơn hàng
+                            Hủy đơn hàng
                         </button>
                     </div>
                 </div>

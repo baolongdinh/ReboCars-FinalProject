@@ -7,7 +7,7 @@
                 </path>
             </svg>
             <div class="text-center">
-                <h3 class="md:text-2xl text-base text-gray-900 font-semibold text-center">Xóa đơn hàng thành công
+                <h3 class="md:text-2xl text-base text-gray-900 font-semibold text-center">Hủy đơn hàng thành công
                 </h3>
                 <div class="py-10 text-center">
                     <button @click="handleBtnBack"

@@ -2,7 +2,8 @@
     <div class="relative">
         <div class="absolute right-0 flex font-normal">
 
-            <VueDatePicker v-model="dateRange" range :partial-range="false" placeholder="Chọn khoảng thời gian" />
+            <VueDatePicker v-model="dateRange" range :partial-range="false" placeholder="Chọn khoảng thời gian"
+                @update:model-value="handleSubmitUpdateDateRange" />
         </div>
         <div class="font-bold font-sans text-3xl flex-col">
             <div>
@@ -63,17 +64,34 @@ const dateRange = ref()
 
 const filter = ref({ car_owner_id: user_id, historyOrders: true })
 
+
+function handleSubmitUpdateDateRange() {
+
+    const addFilterDateRange = {
+        start_date_time: dateRange.value[0].setHours(0, 0, 0, 0),
+        end_date_time: dateRange.value[1].setHours(23, 59, 59, 0),
+    }
+
+    filter.value = {
+        ...filter.value, ...addFilterDateRange
+    }
+    console.log('filterrr', filter.value)
+    loadOrders()
+}
+
+
+
 // logical
 async function loadOrders() {
 
-    const result = await ordersRepo.getOrders(limit, page, filter.value)
+    const result = await ordersRepo.getOrders({ limit, page, filter: filter.value })
 
     orders.value = result.data.metadata
 }
 
 async function loadMoreOrders() {
     page = page + 1
-    const result = await ordersRepo.getOrders(limit, page, filter.value)
+    const result = await ordersRepo.getOrders({ limit, page, filter: filter.value })
     const moreOrders = result.data.metadata
     orders.value = orders.value.concat(moreOrders)
 }

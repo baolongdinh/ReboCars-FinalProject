@@ -1,7 +1,11 @@
 const orderModel = require('../models/order.model');
+const userModel = require('../models/user.model');
+const carModel = require('../models/car.model');
+var mongoose = require('mongoose');
 const {} = require('../helpers/helperFunc');
 const { buildOrderMatchFilterCondition, buildMatchSearchOrderCondition } = require('../helpers/mongo.helper');
 const carService = require('./car.service');
+var { sendEmailToVerifyAccount, sendEmailOrderConfirm } = require('./email.service');
 var {
     BadRequestError,
     UnAuthorizedError,
@@ -67,29 +71,136 @@ const orderServices = {
         car_id,
         car_owner_id
     }) => {
-        if (!start_date_time || !end_date_time) {
-            throw new BadRequestError('invalid request');
+        try {
+            if (!start_date_time || !end_date_time) {
+                throw new BadRequestError('invalid request');
+            }
+
+            const orderSelectFields = {
+                start_date_time: 1,
+                end_date_time: 1
+            };
+
+            const carOrders = await orderModel
+                .find({
+                    car_id: new mongoose.Types.ObjectId(car_id),
+                    end_date_time: {
+                        $gte: new Date()
+                    }
+                })
+                .select(orderSelectFields);
+
+            console.log({ carOrders });
+
+            async function checkAvailableOrder() {
+                for (let i = 0; i < carOrders.length; i++) {
+                    if (
+                        new Date(start_date_time) > new Date(carOrders[i].end_date_time) ||
+                        new Date(end_date_time) < new Date(carOrders[i].start_date_time)
+                    ) {
+                        console.log('passed');
+                    } else {
+                        console.log('failed');
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            if (!(await checkAvailableOrder())) {
+                throw new BadRequestError(
+                    'Order from startDate to endDate not available, please choose another date range'
+                );
+            }
+
+            const order = await orderModel
+                .create({
+                    transaction_id,
+                    start_date_time,
+                    end_date_time,
+                    delivery_receipt_address,
+                    prices_table,
+                    status,
+                    user_id,
+                    car_id,
+                    car_owner_id
+                })
+                .catch((err) => {
+                    throw new InternalServerError(err.message);
+                });
+
+            if (order) {
+                const userInfo = await userModel.findById(order.user_id).lean();
+                const carOwnerInfo = await userModel.findById(order.car_owner_id).lean();
+                const carInfo = await carModel.findById(order.car_id).lean();
+
+                if (!userInfo && !carOwnerInfo && carInfo) {
+                    throw new BadRequestError('userId or carOwnerId or car_id not exist');
+                }
+
+                const prices_table_clone = structuredClone(prices_table);
+                Object.keys(prices_table_clone).forEach(function (key, index) {
+                    prices_table_clone[key] = parseInt(prices_table_clone[key])
+                        .toLocaleString()
+                        .replace(',', ' ');
+                });
+
+                console.log({ prices_table_clone });
+
+                sendEmailOrderConfirm(userInfo.email, 'ReboCars - Thông báo đặt thuê xe thành công', {
+                    order_id: order._id,
+                    brokerageCost: prices_table_clone.brokerageCost,
+                    depositPrice: prices_table_clone.depositPrice,
+                    discountPrice: prices_table_clone.discountPrice,
+                    payLaterPrice: prices_table_clone.payLaterPrice,
+                    dateBetween: prices_table.dateBetween,
+                    price: prices_table_clone.price,
+                    promotionDiscount: prices_table_clone?.promotionDiscount || 0,
+                    deliveryPrice: prices_table_clone?.deliveryPrice || 0,
+                    unitPrice: prices_table_clone.unitPrice,
+                    unitTotalPrice: prices_table_clone.unitTotalPrice,
+                    delivery_receipt_address: delivery_receipt_address.description,
+                    start_date_time: new Date(start_date_time).toLocaleString(),
+                    end_date_time: new Date(end_date_time).toLocaleString(),
+                    createdAt: new Date(order.createdAt).toLocaleString(),
+                    userEmail: userInfo.email,
+                    userPhone: userInfo.phone,
+                    userName: userInfo.name,
+                    carOwnerEmail: carOwnerInfo.email,
+                    carOwnerPhone: carOwnerInfo.phone,
+                    carOwnerName: carOwnerInfo.name
+                }).catch((err) => console.log(err));
+
+                sendEmailOrderConfirm(carOwnerInfo.email, 'ReboCars - Thông báo có đơn hàng đặt thuê xe', {
+                    order_id: order._id,
+                    brokerageCost: prices_table_clone.brokerageCost,
+                    depositPrice: prices_table_clone.depositPrice,
+                    discountPrice: prices_table_clone.discountPrice,
+                    payLaterPrice: prices_table_clone.payLaterPrice,
+                    dateBetween: prices_table.dateBetween,
+                    price: prices_table_clone.price,
+                    promotionDiscount: prices_table_clone.promotionDiscount,
+                    deliveryPrice: prices_table_clone.deliveryPrice,
+                    unitPrice: prices_table_clone.unitPrice,
+                    unitTotalPrice: prices_table_clone.unitTotalPrice,
+                    delivery_receipt_address: delivery_receipt_address.description,
+                    start_date_time: new Date(start_date_time).toLocaleString(),
+                    end_date_time: new Date(end_date_time).toLocaleString(),
+                    createdAt: new Date(order.createdAt).toLocaleString(),
+                    userEmail: userInfo.email,
+                    userPhone: userInfo.phone,
+                    userName: userInfo.name,
+                    carOwnerEmail: carOwnerInfo.email,
+                    carOwnerPhone: carOwnerInfo.phone,
+                    carOwnerName: carOwnerInfo.name
+                }).catch((err) => console.log(err));
+            }
+
+            return order;
+        } catch (error) {
+            throw new BadRequestError(error);
         }
-
-        console.log({ transaction_id, prices_table });
-
-        const order = await orderModel
-            .create({
-                transaction_id,
-                start_date_time,
-                end_date_time,
-                delivery_receipt_address,
-                prices_table,
-                status,
-                user_id,
-                car_id,
-                car_owner_id
-            })
-            .catch((err) => {
-                throw new InternalServerError(err.message);
-            });
-
-        return order;
     },
 
     getAllOrders: async ({ limit = 12, page = 1, sort = { createdAt: -1 }, startDate, endDate, search }) => {
@@ -140,18 +251,23 @@ const orderServices = {
     },
 
     getAllUserOrders: async (
-        { limit = 12, page = 1 },
+        { limit, page },
         {
             user_id,
             car_owner_id,
-            sort = { start_date_time: -1 },
+            car_id,
+            sort = { createdAt: -1 },
             start_date_time,
             end_date_time,
             historyOrders
         }
     ) => {
         try {
+            limit = parseInt(limit) || 99999;
+            page = parseInt(page) || 1;
+
             const skip = (page - 1) * parseInt(limit);
+
             const orders = await orderModel.aggregate([
                 {
                     $lookup: {
@@ -183,7 +299,8 @@ const orderServices = {
                         end_date_time,
                         historyOrders,
                         user_id,
-                        car_owner_id
+                        car_owner_id,
+                        car_id
                     )
                 },
                 { $sort: sort },
@@ -271,6 +388,25 @@ const orderServices = {
                 date_created
             };
             orderExist.save();
+        } catch (error) {
+            throw new BadRequestError(error.message);
+        }
+    },
+    loadTotalOrderStatics: async ({ filter }) => {
+        try {
+            console.log({ filter });
+            const minute = 1000 * 60;
+            const hour = minute * 60;
+            const day = hour * 24;
+            const week = day * 7;
+            const month = day * 30;
+            const year = day * 365;
+
+            const orders = await orderModel.aggregate([
+                { $match: { date: { $gt: new Date(ISODate().getTime() - 94608103680) } } }
+            ]);
+
+            console.log({ orders });
         } catch (error) {
             throw new BadRequestError(error.message);
         }

@@ -198,6 +198,59 @@ const carService = {
             throw new InternalServerError(error.message);
         }
     },
+    FindCarFilterWithRegexString: async ({
+        limit = 6,
+        page = 1,
+        matchString = '',
+        sort = {
+            createdAt: -1
+        },
+        select = carSelectField
+    }) => {
+        try {
+            console.log({ matchString });
+
+            const skip = (page - 1) * parseInt(limit);
+            const cars = await carModel.aggregate([
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'user_id',
+                        foreignField: '_id',
+                        as: 'car_owner'
+                    }
+                },
+                {
+                    $match: {
+                        $or: [
+                            { name: { $regex: matchString, $options: 'i' } },
+                            { identifyNumber: { $regex: matchString, $options: 'i' } }
+                        ]
+                    }
+                },
+                { $project: select },
+                { $sort: sort },
+                { $skip: skip },
+                { $limit: parseInt(limit) }
+            ]);
+
+            if (!cars) {
+                throw new NotfoundError('Invalid value');
+            }
+
+            const totalCars = await carModel.countDocuments();
+
+            const data = {
+                totalCars,
+                cars
+            };
+
+            return data;
+        } catch (error) {
+            throw new InternalServerError(error.message);
+        }
+    },
+
     findCarById: async (carId) => {
         const cars = await carModel.aggregate([
             {
@@ -519,6 +572,44 @@ const carService = {
 
         console.log({ car });
         return car;
+    },
+    loadTotalCarStatics: async ({ filter }) => {
+        try {
+            var groupStage = {
+                year: '$year'
+            };
+
+            if (filter === 'month') {
+                groupStage = { ...groupStage, month: '$month' };
+            }
+
+            const cars = await carModel.aggregate([
+                {
+                    $project: {
+                        month: { $month: '$createdAt' }, // Extract the month from the createdAt field
+                        year: { $year: '$createdAt' } // Extract the year if needed
+                        // Add other fields you want to include in the result
+                    }
+                },
+                {
+                    $group: {
+                        _id: groupStage,
+                        totalCars: { $sum: 1 } // Count the number of orders
+                        // Add other fields you want to include in the result
+                    }
+                },
+                {
+                    $sort: {
+                        '_id.year': 1, // Sort by year in ascending order
+                        '_id.month': 1 // Sort by month in ascending order
+                    }
+                }
+            ]);
+
+            return cars;
+        } catch (error) {
+            throw new BadRequestError(error.message);
+        }
     }
 };
 

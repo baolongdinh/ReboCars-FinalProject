@@ -176,6 +176,45 @@ const discountServices = {
         discountModel.findByIdAndDelete(id).catch((err) => {
             throw new InternalServerError(err.message);
         });
+    },
+    findDiscountsFilterWithRegexString: async ({
+        limit = 6,
+        page = 1,
+        matchString = '',
+        sort = {
+            createdAt: -1
+        }
+    }) => {
+        try {
+            const skip = (page - 1) * parseInt(limit);
+            const discounts = await discountModel.aggregate([
+                {
+                    $match: {
+                        $or: [
+                            { discount_code: { $regex: matchString, $options: 'i' } },
+                            { discount_name: { $regex: matchString, $options: 'i' } }
+                        ]
+                    }
+                },
+                { $sort: sort },
+                { $skip: skip },
+                { $limit: parseInt(limit) }
+            ]);
+
+            if (!discounts) {
+                throw new NotfoundError('Invalid value');
+            }
+
+            const totalDiscounts = await discountModel.countDocuments();
+
+            const data = {
+                totalDiscounts,
+                discounts
+            };
+            return data;
+        } catch (error) {
+            throw new BadRequestError(error.message);
+        }
     }
 };
 

@@ -12,4 +12,5 @@ router.delete('/:id', defineEndpoint, authMiddleware.checkPermission, carControl
 
 router.put('/:id', defineEndpoint, authMiddleware.checkPermission, carController.updateCarById);
 
+router.get('/statics', defineEndpoint, carController.loadTotalCarStatics);
 module.exports = router;

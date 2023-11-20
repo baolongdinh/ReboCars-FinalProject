@@ -394,19 +394,41 @@ const orderServices = {
     },
     loadTotalOrderStatics: async ({ filter }) => {
         try {
-            console.log({ filter });
-            const minute = 1000 * 60;
-            const hour = minute * 60;
-            const day = hour * 24;
-            const week = day * 7;
-            const month = day * 30;
-            const year = day * 365;
+            var groupStage = {
+                year: '$year'
+            };
+
+            if (filter === 'month') {
+                groupStage = { ...groupStage, month: '$month' };
+            }
 
             const orders = await orderModel.aggregate([
-                { $match: { date: { $gt: new Date(ISODate().getTime() - 94608103680) } } }
+                {
+                    $project: {
+                        month: { $month: '$createdAt' }, // Extract the month from the createdAt field
+                        year: { $year: '$createdAt' }, // Extract the year if needed
+                        unitTotalPrice: '$prices_table.unitTotalPrice'
+                        // Add other fields you want to include in the result
+                    }
+                },
+                {
+                    $group: {
+                        _id: groupStage,
+                        totalOrders: { $sum: 1 }, // Count the number of orders
+                        totalSales: { $sum: '$unitTotalPrice' }
+                        // Add other fields you want to include in the result
+                    }
+                },
+                {
+                    $sort: {
+                        '_id.year': 1, // Sort by year in ascending order
+                        '_id.month': 1 // Sort by month in ascending order
+                    }
+                }
             ]);
 
-            console.log({ orders });
+            console.log(orders);
+            return orders;
         } catch (error) {
             throw new BadRequestError(error.message);
         }

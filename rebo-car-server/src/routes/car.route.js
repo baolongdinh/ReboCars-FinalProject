@@ -8,6 +8,8 @@ const defineEndpoint = (req, res, next) => {
     next();
 };
 
+router.get('/search', carController.findCarFilterWithRegexString);
+
 router.get('/', carController.getAllCars);
 
 router.post('/find/filter', carController.getCarFilterWithDateTimeAndLocation);
@@ -24,11 +26,21 @@ router.post(
 
 router.get('/userCars/:id', defineEndpoint, authMiddleware.isUserLoggedIn, carController.getAllUserCars);
 
-router.delete('/userCars/:id', defineEndpoint, authMiddleware.isUserLoggedIn, carController.deleteAllUserCars);
+router.delete(
+    '/userCars/:id',
+    defineEndpoint,
+    authMiddleware.isUserLoggedIn,
+    carController.deleteAllUserCars
+);
 
 router.put('/userCars/:id', defineEndpoint, authMiddleware.isUserLoggedIn, carController.updateCarById);
 
-router.patch('/carImages/:id', defineEndpoint, authMiddleware.isUserLoggedIn, carController.updateCarImagesById);
+router.patch(
+    '/carImages/:id',
+    defineEndpoint,
+    authMiddleware.isUserLoggedIn,
+    carController.updateCarImagesById
+);
 
 router.patch('/review/:id', carController.addReviewByCarId);
 

@@ -11,6 +11,17 @@ const authController = {
                 next(err);
             });
     },
+
+    adminLogin: async (req, res, next) => {
+        authService
+            .adminLogin(req.body.email, req.body.password)
+            .then((data) => {
+                respondOK(res, data, 'login success', 200);
+            })
+            .catch((err) => {
+                next(err);
+            });
+    },
     signUp: async (req, res, next) => {
         authService.signUp(req, res).catch((err) => {
             next(err);

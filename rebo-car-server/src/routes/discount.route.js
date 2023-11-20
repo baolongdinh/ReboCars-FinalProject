@@ -6,4 +6,6 @@ const discountController = require('../controllers/discount.controller');
 
 router.get('/', discountController.getAllDiscount);
 
+router.get('/search', discountController.findDiscountsFilterWithRegexString);
+
 module.exports = router;

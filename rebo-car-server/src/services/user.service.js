@@ -39,7 +39,15 @@ const userSelectField = {
 };
 
 const userService = {
-    getAllUsers: async ({ limit = 10, sort, page = 1, filter, select = userSelectField }) => {
+    getAllUsers: async ({
+        limit = 10,
+        sort = {
+            createdAt: -1
+        },
+        page = 1,
+        filter,
+        select = userSelectField
+    }) => {
         const skip = (page - 1) * limit;
 
         const users = await userModel.find(filter).sort(sort).skip(skip).limit(limit).select(select).lean();
@@ -276,6 +284,48 @@ const userService = {
                     return respondFailure(res, err.message, 500);
                 });
         });
+    },
+    findUsersFilterWithRegexString: async ({
+        limit = 6,
+        page = 1,
+        matchString = '',
+        sort = {
+            createdAt: -1
+        },
+        select = userSelectField
+    }) => {
+        try {
+            const skip = (page - 1) * parseInt(limit);
+            const users = await userModel.aggregate([
+                {
+                    $match: {
+                        $or: [
+                            { name: { $regex: matchString, $options: 'i' } },
+                            { phone: { $regex: matchString, $options: 'i' } },
+                            { email: { $regex: matchString, $options: 'i' } }
+                        ]
+                    }
+                },
+                { $project: select },
+                { $sort: sort },
+                { $skip: skip },
+                { $limit: parseInt(limit) }
+            ]);
+
+            if (!users) {
+                throw new NotfoundError('Invalid value');
+            }
+
+            const totalUsers = await userModel.countDocuments();
+
+            const data = {
+                totalUsers,
+                users
+            };
+            return data;
+        } catch (error) {
+            throw new BadRequestError(error.message);
+        }
     }
 };
 

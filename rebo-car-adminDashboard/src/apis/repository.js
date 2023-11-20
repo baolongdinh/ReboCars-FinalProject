@@ -12,11 +12,11 @@ const instance = axios.create({
 });
 
 function getLocalAccessToken() {
-  return localStorage.getItem("accessToken");
+  return sessionStorage.getItem("accessToken");
 }
 
 function getLocalRefreshToken() {
-  return localStorage.getItem("refreshToken");
+  return sessionStorage.getItem("refreshToken");
 }
 
 async function getNewAccessTokenAndRefreshTokenByRefreshToken() {
@@ -57,11 +57,11 @@ instance.interceptors.response.use(
   },
   async err => {
     console.log("errorrrrrrrrr");
-    const config = err?.config;
+    const config = err.config;
 
     if (err.response) {
       // Access Token was expired
-      if (err.response.status === 401 && !config?._retry) {
+      if (err.response.status === 401 && !config._retry) {
         config._retry = true;
 
         try {
@@ -69,8 +69,8 @@ instance.interceptors.response.use(
           console.log("get new access token and refresh token");
           const { newAccessToken, newRefreshToken } = payload;
 
-          localStorage.setItem("accessToken", "Bearer " + newAccessToken);
-          localStorage.setItem("refreshToken", "Bearer " + newRefreshToken);
+          sessionStorage.setItem("accessToken", "Bearer " + newAccessToken);
+          sessionStorage.setItem("refreshToken", "Bearer " + newRefreshToken);
 
           config.headers["authToken"] = "Bearer " + newAccessToken;
 

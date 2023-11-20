@@ -64,6 +64,17 @@ const orderControllers = {
             .catch((err) => {
                 next(err);
             });
+    },
+    loadOrderStatics: async (req, res, next) => {
+        console.log(req.query);
+        orderServices
+            .loadTotalOrderStatics(req.query)
+            .then((orders) => {
+                respondOK(res, { orders }, 'get orders success', 200);
+            })
+            .catch((err) => {
+                next(err);
+            });
     }
 };
 

@@ -96,6 +96,28 @@ const userController = {
             .catch((err) => {
                 next(err);
             });
+    },
+    loadTotalCarStatics: async (req, res, next) => {
+        console.log(req.query);
+        await carService
+            .loadTotalCarStatics(req.query)
+            .then((cars) => {
+                respondOK(res, { cars }, 'load car statics success', 200);
+            })
+            .catch((err) => {
+                next(err);
+            });
+    },
+    findCarFilterWithRegexString: async (req, res, next) => {
+        console.log(req.query);
+        await carService
+            .FindCarFilterWithRegexString(req.query)
+            .then((data) => {
+                respondOK(res, data, 'get cars success', 200);
+            })
+            .catch((err) => {
+                next(err);
+            });
     }
 };
 

@@ -9,6 +9,9 @@ export default {
       filter
     );
   },
+  getOrderStatics({ filter }) {
+    return repository.get(`/admin/${resource}/statics?filter=${filter}`);
+  },
   async createOrder(payload) {
     return repository.post(`${resource}`, payload);
   },
@@ -17,5 +20,5 @@ export default {
   },
   async addReviewOrderById(orderId, payload) {
     return repository.post(`${resource}/addReview/${orderId}`, payload);
-  },
+  }
 };

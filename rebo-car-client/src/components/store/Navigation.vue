@@ -44,13 +44,10 @@
 
                 </div>
 
-                <button type="button" class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 "
+                <button v-if="user?.avatar" type="button" class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 "
                     @click="pushToUserDashBoard">
 
-                    <img v-if="user?.avatar" class="w-8 h-8 rounded-full" :src="getImage(user.avatar)">
-
-                    <img v-else class="w-8 h-8 rounded-full"
-                        src="https://upload.wikimedia.org/wikipedia/commons/5/59/User-avatar.svg" alt="user photo">
+                    <img class="w-8 h-8 rounded-full" :src="getImage(user.avatar)">
 
                 </button>
             </div>

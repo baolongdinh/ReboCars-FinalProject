@@ -32,9 +32,20 @@ const userController = {
     },
     getAllUser: async (req, res, next) => {
         await userServices
-            .getAllUsers(res, req.query)
+            .getAllUsers(req.query)
             .then((users) => {
                 respondOK(res, users, 'get all users successfully', 201);
+            })
+            .catch((err) => {
+                next(err);
+            });
+    },
+    findUsersFilterWithRegexString: async (req, res, next) => {
+        console.log(req.query);
+        await userServices
+            .findUsersFilterWithRegexString(req.query)
+            .then((users) => {
+                respondOK(res, users, 'get all users successfully', 200);
             })
             .catch((err) => {
                 next(err);
@@ -61,12 +72,9 @@ const userController = {
             });
     },
     updateUserById: async (req, res, next) => {
-        await userServices
-            .updateUserById(req, res, req.params.id)
-
-            .catch((err) => {
-                next(err);
-            });
+        await userServices.updateUserById(req, res, req.params.id).catch((err) => {
+            next(err);
+        });
     },
 
     updateUserByIdByAdmin: async (req, res, next) => {

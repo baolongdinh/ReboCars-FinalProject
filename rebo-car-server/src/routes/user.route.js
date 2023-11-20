@@ -8,6 +8,7 @@ const defineEndpoint = (req, res, next) => {
     next();
 };
 /* GET users listing. */
+router.get('/search', userController.findUsersFilterWithRegexString);
 
 router.get('/:id', userController.findUserById);
 

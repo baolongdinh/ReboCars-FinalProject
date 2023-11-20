@@ -158,10 +158,19 @@
             </div>
 
             <div>
-                <button type="button" @click="showOrderConfirmDialog"
+
+                <button v-if="user" type="button" @click="showOrderConfirmDialog"
                     class="text-white bg-gradient-to-r w-full from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
                     CHỌN THUÊ
                 </button>
+
+                <div v-else
+                    class="text-white bg-gradient-to-r bg-rose-400 px-4 py-2 rounded-lg w-full text-center mr-2 mb-2 ">
+                    Vui lòng đăng nhập để có thể thuê xe
+
+                </div>
+
+
             </div>
 
 
@@ -196,6 +205,7 @@ import DeliveryCarModal from './DeliveryCarModal.vue';
 import { RepositoryFactory } from "../../../apis/repositoryFactory";
 const ordersRepo = RepositoryFactory.get("orders");
 import { onMounted, ref, onUpdated, inject, provide, computed } from 'vue';
+import { useStore } from 'vuex';
 
 
 const props = defineProps({
@@ -205,6 +215,9 @@ const props = defineProps({
     price: Number,
     discount: Number
 })
+
+const store = useStore()
+const user = computed(() => store.state.authStore.user)
 
 const car = inject('car')
 
@@ -245,6 +258,8 @@ provide('promotionDiscount', promotionDiscount)
 provide('deliveryPrice', deliveryPrice)
 provide('unitTotalPrice', unitTotalPrice)
 provide('delivery_receipt_address', delivery_receipt_address)
+
+
 
 
 

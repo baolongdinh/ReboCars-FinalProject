@@ -57,6 +57,16 @@ const discountController = {
             .catch((err) => {
                 next(err);
             });
+    },
+    findDiscountsFilterWithRegexString: async (req, res, next) => {
+        await discountService
+            .findDiscountsFilterWithRegexString(req.query)
+            .then((data) => {
+                respondOK(res, data, 'get list discounts success', 200);
+            })
+            .catch((err) => {
+                next(err);
+            });
     }
 };
 

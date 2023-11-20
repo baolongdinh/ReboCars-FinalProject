@@ -3,7 +3,7 @@
         <div class="w-305 h-415 bg-white rounded-2xl shadow-xl ">
             <div class="p-4 relative">
                 <div class="relative">
-                    <img class="h-auto w-full rounded-2xl object-cover" :src="getImage(car.images[0])">
+                    <img class=" h-44 w-full rounded-2xl object-cover" :src="getImage(car.images[0])">
 
                     <div v-if="car.discount"
                         class="absolute w-20 h-8 bg-orange-500 text-white font-semibold text-sm  rounded-3xl bottom-ne16 right-5 text-center p-de5">
@@ -30,7 +30,7 @@
                 <div v-if="car?.name" class=" mt-2 font-sans ">
                     <div class="text-lg font-bold text-black flex">
                         <div>
-                            {{ car.name }}
+                            {{ car.name.toUpperCase() }}
                         </div>
                         <div class="pl-1">
                             <img :src="activeIcon">

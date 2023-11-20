@@ -8,6 +8,12 @@ export default {
       `${resource}?limit=${limit}&page=${page}&filter=${filter}`
     );
   },
+  async getDiscountsWithSearchString({ page, limit, matchString }) {
+    console.log({ page, limit, matchString });
+    return repository.get(
+      `${resource}/search?page=${page}&limit=${limit}&matchString=${matchString}`
+    );
+  },
   getUserById(id) {
     return repository.get(`${resource}/${id}`);
   },
@@ -16,5 +22,5 @@ export default {
   },
   updatedUser(id, payload) {
     return repository.put(`${resource}/${id}`, payload);
-  },
+  }
 };

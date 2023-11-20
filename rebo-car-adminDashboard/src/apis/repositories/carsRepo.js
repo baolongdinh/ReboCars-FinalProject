@@ -8,6 +8,14 @@ export default {
       `${resource}?page=${page}&limit=${limit}&filter=${filter}`
     );
   },
+  getCarsWithSearchString({ page, limit, matchString }) {
+    return repository.get(
+      `${resource}/search?page=${page}&limit=${limit}&matchString=${matchString}`
+    );
+  },
+  getCarStatics({ filter }) {
+    return repository.get(`/admin/${resource}/statics?filter=${filter}`);
+  },
   findFilterCars(page, limit, filter) {
     return repository.post(
       `${resource}/find/filter?page=${page}&limit=${limit}`,
@@ -20,8 +28,8 @@ export default {
   addCar(payload) {
     return repository.post(`${resource}`, payload, {
       headers: {
-        "Content-Type": "multipart/form-data",
-      },
+        "Content-Type": "multipart/form-data"
+      }
     });
   },
   updatedCar(id, payload) {
@@ -30,8 +38,8 @@ export default {
   updatedCarImages(id, payload) {
     return repository.patch(`${resource}/carImages/${id}`, payload, {
       headers: {
-        "Content-Type": "multipart/form-data",
-      },
+        "Content-Type": "multipart/form-data"
+      }
     });
-  },
+  }
 };

@@ -21,7 +21,7 @@
 
                 <div v-if="car?.name" class="w-full col-span-2 row-span-3 grid gap-y-6 divide-gray-300 divide-y">
                     <div class="font-semibold text-4xl ">
-                        {{ car.name }}
+                        {{ car.name.toUpperCase() }}
                     </div>
 
                     <div class="font-medium text-xl pt-6">

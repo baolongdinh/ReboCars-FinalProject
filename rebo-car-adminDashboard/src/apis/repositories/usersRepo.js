@@ -22,6 +22,13 @@ export default {
       }
     });
   },
+  adminUpdateUserById(id, payload) {
+    return repository.put(`/admin/${resource}/${id}`, payload);
+  },
+  activeOrBlockUserById(id) {
+    console.log({ id });
+    return repository.put(`/admin/${resource}/activeOrBlock/${id}`);
+  },
   resetPasswordByUserId(id, payload) {
     return repository.patch(`${resource}/resetpwd/${id}`, payload, {});
   }

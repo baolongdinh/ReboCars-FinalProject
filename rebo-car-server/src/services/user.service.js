@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 const { deleteFileWithPath, bcryptCompareValue, checkUserPermission } = require('../helpers/helperFunc');
 var { BadRequestError, UnAuthorizedError, ForbiddenError, NotfoundError } = require('../core/error.response');
 const { error } = require('winston');
+const { use } = require('../routes');
 
 // email: {
 //   type: String,
@@ -196,30 +197,50 @@ const userService = {
         });
     },
 
-    updateUserByIdByAdmin: async (req, id, { name, phone, driving_license, active, role }) => {
-        if (req.user.id !== id) {
-            throw new UnAuthorizedError('permission denied');
+    activeOrBlockUserById: async (id) => {
+        try {
+            const user = await userModel.findById(id);
+            if (!user) {
+                throw new BadRequestError('can not found user');
+            }
+            user.active = !user.active;
+            console.log({ user });
+            await user.save();
+            return user;
+        } catch (error) {
+            throw new BadRequestError(error.message);
         }
-        const updatedUser = await userModel
-            .findByIdAndUpdate(
-                id,
-                {
-                    name,
-                    phone,
-                    driving_license,
-                    active,
-                    role
-                },
-                {
-                    new: true
-                }
-            )
-            .catch((err) => {
-                throw new NotfoundError(err.message);
-            });
+    },
 
-        delete updatedUser._doc.password;
-        return updatedUser;
+    updateUserByIdByAdmin: async (id, { name, phone, driving_license, active, role }) => {
+        try {
+            const updatedUser = await userModel
+                .findByIdAndUpdate(
+                    id,
+                    {
+                        name,
+                        phone,
+                        driving_license,
+                        active,
+                        role
+                    },
+                    {
+                        new: true
+                    }
+                )
+                .catch((err) => {
+                    throw new NotfoundError(err.message);
+                });
+
+            if (!updatedUser) {
+                throw new BadRequestError('can not found user id ');
+            }
+
+            delete updatedUser._doc.password;
+            return updatedUser;
+        } catch (error) {
+            throw new BadRequestError(error.message);
+        }
     },
 
     resetPwdByUserById: async (req, id, { oldPassword, newPassword }) => {

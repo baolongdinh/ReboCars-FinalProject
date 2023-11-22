@@ -8,5 +8,9 @@ export default {
     return repository.get(
       `/admin/${resource}/search?page=${page}&limit=${limit}&matchString=${matchString}`
     );
+  },
+
+  async getAllRoles() {
+    return repository.get(`/admin/${resource}`);
   }
 };

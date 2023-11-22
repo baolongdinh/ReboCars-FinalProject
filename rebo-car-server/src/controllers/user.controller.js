@@ -76,10 +76,20 @@ const userController = {
             next(err);
         });
     },
+    activeOrBlockUserById: async (req, res, next) => {
+        await userServices
+            .activeOrBlockUserById(req.params.id)
+            .then((user) => {
+                respondOK(res, { user }, 'active or update user successfully', 200);
+            })
+            .catch((err) => {
+                next(err);
+            });
+    },
 
     updateUserByIdByAdmin: async (req, res, next) => {
         await userServices
-            .updateUserByIdByAdmin(req, req.params.id, req.body)
+            .updateUserByIdByAdmin(req.params.id, req.body)
             .then((updatedUser) => {
                 respondOK(res, { updatedUser }, 'Update user password successfully', 200);
             })

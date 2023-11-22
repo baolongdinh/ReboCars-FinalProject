@@ -15,8 +15,8 @@ const roleControllers = {
     getAllRoles: async (req, res, next) => {
         roleServices
             .getAllRoles()
-            .then((data) => {
-                respondOK(res, data, 'get all roles successfully', 201);
+            .then((roles) => {
+                respondOK(res, { roles }, 'get all roles successfully', 201);
             })
             .catch((err) => {
                 next(err);

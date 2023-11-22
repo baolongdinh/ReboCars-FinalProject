@@ -168,6 +168,7 @@ function handleBtnConfirmUpdate() {
 
 onMounted(() => {
     console.log({ props })
+    console.log(dateOfBirth.value)
 
 })
 

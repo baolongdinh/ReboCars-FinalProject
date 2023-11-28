@@ -98,43 +98,47 @@ const discountServices = {
             return respondOK(res, newDiscount, 'create discount successfully', 201);
         });
     },
-    updateDiscountById: async (
-        id,
-        {
-            discount_name,
-            discount_description,
-            discount_value,
-            discount_code,
-            discount_start_date,
-            discount_end_date,
-            discount_max_uses
-        }
-    ) => {
-        if (!discount_name) {
-            throw new BadRequestError('invalid request');
-        }
-
-        const discountUpdated = await discountModel
-            .findByIdAndUpdate(
-                id,
-                {
+    updateDiscountById: async (id, req, res) => {
+        uploadDiscountFormData(req, res, async function (err) {
+            if (err instanceof multer.MulterError) {
+                return respondFailure(res, 'Multer error occurred when uploading', 401);
+                // A Multer error occurred when uploading.
+            } else if (err) {
+                return respondFailure(res, 'Internal error', 500);
+            }
+            // Everything went fine
+            try {
+                const {
                     discount_name,
                     discount_description,
                     discount_value,
                     discount_code,
                     discount_start_date,
-                    discount_end_date,
-                    discount_max_uses
-                },
-                {
-                    new: true
-                }
-            )
-            .catch((err) => {
-                throw new InternalServerError(err.message);
-            });
+                    discount_end_date
+                } = req.body;
 
-        respondOK(res, { discountUpdated }, 'update discount successfully', 200);
+                const existedDiscount = await discountModel.findById(id);
+
+                if (!existedDiscount) {
+                    throw new BadRequestError('can not found discount id');
+                }
+
+                if (req.file) {
+                    existedDiscount.discount_image = `/static/images/discounts/${req.file.filename}`;
+                }
+                existedDiscount.discount_name = discount_name;
+                existedDiscount.discount_description = discount_description;
+                existedDiscount.discount_value = discount_value;
+                existedDiscount.discount_code = discount_code;
+                existedDiscount.discount_start_date = discount_start_date;
+                existedDiscount.discount_end_date = discount_end_date;
+                await existedDiscount.save();
+
+                return respondOK(res, existedDiscount, 'updated discount successfully', 201);
+            } catch (error) {
+                throw new BadRequestError(error.message);
+            }
+        });
     },
 
     updateDiscountImageById: async (id, req, res) => {
@@ -155,7 +159,7 @@ const discountServices = {
 
             deleteImageOfDiscount(existedDiscount);
 
-            existedDiscount.image = `/static/images/discounts/${req.file.filename}`;
+            existedDiscount.discount_image = `/static/images/discounts/${req.file.filename}`;
 
             existedDiscount.save().catch((err) => {
                 throw new InternalServerError(err.message);
@@ -171,11 +175,26 @@ const discountServices = {
             throw new BadRequestError('can not found discount id');
         }
 
-        deleteImageOfDiscount(existedDiscount);
-
         discountModel.findByIdAndDelete(id).catch((err) => {
             throw new InternalServerError(err.message);
         });
+    },
+
+    activeOrBlockDiscountById: async (id) => {
+        try {
+            const existedDiscount = await discountModel.findById(id);
+
+            if (!existedDiscount) {
+                throw new BadRequestError('can not found discount id');
+            }
+
+            existedDiscount.discount_active = !existedDiscount.discount_active;
+            await existedDiscount.save();
+
+            return existedDiscount;
+        } catch (error) {
+            throw new BadRequestError(error.message);
+        }
     },
     findDiscountsFilterWithRegexString: async ({
         limit = 6,

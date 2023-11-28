@@ -1,6 +1,6 @@
 <template>
     <div class="container  mx-auto ">
-        <div class="px-28 pb-8">
+        <div class="px-28 pb-8 relative">
 
             <div class="px-12 pt-4 pb-6 text-center text-gray-700 font-bold text-3xl font-sans">
                 THÔNG TIN XE CHI TIẾT
@@ -205,8 +205,27 @@
 
                         </div>
                     </div>
+
+
+
+
+
+
                     <div class="font-medium text-xl pt-6">
                         Reviews
+
+                        <button v-if="car?.status"
+                            class="float-right text-lg px-3 py-1 border rounded-lg text-white bg-rose-400 hover:bg-rose-700 "
+                            @click="handleActiveOrBlockCar">
+                            Dừng hoạt động xe
+                        </button>
+
+                        <button v-else
+                            class="float-right text-lg px-3 py-1 border rounded-lg text-white bg-green-400 hover:bg-green-700 "
+                            @click="handleActiveOrBlockCar">
+                            Kích hoạt xe
+                        </button>
+
 
                         <div class="flex flex-col">
                             <div class="mt-1 flex">
@@ -232,6 +251,7 @@
 
                             </div>
                         </div>
+
 
 
                     </div>
@@ -276,7 +296,9 @@ import { useStore, mapGetters } from 'vuex'
 import { router } from '../../../../routers'
 import UpdateCarModal from './UpdateCarModal.vue'
 import UpdateCarImagesModal from "./UpdateCarImagesModal.vue"
+import { RepositoryFactory } from "../../../../apis/repositoryFactory";
 
+const carsRepo = RepositoryFactory.get('cars')
 
 
 const store = useStore()
@@ -319,6 +341,16 @@ async function handleBtnConfirmUpdateCarInfo() {
     await findCarByIdAndSetValue(route.params.id)
     hiddenUpdateCarDialog()
 }
+
+function handleActiveOrBlockCar() {
+    carsRepo.activeOrBlockCarById(route.params.id).then((result) => {
+        handBtnBack()
+    }).catch((err) => {
+        console.error(err)
+    })
+}
+
+
 
 ///
 

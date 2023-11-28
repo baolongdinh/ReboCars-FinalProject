@@ -7,7 +7,7 @@ import "element-plus/dist/index.css";
 import App from "./App.vue";
 import "./assets/index.css";
 import vueBraintree from "vue-braintree";
-
+import FacebookChat from "./components/FacebookChat.vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { VueperSlides, VueperSlide } from "vueperslides";
@@ -60,6 +60,7 @@ app.use(store);
 app.use(vueBraintree);
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.component("VueDatePicker", VueDatePicker);
+app.component("FacebookChat", FacebookChat);
 app.use(ElementPlus);
 app.use(vfm);
 app.use(router);

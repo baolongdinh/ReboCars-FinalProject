@@ -133,11 +133,16 @@ const orderServices = {
             if (order) {
                 const userInfo = await userModel.findById(order.user_id).lean();
                 const carOwnerInfo = await userModel.findById(order.car_owner_id).lean();
-                const carInfo = await carModel.findById(order.car_id).lean();
+                const carInfo = await carModel.findById(order.car_id);
 
                 if (!userInfo && !carOwnerInfo && carInfo) {
                     throw new BadRequestError('userId or carOwnerId or car_id not exist');
                 }
+
+                carInfo.bookedNumber = carInfo.bookedNumber + 1;
+                carInfo.save().catch((err) => {
+                    throw new BadRequestError(err.message);
+                });
 
                 const prices_table_clone = structuredClone(prices_table);
                 Object.keys(prices_table_clone).forEach(function (key, index) {

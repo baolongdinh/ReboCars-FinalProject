@@ -14,13 +14,24 @@ export default {
       `${resource}/search?page=${page}&limit=${limit}&matchString=${matchString}`
     );
   },
-  getUserById(id) {
-    return repository.get(`${resource}/${id}`);
+  async updateDiscountById(id, payload) {
+    return repository.put(`/admin/${resource}/${id}`, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
   },
-  addUser(payload) {
-    return repository.post(`${resource}`, payload);
+  async addDiscount(payload) {
+    return repository.post(`/admin/${resource}`, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
   },
-  updatedUser(id, payload) {
-    return repository.put(`${resource}/${id}`, payload);
+  async activeOrBlockDiscountById(id) {
+    return repository.put(`/admin/${resource}/activeOrBlock/${id}`);
+  },
+  async deleteDiscountById(id) {
+    return repository.delete(`/admin/${resource}/${id}`);
   }
 };

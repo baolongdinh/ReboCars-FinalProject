@@ -108,6 +108,17 @@ const userController = {
                 next(err);
             });
     },
+    activeOrBlockCarById: async (req, res, next) => {
+        await carService
+            .activeOrBlockCarById(req.params.id)
+            .then((car) => {
+                respondOK(res, { car }, 'updated car success', 201);
+            })
+            .catch((err) => {
+                next(err);
+            });
+    },
+
     findCarFilterWithRegexString: async (req, res, next) => {
         console.log(req.query);
         await carService

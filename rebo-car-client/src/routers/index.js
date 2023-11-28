@@ -17,6 +17,7 @@ import CarRegistration from "../components/store/cars/CarRegistration.Vue";
 import CarStepRegister from "../components/store/cars/CarStepRegister.Vue";
 import MyHistoryOrders from "../components/store/userDashboard/MyHistoryOrders.Vue";
 import MyCar from "../components/store/userDashboard/userCarsDashboard/CarInfoDetail.Vue";
+import VerifyEmail from "../components/store/auths/VerifyEmail.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -27,6 +28,11 @@ export const router = createRouter({
       path: "/",
       component: Home,
       name: "home",
+    },
+    {
+      path: "/verifyemail",
+      component: VerifyEmail,
+      name: "VerifyEmail",
     },
     {
       path: "/find/filter/cars",

@@ -1,7 +1,14 @@
 const userModel = require('../models/user.model');
 const roleModel = require('../models/role.model');
 const bcrypt = require('bcrypt');
-const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../helpers/jwtService');
+const {
+    signAccessToken,
+    signRefreshToken,
+    verifyRefreshToken,
+    signEmailVerifyToken,
+    verifyEmailVerifyToken
+} = require('../helpers/jwtService');
+var { sendEmailToVerifyAccount } = require('./email.service');
 const { respondOK, respondFailure } = require('../helpers/respond.helper');
 var {
     BadRequestError,
@@ -20,12 +27,12 @@ const authService = {
             }
 
             const checkedPassword = await bcrypt.compare(password, userExist.password);
+
             if (!checkedPassword) {
                 throw new BadRequestError('email or password did not match');
             }
 
-            //   if (!userExist.active)
-            //     throw new BadRequestError("user did not active or get blocked");
+            if (!userExist.active) throw new BadRequestError('account did not active or blocked');
 
             const accessToken = signAccessToken(userExist._id, userExist.role, 60 * 5);
 
@@ -56,8 +63,8 @@ const authService = {
             if (!checkedPassword) {
                 throw new BadRequestError('email or password did not match');
             }
-            //   if (!userExist.active)
-            //     throw new BadRequestError("user did not active or get blocked");
+
+            if (!userExist.active) throw new BadRequestError('account did not active or blocked');
 
             if (userExist.role.name === 'USER') {
                 throw new ForbiddenError('account permission denied');
@@ -97,6 +104,7 @@ const authService = {
         if (emailExist) {
             return respondFailure(res, 'Email exist', 400);
         }
+
         const salt = await bcrypt.genSaltSync(10);
         const passwordHash = await bcrypt.hashSync(password, salt);
 
@@ -113,8 +121,38 @@ const authService = {
                 return respondFailure(res, err.message, 400);
             });
 
+        const verifyToken = signEmailVerifyToken(newUser._id, 60 * 15);
+        const verifyEmailUrl = `http://localhost:5173/verifyemail?token=${verifyToken}`;
+        sendEmailToVerifyAccount(newUser.email, 'ReboCars - Verify your email', {
+            verifyEmailUrl
+        }).catch((err) => console.log(err));
+
         delete newUser._doc.password;
         return respondOK(res, { newUser }, 'user added successfully', 201);
+    },
+
+    verifyEmailByToken: async (verifyToken) => {
+        try {
+            const { id } = await verifyEmailVerifyToken('Bearer ' + verifyToken);
+
+            if (!id) {
+                throw new UnAuthorizedError('can not verify user Id');
+            }
+
+            const user = await userModel.findByIdAndUpdate(
+                id,
+                {
+                    active: true
+                },
+                {
+                    new: true
+                }
+            );
+
+            return user;
+        } catch (error) {
+            throw new BadRequestError(error.message);
+        }
     },
 
     generateNewAccessToken: async (refreshToken) => {

@@ -40,6 +40,24 @@ const signRefreshToken = (id, role, exp) => {
     }
 };
 
+const signEmailVerifyToken = (id, exp) => {
+    try {
+        const token = jwt.sign(
+            {
+                id
+            },
+            process.env.JWT_VERIFY_EMAIL_KEY,
+            {
+                expiresIn: exp
+            }
+        );
+
+        return token;
+    } catch (error) {
+        throw new BadRequestError('can not sign token with jwt');
+    }
+};
+
 const verifyAccessToken = (accessToken) => {
     return new Promise((resolve, reject) => {
         if (!accessToken) {
@@ -77,9 +95,29 @@ const verifyRefreshToken = async (refreshToken) => {
     });
 };
 
+const verifyEmailVerifyToken = async (Token) => {
+    return new Promise((resolve, reject) => {
+        if (!Token) {
+            reject(new UnAuthorizedError());
+        }
+        const token = Token.split(' ')[1];
+        jwt.verify(token, process.env.JWT_VERIFY_EMAIL_KEY, (err, payload) => {
+            if (err) {
+                if ((err.name = 'TokenExpiredError')) {
+                    reject(new UnAuthorizedError(err.message));
+                }
+                reject(new UnAuthorizedError(err));
+            }
+            resolve(payload);
+        });
+    });
+};
+
 module.exports = {
     signAccessToken,
     signRefreshToken,
     verifyAccessToken,
-    verifyRefreshToken
+    verifyRefreshToken,
+    signEmailVerifyToken,
+    verifyEmailVerifyToken
 };

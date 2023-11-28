@@ -113,7 +113,6 @@
 
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -165,16 +164,17 @@
 import { VueFinalModal } from 'vue-final-modal'
 import Slider from '@vueform/slider'
 import { useStore } from 'vuex'
-import { ref, onUpdated, onBeforeUnmount } from 'vue'
+import { ref, onUpdated, onBeforeUnmount, computed } from 'vue'
 
 const carStore = useStore()
 const filterState = carStore.getters.getFilterState
 
-const priceRangeValue = filterState.priceRangeValue || ref([200, 5000])
-const seatRangeValue = filterState.seatRangeValue || ref([2, 10])
-const yearRangeValue = filterState.yearRangeValue || ref([2005, 2023])
-const oilConsumedValue = filterState.oilConsumedValue || ref(100)
+var priceRangeValue = filterState.priceRangeValue || [200, 5000]
+var seatRangeValue = filterState.seatRangeValue || [2, 10]
+var yearRangeValue = filterState.yearRangeValue || [2005, 2023]
+var oilConsumedValue = filterState.oilConsumedValue || 100
 
+console.log({ filterState })
 
 const features = carStore.getters.getFeatures
 
@@ -183,20 +183,57 @@ const fuels = carStore.getters.getFuels
 const sortOptions = carStore.getters.getSortOptions
 const typeOfCars = carStore.getters.getListTypeOfCars
 const autoMakers = carStore.getters.getAutoMakers
-const checkedFeatures = filterState.checkedFeatures || ref([])
-const checkedFuels = filterState.checkedFuels || ref([])
 
-const sortSelected = filterState.sortSelected || ref("")
-const typeOfCarSelected = filterState.typeOfCarSelected || ref("")
-const autoMakerSelected = filterState.autoMakerSelected || ref("")
 
+var checkedFeatures = filterState?.checkedFeatures ? ref(filterState.checkedFeatures) : ref([])
+var checkedFuels = ref(filterState?.checkedFuels) || ref("")
+
+var sortSelected = filterState.sortSelected || ""
+var typeOfCarSelected = filterState.typeOfCarSelected || ""
+var autoMakerSelected = filterState.autoMakerSelected || ""
 
 const filter = {}
+
+function setFilterState() {
+    filter.priceRange = {
+        min: priceRangeValue[0],
+        max: priceRangeValue[1],
+    }
+
+    filter.seatsRange = {
+        min: seatRangeValue[0],
+        max: seatRangeValue[1],
+    }
+
+    filter.manufactureYearRange = {
+        min: yearRangeValue[0],
+        max: yearRangeValue[1],
+    }
+
+    filter.sfc_100km = oilConsumedValue
+
+    filter.features = checkedFeatures.value
+
+    filter.fuel = checkedFuels.value
+
+    filter.typeOfCar = typeOfCarSelected
+
+    filter.autoMaker = autoMakerSelected
+
+    carStore.dispatch("matchSortSelected", sortSelected).then(sort => {
+        filter.sort = sort
+    })
+
+}
+
+setFilterState()
+
+console.log({ filter })
 
 const emit = defineEmits(['handleUpdateFilterChanged', 'handleDeleteFilterState'])
 
 function handleUpdatePriceRangeChanged(priceRange) {
-    priceRangeValue.value = priceRange
+    priceRangeValue = priceRange
     filter.priceRange = {
         min: priceRange[0],
         max: priceRange[1],
@@ -205,7 +242,7 @@ function handleUpdatePriceRangeChanged(priceRange) {
 }
 
 function handleUpdateSeatsRangeChanged(seatsRange) {
-    seatRangeValue.value = seatsRange
+    seatRangeValue = seatsRange
     filter.seatsRange = {
         min: seatsRange[0],
         max: seatsRange[1],
@@ -214,7 +251,7 @@ function handleUpdateSeatsRangeChanged(seatsRange) {
 }
 
 function handleUpdateYearRangeChanged(yearsRange) {
-    yearRangeValue.value = yearsRange
+    yearRangeValue = yearsRange
     filter.manufactureYearRange = {
         min: yearsRange[0],
         max: yearsRange[1],
@@ -223,7 +260,7 @@ function handleUpdateYearRangeChanged(yearsRange) {
 }
 
 function handleUpdateSFCChanged(sfc_100km) {
-    oilConsumedValue.value = sfc_100km
+    oilConsumedValue = sfc_100km
     filter.sfc_100km = sfc_100km
     emit('handleUpdateFilterChanged', filter)
 }
@@ -259,8 +296,6 @@ function handleAutoMakerSelected(event) {
 function handleDeleteFilterState() {
     carStore.commit('setFilterState', {})
     emit('handleDeleteFilterState')
-
-
 }
 
 onUpdated(async () => {
@@ -268,11 +303,14 @@ onUpdated(async () => {
 })
 
 onBeforeUnmount(() => {
+
+    console.log("2", { checkedFeatures })
+
     const filterState = {
-        priceRangeValue: priceRangeValue.value,
-        seatRangeValue: seatRangeValue.value,
-        yearRangeValue: yearRangeValue.value,
-        oilConsumedValue: oilConsumedValue.value,
+        priceRangeValue,
+        seatRangeValue,
+        yearRangeValue,
+        oilConsumedValue,
         sortSelected,
         typeOfCarSelected,
         autoMakerSelected,

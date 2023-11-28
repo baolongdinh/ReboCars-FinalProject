@@ -28,7 +28,8 @@
                         {{ msgErr }}
                     </div>
                     <p class="mb-1 text-gray-700 font-bold text-xl ">Bạn có đồng ý hủy đơn hàng này ? </p>
-                    <p class="mb-4 text-gray-500 text-start text-base"> Nếu hủy bạn sẽ được hoàn {{ refundPrice }} 000đ
+                    <p class="mb-4 text-gray-500 text-start text-base"> Nếu hủy bạn sẽ được hoàn {{
+                        convertNumToPrice(refundPrice) }} 000đ
                         trở
                         lại
                         thẻ bạn đã
@@ -84,6 +85,11 @@ function calculateRefundPrice() {
         refundPrice.value = 0
     }
 }
+
+function convertNumToPrice(num) {
+    return parseInt(num).toLocaleString().replaceAll(',', ' ')
+}
+
 
 function handleConfirmDeleteBtn() {
 

@@ -21,7 +21,11 @@
                 </div>
 
                 <div class="text-lg text-gray-800 mt-4 text-start ">
-                    {{ promotion.discount_description }}
+                    <textarea class="w-full border-none outline-none rounded-lg" name="" id="" cols="30" rows="10"
+                        v-model="promotion.discount_description" disabled>
+
+                    </textarea>
+
                 </div>
             </div>
 

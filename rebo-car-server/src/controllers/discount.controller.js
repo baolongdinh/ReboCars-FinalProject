@@ -42,22 +42,27 @@ const discountController = {
     },
 
     updateDiscountById: async (req, res, next) => {
-        await discountService
-            .updateDiscountById(req.params.id, req.body)
-
-            .catch((err) => {
-                next(err);
-            });
+        await discountService.updateDiscountById(req.params.id, req, res).catch((err) => {
+            next(err);
+        });
     },
 
     updateDiscountImageById: async (req, res, next) => {
+        await discountService.updateDiscountImageById(req.params.id, req, res).catch((err) => {
+            next(err);
+        });
+    },
+    activeOrBlockDiscountById: async (req, res, next) => {
         await discountService
-            .updateDiscountImageById(req.params.id, req, res)
-
+            .activeOrBlockDiscountById(req.params.id)
+            .then(() => {
+                respondOK(res, null, 'update discount status success', 203);
+            })
             .catch((err) => {
                 next(err);
             });
     },
+
     findDiscountsFilterWithRegexString: async (req, res, next) => {
         await discountService
             .findDiscountsFilterWithRegexString(req.query)

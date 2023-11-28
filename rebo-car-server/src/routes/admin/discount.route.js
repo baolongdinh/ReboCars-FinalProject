@@ -12,6 +12,8 @@ router.delete('/:id', defineEndpoint, discountController.deleteDiscountById);
 
 router.put('/:id', defineEndpoint, discountController.updateDiscountById);
 
+router.put('/activeOrBlock/:id', defineEndpoint, discountController.activeOrBlockDiscountById);
+
 router.patch(
     '/:id',
     defineEndpoint,

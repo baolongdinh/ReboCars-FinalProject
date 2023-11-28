@@ -74,18 +74,13 @@
             <el-table-column label="Action" min-width="150px">
                 <template v-slot="{ row }">
 
-                    <button class="px-4 py-1" v-if="row.status">
+                    <button class="px-4 py-1" @click="activeOrBlockUser(row)" v-if="row.status">
                         Block
                     </button>
 
 
-                    <button class="px-4 py-1" v-else>
+                    <button class="px-4 py-1" @click="activeOrBlockUser(row)" v-else>
                         Active
-                    </button>
-
-
-                    <button class="px-4 py-1 mt-2">
-                        Detail
                     </button>
 
                 </template>
@@ -93,7 +88,7 @@
         </el-table>
 
         <b-card-footer class="py-4 d-flex justify-content-end">
-            <paginate :page-count="pageCount" :page-range="3" :margin-pages="5" :click-handler="clickPageChange"
+            <paginate :page-count="pageCount" :page-range="2" :margin-pages="2" :click-handler="clickPageChange"
                 :prev-text="'Prev'" :next-text="'Next'" :container-class="'pagination'" :page-class="'page-item'">
             </paginate>
         </b-card-footer>
@@ -140,7 +135,20 @@ export default {
         clickPageChange(pageNum) {
             this.currentPage = pageNum
             this.loadCars()
-        }
+        },
+        activeOrBlockUser(car) {
+            carsRepo.activeOrBlockCarById(car._id).then((result) => {
+                this.$notify({
+                    title: 'Notification',
+                    text: 'Update car status success.',
+                    type: 'success'
+                });
+                console.log({ result })
+                this.loadCars()
+            }).catch((err) => {
+                console.error(err)
+            })
+        },
     },
     computed: {
     },

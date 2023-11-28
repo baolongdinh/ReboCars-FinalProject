@@ -36,6 +36,18 @@ const authController = {
             .catch((err) => {
                 next(err);
             });
+    },
+    verifyEmailByToken: (req, res, next) => {
+        console.log(req.query.token);
+
+        authService
+            .verifyEmailByToken(req.query.token)
+            .then((user) => {
+                respondOK(res, { user }, 'active user success', 201);
+            })
+            .catch((err) => {
+                next(err);
+            });
     }
 };
 

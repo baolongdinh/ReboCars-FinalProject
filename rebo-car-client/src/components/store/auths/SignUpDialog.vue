@@ -24,7 +24,7 @@
                         class="text-center py-2 rounded-md w-full bg-red-400 text-white font-medium text-lg h-10">
                         {{ alertMsg }}
                     </div>
-                    <form class="space-y-2 " action="#">
+                    <form class="space-y-2 " @submit="handleSignUpBtn">
                         <div>
                             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 ">Email</label>
                             <input type="email" name="email" id="email" v-model="email"
@@ -60,7 +60,7 @@
                         </div>
 
                         <div class=" pt-4">
-                            <button type="submit" @click="handleSignUpBtn"
+                            <button type="submit"
                                 class="w-full text-black bg-primary-600 hover:bg-slate-500 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center border-2 border-gray-500 ">
                                 Đăng ký</button>
                         </div>
@@ -91,7 +91,10 @@ const successMsg = ref('')
 const alertMsg = ref('')
 
 
-async function handleSignUpBtn() {
+async function handleSignUpBtn(event) {
+
+    event.preventDefault();
+
     store.dispatch('signUp', {
         email: email.value,
         password: password.value,

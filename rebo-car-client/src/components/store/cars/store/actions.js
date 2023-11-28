@@ -33,7 +33,7 @@ export default {
       return discounts;
     }
   },
-  matchSortSelected: async (context, sortSelected) => {
+  matchSortSelected: (context, sortSelected) => {
     const sort = {};
     if (sortSelected === "Giá thấp nhất") {
       sort.discountPrice = 1;

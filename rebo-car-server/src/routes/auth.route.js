@@ -6,4 +6,5 @@ router.post('/login', authController.login);
 router.post('/admin/login', authController.adminLogin);
 router.post('/signup', authController.signUp);
 router.post('/refreshToken', authController.generateNewToken);
+router.get('/verifyemail', authController.verifyEmailByToken);
 module.exports = router;

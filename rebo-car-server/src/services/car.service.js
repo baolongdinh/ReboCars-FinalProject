@@ -552,6 +552,24 @@ const carService = {
             }
         });
     },
+    activeOrBlockCarById: async (carId) => {
+        try {
+            console.log(carId);
+
+            const existCar = await carModel.findById(carId);
+
+            if (!existCar) {
+                return respondFailure(res, 'can not found car with id', 403);
+            }
+            existCar.status = !existCar.status;
+            await existCar.save();
+            return existCar;
+        } catch (error) {
+            console.error(error.message);
+            return respondFailure(res, error.message, 400);
+        }
+    },
+
     addCarReviewByCarId: async (carId, review) => {
         console.log(review, carId);
         const car = await carModel

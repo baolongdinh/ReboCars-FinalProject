@@ -19,6 +19,10 @@
 
             </div>
 
+            <div class="pt-3">
+                <b-button @click="handleBtnAddRole()" variant="primary">Add new role</b-button>
+            </div>
+
         </b-card-header>
 
         <el-table class="table-responsive table" v-if="loaded" header-row-class-name="thead-light" :data="roles">
@@ -38,7 +42,7 @@
 
                         <b-media-body>
 
-                            <select>
+                            <select v-if="row.permissions.length > 0">
                                 <option :value="row.permissions[0]" selected> {{ row.permissions[0].method }}
                                     -----------------
                                     {{ row.permissions[0].endpoint }} </option>
@@ -47,23 +51,25 @@
                                     {{ permission.method }} ----------------- {{ permission.endpoint }}</option>
                             </select>
 
+                            <span v-else class="text-center"> No permissions exists </span>
+
                         </b-media-body>
                     </b-media>
                 </template>
 
             </el-table-column>
 
-            <el-table-column label="Action" min-width="150px">
+            <el-table-column label="Action" min-width="140px">
                 <template v-slot="{ row }">
 
-                    <button class="px-4 py-1">
-                        Update
-                    </button>
+                    <b-button variant="primary" @click="handleShowRoleDetail(row)" class=" px-4 py-1 mt-2">
+                        Detail
+                    </b-button>
 
 
-                    <button class="px-4 py-1 mt-2">
+                    <b-button variant="danger" class="ml-1 px-4 py-1 mt-2" @click="handleBtnDeleteRole(row._id)">
                         Delete
-                    </button>
+                    </b-button>
 
                 </template>
             </el-table-column>
@@ -74,15 +80,24 @@
                 :prev-text="'Prev'" :next-text="'Next'" :container-class="'pagination'" :page-class="'page-item'">
             </paginate>
         </b-card-footer>
+
+        <role-detail-modal ref="roleDetailModal" @reloadRoles="loadRoles()"> </role-detail-modal>
+
+        <add-role-modal ref="addRoleModal" @reloadRoles="loadRoles()"> </add-role-modal>
+
     </b-card>
 </template>
 <script>
 import { Table, TableColumn } from 'element-ui'
 import { RepositoryFactory } from "../../apis/repositoryFactory";
+import RoleDetailModal from './RoleDetailModal.vue';
+import AddRoleModal from './AddRoleModal.vue';
 const rolesRepo = RepositoryFactory.get("roles");
 export default {
     name: 'light-table',
     components: {
+        RoleDetailModal,
+        AddRoleModal,
         [Table.name]: Table,
         [TableColumn.name]: TableColumn
     },
@@ -115,6 +130,48 @@ export default {
         clickPageChange(pageNum) {
             this.currentPage = pageNum
             this.loadRoles()
+        },
+        handleShowRoleDetail(role) {
+            this.$refs.roleDetailModal.showRoleDetailModal = true
+            this.$refs.roleDetailModal.role = role
+        },
+        handleBtnAddRole() {
+            this.$refs.addRoleModal.showAddRoleModal = true
+        },
+        handleBtnDeleteRole(id) {
+            this.$dialog
+                .confirm("Confirm to delete this role", {
+                    loader: true // default: false - when set to true, the proceed button shows a loader when clicked.
+                    // And a dialog object will be passed to the then() callback
+                })
+                .then(dialog => {
+                    // Triggered when proceed button is clicked
+                    // dialog.close() // stops the loader and close the dialog
+
+                    rolesRepo.deleteRoleById(id).then((result) => {
+                        this.$notify({
+                            title: 'Notification',
+                            text: 'Delete role success.',
+                            type: 'success'
+                        });
+                        this.loadRoles()
+                        dialog.close()
+
+                    }).catch(err => {
+                        this.$notify({
+                            title: 'Notification',
+                            text: err.response.data.message,
+                            type: 'error'
+                        });
+                    })
+
+
+                })
+                .catch(() => {
+                    // Triggered when cancel button is clicked
+
+                    console.log('Delete aborted');
+                });
         }
     },
     computed: {

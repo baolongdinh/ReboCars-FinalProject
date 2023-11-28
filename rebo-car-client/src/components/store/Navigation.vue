@@ -44,12 +44,13 @@
 
                 </div>
 
-                <button v-if="user?.avatar" type="button" class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 "
+                <button v-if="user" type="button" class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 "
                     @click="pushToUserDashBoard">
-
-                    <img class="w-8 h-8 rounded-full" :src="getImage(user.avatar)">
-
+                    <img v-if="user?.avatar" class="w-8 h-8 rounded-full" :src="getImage(user.avatar)">
+                    <img v-else class="w-8 h-8 rounded-full"
+                        src="https://pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png">
                 </button>
+
             </div>
 
             <div class="opacity-80 bg-gray-800 fixed z-100 inset-0" v-if="show">

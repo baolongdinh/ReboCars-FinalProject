@@ -18,4 +18,7 @@ export default {
       phone,
     });
   },
+  verifyEmail(token) {
+    return repository.get(`${resource}/verifyemail?token=${token}`);
+  },
 };

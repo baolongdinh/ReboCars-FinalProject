@@ -28,7 +28,8 @@
                         {{ msgErr }}
                     </div>
                     <p class="mb-1 text-gray-700 font-bold text-xl ">Bạn có đồng ý hủy đơn hàng này ? </p>
-                    <p class="mb-4 text-gray-500 text-start text-base"> Nếu hủy bạn phải hoàn lại {{ refundPrice }} 000đ
+                    <p class="mb-4 text-gray-500 text-start text-base"> Nếu hủy bạn phải hoàn lại {{
+                        convertNumToPrice(refundPrice) }} 000đ
                         tiền người dùng đã cọc và có thể là tiền đền thêm cho người dùng theo chính sách hủy xe </p>
                     <div class="flex justify-center items-center space-x-4">
                         <button @click="this.$emit('logout')" data-modal-toggle="deleteModal" type="button"
@@ -80,6 +81,10 @@ function calculateRefundPrice() {
     } else if (start_date_time - new_date < seven_days) {
         refundPrice.value = depositPrice * 2
     }
+}
+
+function convertNumToPrice(num) {
+    return parseInt(num).toLocaleString().replaceAll(',', ' ')
 }
 
 function handleConfirmDeleteBtn() {

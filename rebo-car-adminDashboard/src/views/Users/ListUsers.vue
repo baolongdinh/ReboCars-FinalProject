@@ -27,7 +27,10 @@
                     <template v-slot="{ row }">
                         <b-media no-body class="align-items-center">
                             <a class="avatar rounded-circle mr-3">
-                                <img alt="Image placeholder" :src="getImage(row.avatar)">
+                                <img v-if="row.avatar" alt="Image placeholder" :src="getImage(row.avatar)">
+                                <img v-else alt="Image placeholder"
+                                    src="https://www.pngitem.com/pimgs/m/150-1503945_transparent-user-png-default-user-image-png-png.png">
+
                             </a>
                             <b-media-body>
                                 <span class="font-weight-600 name mb-0 text-sm">{{ row.name }}</span>

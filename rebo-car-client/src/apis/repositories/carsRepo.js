@@ -27,6 +27,9 @@ export default {
   updatedCar(id, payload) {
     return repository.put(`${resource}/userCars/${id}`, payload);
   },
+  activeOrBlockCarById(id) {
+    return repository.put(`${resource}/activeOrBlock/${id}`);
+  },
   updatedCarImages(id, payload) {
     return repository.patch(`${resource}/carImages/${id}`, payload, {
       headers: {

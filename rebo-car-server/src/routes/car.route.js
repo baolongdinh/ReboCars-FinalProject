@@ -35,6 +35,8 @@ router.delete(
 
 router.put('/userCars/:id', defineEndpoint, authMiddleware.isUserLoggedIn, carController.updateCarById);
 
+router.put('/activeOrBlock/:id', defineEndpoint, carController.activeOrBlockCarById);
+
 router.patch(
     '/carImages/:id',
     defineEndpoint,

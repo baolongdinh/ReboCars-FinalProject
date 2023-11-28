@@ -50,12 +50,12 @@
                             <div class="opacity-80 bg-gray-800 fixed z-40 inset-0 " v-if="show">
                                 <!-- OVERLAY SCREEN WHEN POP UP DIALOG MODAL -->
 
-                                <KeepAlive>
+                                <keep-alive>
                                     <FilterModal class="overflow-y-auto h-650 w-580 absolute m-auto inset-0 " v-model="show"
                                         :key="keyReload" @handleUpdateFilterChanged="handleUpdateFilterChanged"
-                                        @handleDeleteFilterState="handleDeleteFilterState" @confirm="() => confirm()">
+                                        @handleDeleteFilterState="handleDeleteFilterState" @confirm="confirm">
                                     </FilterModal>
-                                </KeepAlive>
+                                </keep-alive>
 
                             </div>
                         </div>

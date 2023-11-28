@@ -6,7 +6,7 @@
                     <h3 class="mb-0 font-semibold text-xl">List Discounts</h3>
                 </div>
 
-                <div>
+                <div class="py-2">
                     <b-input-group
                         class="input-group-alternative input-group-merge shadow-2xl                                                                                                                                              ">
                         <b-form-input placeholder="Search" type="text" v-model="matchString"> </b-form-input>
@@ -15,6 +15,10 @@
                             <span class="input-group-text"><i class="fas fa-search"></i></span>
                         </div>
                     </b-input-group>
+                </div>
+
+                <div class="py-2">
+                    <b-button @click="handleBtnShowAddDiscountModal()" variant="primary">Add new discount</b-button>
                 </div>
 
             </div>
@@ -71,44 +75,58 @@
             <el-table-column label="Action" min-width="150px">
                 <template v-slot="{ row }">
 
-                    <button class="px-4 py-1" v-if="row.discount_active">
+                    <button class="px-4 py-1" @click="activeOrBlockDiscount(row)" v-if="row.discount_active">
                         Block
                     </button>
 
 
-                    <button class="px-4 py-1" v-else>
+                    <button class="px-4 py-1" @click="activeOrBlockDiscount(row)" v-else>
                         Active
                     </button>
 
 
-                    <button class="px-4 py-1 mt-2">
+                    <button class="px-4 py-1 mt-2" @click="handleBtnModal(row)">
                         Detail
                     </button>
+
+                    <button class="px-4 py-1 mt-2" @click="handleBtnDeleteDiscount(row._id)">
+                        Delete
+                    </button>
+
 
                 </template>
             </el-table-column>
         </el-table>
 
         <b-card-footer class="py-4 d-flex justify-content-end">
-            <paginate :page-count="pageCount" :page-range="3" :margin-pages="5" :click-handler="clickPageChange"
+            <paginate :page-count="pageCount" :page-range="3" :margin-pages="2" :click-handler="clickPageChange"
                 :prev-text="'Prev'" :next-text="'Next'" :container-class="'pagination'" :page-class="'page-item'">
             </paginate>
         </b-card-footer>
+
+        <discount-detail-modal ref="discountDetailModal" @reloadDiscounts="loadDiscounts"> </discount-detail-modal>
+
+        <add-discount-modal ref="addDiscountModal" @reloadDiscounts="loadDiscounts"> </add-discount-modal>
     </b-card>
 </template>
 <script>
 import { Table, TableColumn } from 'element-ui'
 import { RepositoryFactory } from "../../apis/repositoryFactory";
+import DiscountDetailModal from './DiscountDetailModal.vue';
+import AddDiscountModal from './AddDiscountModal.vue';
 const discountsRepo = RepositoryFactory.get("discounts");
 export default {
     name: 'light-table',
     components: {
+        DiscountDetailModal,
+        AddDiscountModal,
         [Table.name]: Table,
         [TableColumn.name]: TableColumn
     },
     data() {
         return {
             discounts: {},
+            discount: {},
             currentPage: 1,
             limit: 6,
             matchString: "",
@@ -134,7 +152,71 @@ export default {
         clickPageChange(pageNum) {
             this.currentPage = pageNum
             this.loadDiscounts()
+        },
+        handleBtnModal(discount) {
+            this.$refs.discountDetailModal.showDiscountDetailModal = true
+            this.$refs.discountDetailModal.discount = discount
+        },
+        handleBtnShowAddDiscountModal() {
+            console.log('123123')
+            this.$refs.addDiscountModal.showAddDiscountModal = true
+        },
+        activeOrBlockDiscount(discount) {
+            discountsRepo.activeOrBlockDiscountById(discount._id).then((result) => {
+                this.$notify({
+                    title: 'Notification',
+                    text: 'Update car status success.',
+                    type: 'success'
+                });
+                console.log({ result })
+                this.loadDiscounts()
+            }).catch((err) => {
+                this.$notify({
+                    title: 'Notification',
+                    text: err.response.data.message,
+                    type: 'error'
+                });
+            })
+        },
+        handleBtnDeleteDiscount(id) {
+
+            this.$dialog
+                .confirm("Confirm to delete this discount", {
+                    loader: true // default: false - when set to true, the proceed button shows a loader when clicked.
+                    // And a dialog object will be passed to the then() callback
+                })
+                .then(dialog => {
+                    // Triggered when proceed button is clicked
+                    // dialog.close() // stops the loader and close the dialog
+
+                    discountsRepo.deleteDiscountById(id).then((result) => {
+                        this.$notify({
+                            title: 'Notification',
+                            text: 'Delete discount success.',
+                            type: 'success'
+                        });
+                        this.loadDiscounts()
+                        dialog.close()
+
+                    }).catch(err => {
+                        this.$notify({
+                            title: 'Notification',
+                            text: err.response.data.message,
+                            type: 'error'
+                        });
+                    })
+
+
+                })
+                .catch(() => {
+                    // Triggered when cancel button is clicked
+
+                    console.log('Delete aborted');
+                });
+
+
         }
+
     },
     computed: {
     },

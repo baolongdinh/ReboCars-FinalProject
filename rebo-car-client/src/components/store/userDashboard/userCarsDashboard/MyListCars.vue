@@ -5,6 +5,18 @@
                 Danh sách xe
             </div>
 
+            <div v-if="!userCars.length" class="flex flex-col space-y-2 w-355 h-305 mx-auto mt-4">
+
+                <div>
+                    <img class="" loading="lazy" src="https://www.mioto.vn/static/media/empty-mycar.e023e681.svg" alt="">
+                </div>
+
+                <div class="font-semibold text-2xl text-gray-600 text-center">
+                    Không tìm thấy xe nào
+                </div>
+            </div>
+
+
             <div class="flex-col space-y-5 pt-4">
                 <div v-for="userCar in userCars" :key="userCar._id">
                     <MyCarCard :userCar="userCar" v-if="userCar" @handleClickCarInfo="handleClickCarInfo"></MyCarCard>

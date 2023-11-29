@@ -4,7 +4,6 @@ import CarDetail from "../components/store/cars/CarDetail.vue";
 import Home from "../components/store/Home.vue";
 import userDashboard from "../components/store/userDashboard/Dashboard.vue";
 import Account from "../components/store/userDashboard/Account.vue";
-import CarWishList from "../components/store/userDashboard/CarWishList.vue";
 import MyReward from "../components/store/userDashboard/MyReward.vue";
 import ResetPwd from "../components/store/userDashboard/ResetPwd.vue";
 import MyOrders from "../components/store/userDashboard/MyOrders.vue";
@@ -68,11 +67,6 @@ export const router = createRouter({
           path: "account",
           component: Account,
           name: "account",
-        },
-        {
-          path: "myfavs",
-          component: CarWishList,
-          name: "CarWishList",
         },
         {
           path: "myrewards",

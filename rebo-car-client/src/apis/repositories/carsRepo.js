@@ -11,7 +11,10 @@ export default {
   findFilterCars(page, limit, filter) {
     return repository.post(
       `${resource}/find/filter?page=${page}&limit=${limit}`,
-      filter
+      {
+        ...filter,
+        status: true,
+      }
     );
   },
   findCarById(id) {

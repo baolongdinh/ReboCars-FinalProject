@@ -10,6 +10,10 @@ import vueBraintree from "vue-braintree";
 import FacebookChat from "./components/FacebookChat.vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+
+import Notifications from "@kyvg/vue3-notification";
+import Vue3ConfirmDialog from "vue3-confirm-dialog";
+
 import { VueperSlides, VueperSlide } from "vueperslides";
 /* import the fontawesome core */
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -58,6 +62,9 @@ const app = createApp(App);
 app.provide("base_url", "http://localhost:3000");
 app.use(store);
 app.use(vueBraintree);
+app.use(Vue3ConfirmDialog);
+app.component("vue3-confirm-dialog", Vue3ConfirmDialog.default);
+app.use(Notifications);
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.component("VueDatePicker", VueDatePicker);
 app.component("FacebookChat", FacebookChat);

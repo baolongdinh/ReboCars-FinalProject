@@ -34,7 +34,7 @@ function getImage(url) {
 }
 
 const filter = {
-
+    discount_active: true
 }
 const emit = defineEmits(['handleSelectDiscount'])
 

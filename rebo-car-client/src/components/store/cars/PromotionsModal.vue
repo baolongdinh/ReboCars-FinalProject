@@ -41,8 +41,9 @@ const store = useStore()
 const listPromotions = ref()
 
 const filter = {
-
+    discount_active: true
 }
+
 
 const emit = defineEmits(['handleSelectDiscount'])
 

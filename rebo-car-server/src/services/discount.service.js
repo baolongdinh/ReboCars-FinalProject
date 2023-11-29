@@ -41,6 +41,8 @@ const discountServices = {
             filter = JSON.stringify({});
         }
 
+        console.log(JSON.parse(filter));
+
         const discounts = await discountModel
             .find(JSON.parse(filter))
             .sort(sortBy)

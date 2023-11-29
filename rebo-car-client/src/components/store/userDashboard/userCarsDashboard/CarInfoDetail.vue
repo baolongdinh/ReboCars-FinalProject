@@ -7,7 +7,7 @@
             </div>
 
             <button type="button"
-                class="absolute top-28 left-24 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-12 h-12 ms-auto inline-flex justify-center items-center "
+                class="absolute top-8 left-24 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-12 h-12 ms-auto inline-flex justify-center items-center "
                 data-modal-hide="static-modal" @click="handBtnBack">
                 <svg xmlns="http://www.w3.org/2000/svg" height="36" viewBox="0 -960 960 960" width="36">
                     <path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" />
@@ -297,9 +297,10 @@ import { router } from '../../../../routers'
 import UpdateCarModal from './UpdateCarModal.vue'
 import UpdateCarImagesModal from "./UpdateCarImagesModal.vue"
 import { RepositoryFactory } from "../../../../apis/repositoryFactory";
+import { useNotification } from "@kyvg/vue3-notification";
 
 const carsRepo = RepositoryFactory.get('cars')
-
+const { notify } = useNotification()
 
 const store = useStore()
 const route = useRoute()
@@ -343,11 +344,23 @@ async function handleBtnConfirmUpdateCarInfo() {
 }
 
 function handleActiveOrBlockCar() {
+
     carsRepo.activeOrBlockCarById(route.params.id).then((result) => {
+        notify({
+            title: 'Thông báo',
+            text: 'Thay đổi trạng thái xe thành công.',
+            type: 'success'
+        });
         handBtnBack()
     }).catch((err) => {
-        console.error(err)
+        notify({
+            title: 'Error',
+            text: err.response.data.message,
+            type: 'error'
+        });
     })
+
+
 }
 
 

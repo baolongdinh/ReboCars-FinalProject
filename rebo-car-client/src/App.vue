@@ -1,6 +1,7 @@
 <template>
   <div class="">
     <navigation class="" />
+    <notifications />
     <router-view> </router-view>
   </div>
 </template>

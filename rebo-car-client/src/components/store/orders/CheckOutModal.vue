@@ -29,14 +29,14 @@
             <span class=" text-base text-gray-700">
                 Tổng số tiền cần thanh toán:
                 <span class="pl-4 font-bold text-xl ">
-                    {{ depositPrice }} 000đ
+                    {{ convertNumToPrice(depositPrice) }} 000đ
                 </span>
                 <span>
                     ~
                 </span>
 
                 <span class="font-bold text-xl">
-                    {{ usdPrice }}$
+                    {{ convertNumToPrice(usdPrice) }}$
                 </span>
 
             </span>
@@ -125,6 +125,10 @@ calculateUSDPrice()
 function calculateUSDPrice() {
     usdPrice.value = depositPrice.value * 1000 * rate_vnd_usd_exchange
     usdPrice.value = usdPrice.value.toFixed(2)
+}
+
+function convertNumToPrice(num) {
+    return parseInt(num).toLocaleString().replaceAll(',', ' ')
 }
 
 // braintree define for payment

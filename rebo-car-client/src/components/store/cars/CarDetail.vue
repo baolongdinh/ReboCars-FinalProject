@@ -414,7 +414,6 @@ async function findCarByIdAndSetValue(id) {
 }
 
 async function loadMap() {
-
     const { lat, lng } = car.value.location.geometry
     console.log({ lat, lng })
     map.value = await gongAPI.loadMap(lng, lat, mapContainer.value, 12)

@@ -1,11 +1,6 @@
 <template>
   <fade-transition>
-    <b-alert
-      v-model="visible"
-      :variant="type"
-      :class="[{ 'alert-dismissible': dismissible }]"
-      role="alert"
-    >
+    <b-alert v-model="visible" :variant="type" :class="[{ 'alert-dismissible': dismissible }]" role="alert">
       <slot v-if="!dismissible"></slot>
       <template v-else>
 
@@ -17,14 +12,12 @@
           </slot>
         </template>
 
-        <span class="alert-text"> <slot></slot> </span>
+        <span class="alert-text">
+          <slot></slot>
+        </span>
 
         <slot name="dismiss-icon">
-          <button type="button"
-                  class="close"
-                  data-dismiss="alert"
-                  aria-label="Close"
-                  @click="dismissAlert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="dismissAlert">
             <span aria-hidden="true">×</span>
           </button>
         </slot>

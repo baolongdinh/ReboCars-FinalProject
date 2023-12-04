@@ -5,7 +5,6 @@ const baseURL = `${baseDomain}api/`; // or `${baseDomain}/api/v1`
 
 const instance = axios.create({
   baseURL,
-  headers: { "Content-Type": "application/json" },
   timeout: 10000,
   withCredentials: false,
   params: {}

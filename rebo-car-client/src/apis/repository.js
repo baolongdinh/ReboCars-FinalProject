@@ -5,7 +5,6 @@ const baseURL = `${baseDomain}api/`; // or `${baseDomain}/api/v1`
 
 const instance = axios.create({
   baseURL,
-  headers: { "Content-Type": "application/json" },
   timeout: 10000,
   withCredentials: false,
   params: {},
@@ -75,6 +74,24 @@ instance.interceptors.response.use(
 
           config.headers["authToken"] = "Bearer " + newAccessToken;
 
+          // Check if the original request contains multipart form data
+          if (isMultipartFormData(config)) {
+            console.log("form data");
+            try {
+              // Recreate the multipart form data object
+              const formData = new FormData();
+
+              // Append the file or any other form fields to the new form data object
+              appendFormFields(config.data, formData);
+
+              // Update the original request data with the new form data object
+              config.data = formData;
+            } catch (retryError) {
+              // Handle retry error
+              return Promise.reject(retryError);
+            }
+          }
+
           return instance(config);
         } catch (_error) {
           if (_error.response && _error.response.data) {
@@ -93,5 +110,17 @@ instance.interceptors.response.use(
     return Promise.reject(err);
   }
 );
+
+function isMultipartFormData(requestConfig) {
+  console.log({ requestConfig });
+  const contentType = requestConfig.headers["Content-Type"];
+  return contentType && contentType.startsWith("multipart/form-data");
+}
+
+function appendFormFields(originalFormData, newFormData) {
+  for (const [key, value] of originalFormData.entries()) {
+    newFormData.append(key, value);
+  }
+}
 
 export default instance;

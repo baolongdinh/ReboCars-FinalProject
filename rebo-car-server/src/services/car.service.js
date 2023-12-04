@@ -470,7 +470,7 @@ const carService = {
             }
 
             // -------------------------- //
-            features = features.split(',');
+            // features = features.split(',');
             location = JSON.parse(location);
             // -------------------------- //
 
@@ -496,8 +496,10 @@ const carService = {
                     }
                 )
                 .catch((err) => {
-                    return respondFailure(res, 'updated error', 400);
+                    console.log({ err });
                 });
+            console.log({ updatedCar });
+
             respondOK(res, { updatedCar }, 'updated car successfully', 200);
         } catch (error) {
             console.error(error);

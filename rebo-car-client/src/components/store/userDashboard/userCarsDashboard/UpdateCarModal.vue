@@ -299,7 +299,7 @@ function convertObjToFormData(obj) {
 }
 
 function handleBtnConfirmUpdateCarInfo() {
-    const data = {
+    const payload = {
         features: checkedFeatures.value,
         price: price.value,
         location: JSON.stringify(carLocation.value),
@@ -313,8 +313,6 @@ function handleBtnConfirmUpdateCarInfo() {
         max_distance_per_day: maxKmPerDayValue.value,
         over_distance_per_km_price: overLimitFee.value
     }
-
-    const payload = convertObjToFormData(data)
 
     carsRepo.updatedCar(props.car._id, payload).then((result) => {
         console.log({ result })

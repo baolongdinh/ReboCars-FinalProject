@@ -11,7 +11,7 @@ services:
       - app
 
   app:
-    container_name: reboCars-website
+    container_name: rebocars-server
     build:
       context: .
       dockerfile: Dockerfile

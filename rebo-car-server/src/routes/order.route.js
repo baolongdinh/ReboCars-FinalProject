@@ -1,14 +1,14 @@
 var express = require('express');
 var router = express.Router();
-
+const authMiddleware = require('../middlewares/auth.middleware');
 const orderControllers = require('../controllers/order.controller');
 
-router.post('/', orderControllers.createOrder);
+router.post('/', authMiddleware.isUserLoggedIn, orderControllers.createOrder);
 
-router.post('/addReview/:id', orderControllers.reviewOrderById);
+router.post('/addReview/:id', authMiddleware.isUserLoggedIn, orderControllers.reviewOrderById);
 
-router.post('/filter', orderControllers.getAllUserOrders);
+router.post('/filter', authMiddleware.isUserLoggedIn, orderControllers.getAllUserOrders);
 
-router.delete('/:id', orderControllers.deleteOrderById);
+router.delete('/:id', authMiddleware.isUserLoggedIn, orderControllers.deleteOrderById);
 
 module.exports = router;

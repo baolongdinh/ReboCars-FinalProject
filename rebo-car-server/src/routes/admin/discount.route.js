@@ -8,19 +8,24 @@ const defineEndpoint = (req, res, next) => {
     next();
 };
 
-router.delete('/:id', defineEndpoint, discountController.deleteDiscountById);
+router.delete('/:id', defineEndpoint, authMiddleware.checkPermission, discountController.deleteDiscountById);
 
-router.put('/:id', defineEndpoint, discountController.updateDiscountById);
+router.put('/:id', defineEndpoint, authMiddleware.checkPermission, discountController.updateDiscountById);
 
-router.put('/activeOrBlock/:id', defineEndpoint, discountController.activeOrBlockDiscountById);
+router.put(
+    '/activeOrBlock/:id',
+    defineEndpoint,
+    authMiddleware.checkPermission,
+    discountController.activeOrBlockDiscountById
+);
 
 router.patch(
     '/:id',
     defineEndpoint,
-
+    authMiddleware.checkPermission,
     discountController.updateDiscountImageById
 );
 
-router.post('/', defineEndpoint, discountController.addNewDiscount);
+router.post('/', defineEndpoint, authMiddleware.checkPermission, discountController.addNewDiscount);
 
 module.exports = router;

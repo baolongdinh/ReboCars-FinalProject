@@ -15,7 +15,7 @@ router.put('/:id', defineEndpoint, userController.updateUserByIdByAdmin);
 router.put(
     '/activeOrBlock/:id',
     defineEndpoint,
-    //   authMiddleware.checkPermission,
+    authMiddleware.checkPermission,
     userController.activeOrBlockUserById
 );
 

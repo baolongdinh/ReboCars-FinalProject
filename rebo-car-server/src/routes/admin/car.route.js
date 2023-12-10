@@ -12,7 +12,12 @@ router.delete('/:id', defineEndpoint, authMiddleware.checkPermission, carControl
 
 router.put('/:id', defineEndpoint, authMiddleware.checkPermission, carController.updateCarById);
 
-router.put('/activeOrBlock/:id', defineEndpoint, carController.activeOrBlockCarById);
+router.put(
+    '/activeOrBlock/:id',
+    defineEndpoint,
+    authMiddleware.checkPermission,
+    carController.activeOrBlockCarById
+);
 
-router.get('/statics', defineEndpoint, carController.loadTotalCarStatics);
+router.get('/statics', defineEndpoint, authMiddleware.checkPermission, carController.loadTotalCarStatics);
 module.exports = router;

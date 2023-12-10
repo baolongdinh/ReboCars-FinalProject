@@ -13,7 +13,7 @@
         </div>
 
         <div class="">
-            <promotions @handleSelectDiscount="handleSelectDiscount" class="w-full"></promotions>
+            <promotions class="w-full"></promotions>
         </div>
 
         <div class="mt-24 bg-gray-100 pb-16">
@@ -28,15 +28,6 @@
             <special-places class="w-full" @handleSelectDiscount="handleSelectDiscount">
 
             </special-places>
-        </div>
-
-
-
-        <div class="opacity-80 bg-gray-800 fixed z-200 inset-0" v-if="showPromotionDetailModal">
-            <PromotionDetailModal ref="promotionModal" v-if="promotionSelected" :promotion="promotionSelected"
-                class=" overflow-y-auto h-11/12 px-465 py-32 absolute top-3/4  " v-model="showPromotionDetailModal"
-                @logout="hidePromotionDetailDialog">
-            </PromotionDetailModal>
         </div>
 
     </div>
@@ -82,23 +73,6 @@ function handleUserClickCarCard(carId) {
     })
 }
 
-//handle btn show promotion detail
-const promotionSelected = ref()
-const showPromotionDetailModal = ref(false)
-
-function showPromotionDetailDialog() {
-    showPromotionDetailModal.value = true
-}
-
-function hidePromotionDetailDialog() {
-    showPromotionDetailModal.value = false
-}
-
-function handleSelectDiscount(promotion) {
-    console.log({ promotion })
-    promotionSelected.value = promotion
-    showPromotionDetailDialog()
-}
 
 
 onMounted(() => {

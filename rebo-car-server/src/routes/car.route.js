@@ -35,7 +35,12 @@ router.delete(
 
 router.put('/userCars/:id', defineEndpoint, authMiddleware.isUserLoggedIn, carController.updateCarById);
 
-router.put('/activeOrBlock/:id', defineEndpoint, carController.activeOrBlockCarById);
+router.put(
+    '/activeOrBlock/:id',
+    defineEndpoint,
+    authMiddleware.isUserLoggedIn,
+    carController.activeOrBlockCarById
+);
 
 router.patch(
     '/carImages/:id',
@@ -44,7 +49,7 @@ router.patch(
     carController.updateCarImagesById
 );
 
-router.patch('/review/:id', carController.addReviewByCarId);
+router.patch('/review/:id', authMiddleware.isUserLoggedIn, carController.addReviewByCarId);
 
 /* ADMIN PERMISSIONS */
 

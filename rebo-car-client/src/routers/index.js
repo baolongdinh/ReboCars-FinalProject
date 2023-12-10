@@ -12,10 +12,10 @@ import MyListCars from "../components/store/userDashboard/userCarsDashboard/MyLi
 import TripOrders from "../components/store/userDashboard/userCarsDashboard/TripOrders.vue";
 import TripsHistory from "../components/store/userDashboard/userCarsDashboard/TripsHistory.vue";
 import Contracts from "../components/store/userDashboard/userCarsDashboard/Contract.vue";
-import CarRegistration from "../components/store/cars/CarRegistration.Vue";
-import CarStepRegister from "../components/store/cars/CarStepRegister.Vue";
-import MyHistoryOrders from "../components/store/userDashboard/MyHistoryOrders.Vue";
-import MyCar from "../components/store/userDashboard/userCarsDashboard/CarInfoDetail.Vue";
+import CarRegistration from "../components/store/cars/CarRegistration.vue";
+import CarStepRegister from "../components/store/cars/CarStepRegister.vue";
+import MyHistoryOrders from "../components/store/userDashboard/MyHistoryOrders.vue";
+import MyCar from "../components/store/userDashboard/userCarsDashboard/CarInfoDetail.vue";
 import VerifyEmail from "../components/store/auths/VerifyEmail.vue";
 
 export const router = createRouter({

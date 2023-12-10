@@ -1,32 +1,29 @@
-# Base image
-FROM node:14 as build
+# Use a Node.js base image
+FROM node:14-alpine
 
-# Set working directory
+# Install Yarn
+RUN apk add --no-cache yarn
+
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copy package.json and yarn.lock
+COPY package*.json yarn.lock ./
 
 # Install dependencies
-RUN npm install
+RUN yarn install --ignore-engines
 
-# Copy application code
+# Copy the rest of the application code
 COPY . .
 
-# Build the Vue.js application
-RUN npm run build
+# Build the Vue.js app
+RUN yarn build
 
-# Production image
-FROM nginx:stable-alpine
+# Install serve globally
+RUN yarn global add serve
 
-# Copy built files from the build stage
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Copy custom Nginx configuration (optional)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port
+# Expose the app's port
 EXPOSE 80
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start the app
+CMD ["serve", "-s", "dist", "-l", "80"]

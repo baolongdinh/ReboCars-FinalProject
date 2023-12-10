@@ -199,7 +199,7 @@ export default {
       let chartData = {
         datasets: [
           {
-            label: 'Performance',
+            label: 'Sale',
             data: this.bigLineChart.allData[index]
           }
         ],

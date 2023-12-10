@@ -153,7 +153,7 @@
                     Tổng cộng
                 </div>
                 <div class="">
-                    {{ convertNumToPrice(unitTotalPrice) }} 000đ/ngày
+                    {{ convertNumToPrice(unitTotalPrice) }} 000đ
                 </div>
             </div>
 

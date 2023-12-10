@@ -6,7 +6,7 @@
 
         <div class="px-12 pt-12 pb-2 font-sans flex flex-col space-y-4 relative">
 
-            <div class="text-center font-semibold text-3xl pb-6">
+            <div class=" text-center font-semibold text-3xl pb-6">
                 Chỉnh sửa thông tin xe
             </div>
 
@@ -19,6 +19,8 @@
                 </svg>
                 <span class="sr-only">Close modal</span>
             </button>
+
+
 
 
             <div class="flex flex-col space-y-1">
@@ -309,7 +311,7 @@ function handleBtnConfirmUpdateCarInfo() {
         max_km_per_day: showMaxCarDelivery.value,
         max_distance_delivery: deliverDistanceValue.value,
         delivery_price_1km: deliverPriceValue.value,
-        freeDeliverDistanceValue: freeDeliverDistanceValue.value,
+        max_delivery_free_price: freeDeliverDistanceValue.value,
         max_distance_per_day: maxKmPerDayValue.value,
         over_distance_per_km_price: overLimitFee.value
     }

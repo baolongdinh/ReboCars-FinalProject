@@ -10,7 +10,7 @@
         </button>
 
         <div class="text-center my-3 text-xl">
-            Discount Detail
+            Add Discount
         </div>
 
         <div class="my-3">

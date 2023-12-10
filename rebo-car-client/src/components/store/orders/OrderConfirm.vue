@@ -59,11 +59,11 @@
 
                                 <span class=" font-medium text-gray-700">Bắt đầu:</span>
 
-                                {{ startDateTimeObj.toLocaleString() }}
+                                {{ new Date(startDateTimeObj).toLocaleString() }}
                             </div>
                             <div class="text-base font-normal">
                                 <span class=" font-medium text-gray-700">Kết thúc:</span>
-                                {{ endDateTimeObj.toLocaleString() }}
+                                {{ new Date(endDateTimeObj).toLocaleString() }}
                             </div>
                         </div>
 

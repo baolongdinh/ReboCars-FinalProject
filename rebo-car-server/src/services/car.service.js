@@ -458,7 +458,8 @@ const carService = {
                 delivery_price_1km,
                 freeDeliverDistanceValue,
                 max_distance_per_day,
-                over_distance_per_km_price
+                over_distance_per_km_price,
+                max_delivery_free_price
             } = req.body;
 
             console.log(req.body);
@@ -489,7 +490,8 @@ const carService = {
                         delivery_price_1km,
                         freeDeliverDistanceValue,
                         max_distance_per_day,
-                        over_distance_per_km_price
+                        over_distance_per_km_price,
+                        max_delivery_free_price
                     },
                     {
                         new: true

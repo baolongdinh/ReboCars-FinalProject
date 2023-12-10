@@ -72,24 +72,24 @@
 
 
 
-            <el-table-column label="Action" min-width="150px">
+            <el-table-column label="Action" min-width="120px">
                 <template v-slot="{ row }">
 
-                    <button class="px-4 py-1" @click="activeOrBlockDiscount(row)" v-if="row.discount_active">
+                    <button class="px-4 py-1 w-24" @click="activeOrBlockDiscount(row)" v-if="row.discount_active">
                         Block
                     </button>
 
 
-                    <button class="px-4 py-1" @click="activeOrBlockDiscount(row)" v-else>
+                    <button class="px-4 py-1 w-24" @click="activeOrBlockDiscount(row)" v-else>
                         Active
                     </button>
 
 
-                    <button class="px-4 py-1 mt-2" @click="handleBtnModal(row)">
+                    <button class="px-4 py-1 mt-2 w-24" @click="handleBtnModal(row)">
                         Detail
                     </button>
 
-                    <button class="px-4 py-1 mt-2" @click="handleBtnDeleteDiscount(row._id)">
+                    <button class="px-4 py-1 mt-2 w-24" @click="handleBtnDeleteDiscount(row._id)">
                         Delete
                     </button>
 

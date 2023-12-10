@@ -102,7 +102,9 @@ import { VueFinalModal } from 'vue-final-modal'
 import { onMounted, ref, inject, onUpdated } from 'vue';
 import { RepositoryFactory } from "../../../apis/repositoryFactory";
 import { useStore } from 'vuex';
-
+import { useNotification } from "@kyvg/vue3-notification";
+const { notify } = useNotification()
+const carsRepo = RepositoryFactory.get('cars')
 const usersRepo = RepositoryFactory.get("users");
 const store = useStore()
 const props = defineProps({ user: Object })
@@ -110,11 +112,12 @@ const emit = defineEmits(['confirm'])
 
 const preview = ref()
 const image = ref()
-const dateOfBirth = ref(new Date(props?.user.dateOfBirth))
+const dateOfBirth = ref(formatDateToYYYYMMDD(new Date(props?.user.dateOfBirth)))
 const name = ref(props?.user.name)
 const phone = ref(props?.user.phone)
 const userId = props.user._id
 const msgErr = ref("")
+
 
 function previewImage(event) {
     var input = event.target;
@@ -126,6 +129,14 @@ function previewImage(event) {
         image.value = input.files[0];
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+function formatDateToYYYYMMDD(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${month}-${day}-${year}`;
 }
 
 // handle image src
@@ -152,9 +163,14 @@ function handleBtnConfirmUpdate() {
     }
 
     const payload = convertObjToFormData(user)
-    console.log(userId)
+    console.log({ user })
     usersRepo.updateUserById(userId, payload).then((result) => {
         console.log({ result })
+        notify({
+            title: 'Thông báo',
+            text: 'Thay đổi thông tin thành công.',
+            type: 'success'
+        });
         const user = result.data.metadata.userUpdated
         localStorage.setItem("user", JSON.stringify(user));
         store.commit("setUser", user);
@@ -168,12 +184,12 @@ function handleBtnConfirmUpdate() {
 
 onMounted(() => {
     console.log({ props })
-    console.log(dateOfBirth.value)
+    console.log(dateOfBirth)
 
 })
 
 onUpdated(() => {
-    console.log(dateOfBirth.value)
+    console.log(dateOfBirth)
 })
 
 </script>

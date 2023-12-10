@@ -57,6 +57,9 @@ import SuccessDeleteOrder from './SuccessDeleteOrder.vue';
 // define 
 const paymentRepo = RepositoryFactory.get("payment");
 const ordersRepo = RepositoryFactory.get("orders");
+
+import { useNotification } from "@kyvg/vue3-notification";
+const { notify } = useNotification()
 const props = defineProps({
     order: Object
 })

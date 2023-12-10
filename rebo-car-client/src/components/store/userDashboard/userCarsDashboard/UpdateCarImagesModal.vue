@@ -75,7 +75,8 @@ import { VueFinalModal } from 'vue-final-modal'
 import { onMounted, defineEmits, ref, onBeforeUnmount, watch, onUpdated, onActivated, inject } from 'vue';
 import { useStore } from 'vuex';
 import { RepositoryFactory } from "../../../../apis/repositoryFactory";
-
+import { useNotification } from "@kyvg/vue3-notification";
+const { notify } = useNotification()
 const carsRepo = RepositoryFactory.get('cars')
 
 const props = defineProps({
@@ -157,9 +158,19 @@ function handleBtnConfirmUpdateCarImages() {
 
     carsRepo.updatedCarImages(props.car._id, payload).then((result) => {
         console.log({ result })
+        notify({
+            title: 'Thông báo',
+            text: 'Thay đổi hình ảnh xe thành công.',
+            type: 'success'
+        });
         emit('handleBtnConfirmUpdateCarImages')
     }).catch((err) => {
         console.error(err.response)
+        notify({
+            title: 'Error',
+            text: err.response.data.message,
+            type: 'error'
+        });
     })
 
 }

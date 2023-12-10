@@ -253,6 +253,9 @@ import gongAPI from "../../../../apis/goongMapAPI/api"
 import { useStore } from 'vuex';
 import { RepositoryFactory } from "../../../../apis/repositoryFactory";
 
+import { useNotification } from "@kyvg/vue3-notification";
+const { notify } = useNotification()
+
 const carsRepo = RepositoryFactory.get('cars')
 const props = defineProps({
     car: Object
@@ -318,9 +321,18 @@ function handleBtnConfirmUpdateCarInfo() {
 
     carsRepo.updatedCar(props.car._id, payload).then((result) => {
         console.log({ result })
+        notify({
+            title: 'Thông báo',
+            text: 'Thay đổi thông tin xe thành công.',
+            type: 'success'
+        });
         emit('handleBtnConfirmUpdateCarInfo')
     }).catch((err) => {
-        console.error(err.response)
+        notify({
+            title: 'Error',
+            text: err.response.data.message,
+            type: 'error'
+        });
     })
 }
 

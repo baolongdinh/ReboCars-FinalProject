@@ -172,7 +172,7 @@ function handleBtnConfirmUpdate() {
             type: 'success'
         });
         const user = result.data.metadata.userUpdated
-        localStorage.setItem("user", JSON.stringify(user));
+        window.sessionStorage.setItem("user", JSON.stringify(user));
         store.commit("setUser", user);
         emit('confirm')
 

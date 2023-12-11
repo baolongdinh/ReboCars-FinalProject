@@ -11,11 +11,11 @@ const instance = axios.create({
 });
 
 function getLocalAccessToken() {
-  return localStorage.getItem("accessToken");
+  return window.sessionStorage.getItem("accessToken");
 }
 
 function getLocalRefreshToken() {
-  return localStorage.getItem("refreshToken");
+  return window.sessionStorage.getItem("refreshToken");
 }
 
 async function getNewAccessTokenAndRefreshTokenByRefreshToken() {
@@ -69,8 +69,14 @@ instance.interceptors.response.use(
           console.log("get new access token and refresh token");
           const { newAccessToken, newRefreshToken } = payload;
 
-          localStorage.setItem("accessToken", "Bearer " + newAccessToken);
-          localStorage.setItem("refreshToken", "Bearer " + newRefreshToken);
+          window.sessionStorage.setItem(
+            "accessToken",
+            "Bearer " + newAccessToken
+          );
+          window.sessionStorage.setItem(
+            "refreshToken",
+            "Bearer " + newRefreshToken
+          );
 
           config.headers["authToken"] = "Bearer " + newAccessToken;
 

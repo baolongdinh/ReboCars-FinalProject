@@ -17,6 +17,7 @@ import CarStepRegister from "../components/store/cars/CarStepRegister.vue";
 import MyHistoryOrders from "../components/store/userDashboard/MyHistoryOrders.vue";
 import MyCar from "../components/store/userDashboard/userCarsDashboard/CarInfoDetail.vue";
 import VerifyEmail from "../components/store/auths/VerifyEmail.vue";
+import ResetPassword from "../components/store/auths/ResetPassword.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -27,6 +28,11 @@ export const router = createRouter({
       path: "/",
       component: Home,
       name: "home",
+    },
+    {
+      path: "/resetpassword",
+      component: ResetPassword,
+      name: "ResetPassword",
     },
     {
       path: "/verifyemail",

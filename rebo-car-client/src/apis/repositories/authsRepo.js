@@ -21,4 +21,10 @@ export default {
   verifyEmail(token) {
     return repository.get(`${resource}/verifyemail?token=${token}`);
   },
+  forgotPassword(payload) {
+    return repository.post(`${resource}/forgotpassword`, payload);
+  },
+  resetPassword(payload) {
+    return repository.put(`${resource}/resetpassword`, payload);
+  },
 };

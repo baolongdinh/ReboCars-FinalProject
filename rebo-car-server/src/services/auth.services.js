@@ -8,7 +8,7 @@ const {
     signEmailVerifyToken,
     verifyEmailVerifyToken
 } = require('../helpers/jwtService');
-var { sendEmailToVerifyAccount } = require('./email.service');
+var { sendEmailToVerifyAccount, sendEmailResetPassword } = require('./email.service');
 const { respondOK, respondFailure } = require('../helpers/respond.helper');
 var {
     BadRequestError,
@@ -129,6 +129,52 @@ const authService = {
 
         delete newUser._doc.password;
         return respondOK(res, { newUser }, 'user added successfully', 201);
+    },
+    forgotPassword: async ({ email }) => {
+        try {
+            const user = await userModel.findOne({ email: email });
+
+            if (!user) {
+                throw new BadRequestError('can not found email');
+            }
+
+            const verifyToken = signEmailVerifyToken(user._id, 60 * 15);
+            const verifyEmailUrl = `http://localhost:5173/resetpassword?token=${verifyToken}`;
+            sendEmailResetPassword(email, 'ReboCars - Reset Password', {
+                verifyEmailUrl
+            }).catch((err) => console.log(err));
+        } catch (error) {
+            throw new BadRequestError(error.message);
+        }
+    },
+
+    verifyTokenAndResetPwd: async ({ verifyToken, newPassword }) => {
+        try {
+            console.log(verifyToken);
+
+            const { id } = await verifyEmailVerifyToken('Bearer ' + verifyToken);
+
+            if (!id) {
+                throw new UnAuthorizedError('can not verify user Id');
+            }
+
+            const salt = await bcrypt.genSaltSync(10);
+            const passwordHash = await bcrypt.hashSync(newPassword, salt);
+
+            const user = await userModel.findByIdAndUpdate(
+                id,
+                {
+                    password: passwordHash
+                },
+                {
+                    new: true
+                }
+            );
+
+            return true;
+        } catch (error) {
+            throw new BadRequestError(error.message);
+        }
     },
 
     verifyEmailByToken: async (verifyToken) => {

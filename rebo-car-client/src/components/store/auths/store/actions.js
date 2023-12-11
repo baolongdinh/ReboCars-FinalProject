@@ -6,17 +6,23 @@ export default {
     const response = await authRepo.login(email, password);
     if (response.data.success === true) {
       const user = response.data.metadata;
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("accessToken", "Bearer " + user.accessToken);
-      localStorage.setItem("refreshToken", "Bearer " + user.refreshToken);
+      window.sessionStorage.setItem("user", JSON.stringify(user));
+      window.sessionStorage.setItem(
+        "accessToken",
+        "Bearer " + user.accessToken
+      );
+      window.sessionStorage.setItem(
+        "refreshToken",
+        "Bearer " + user.refreshToken
+      );
       context.commit("setUser", user);
       return user;
     }
   },
   logOut: async (context) => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    window.sessionStorage.removeItem("user");
+    window.sessionStorage.removeItem("accessToken");
+    window.sessionStorage.removeItem("refreshToken");
     context.commit("setUser", null);
   },
 

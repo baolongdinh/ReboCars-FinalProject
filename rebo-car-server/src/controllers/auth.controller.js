@@ -48,6 +48,28 @@ const authController = {
             .catch((err) => {
                 next(err);
             });
+    },
+    forgotPassword: (req, res, next) => {
+        authService
+            .forgotPassword(req.body)
+            .then(() => {
+                respondOK(res, true, 'success', 200);
+            })
+            .catch((err) => {
+                next(err);
+            });
+    },
+    verifyTokenAndResetPwd: (req, res, next) => {
+        console.log('body', req.body);
+
+        authService
+            .verifyTokenAndResetPwd(req.body)
+            .then(() => {
+                respondOK(res, true, 'reset password success', 200);
+            })
+            .catch((err) => {
+                next(err);
+            });
     }
 };
 

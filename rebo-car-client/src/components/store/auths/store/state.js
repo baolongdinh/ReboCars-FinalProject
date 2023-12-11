@@ -1,5 +1,5 @@
 function getLocalUser() {
-  const user = localStorage.getItem("user");
+  const user = window.sessionStorage.getItem("user");
   return JSON.parse(user);
 }
 

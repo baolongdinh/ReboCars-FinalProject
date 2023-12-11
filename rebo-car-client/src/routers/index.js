@@ -68,6 +68,9 @@ export const router = createRouter({
       path: "/userdashboard",
       component: userDashboard,
       name: "userDashboard",
+      meta: {
+        requiresAuth: true,
+      },
       children: [
         {
           path: "account",
@@ -100,6 +103,9 @@ export const router = createRouter({
       path: "/usercarsdashboard",
       component: UserCarsDashboard,
       name: "UserCarsDashboard",
+      meta: {
+        requiresAuth: true,
+      },
       children: [
         {
           path: "mylistcars",
@@ -131,4 +137,22 @@ export const router = createRouter({
       return { top: 0 };
     }
   },
+});
+
+function checkUserAuthentication() {
+  // Assuming you have a token stored in local storage or a user authentication flag in your state
+  const token = window.sessionStorage.getItem("refreshToken"); // Get the token from local storage
+  const isAuthenticated = !!token; // Check if the token exists
+
+  return isAuthenticated;
+}
+
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = checkUserAuthentication();
+  console.log(isAuthenticated, to.meta.requiresAuth);
+  if ((isAuthenticated && to.meta.requiresAuth) || !to.meta.requiresAuth) {
+    next(); // Proceed to the next route
+  } else {
+    next(""); // Redirect to login page or wherever appropriate
+  }
 });

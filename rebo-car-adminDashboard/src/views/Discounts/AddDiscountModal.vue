@@ -178,7 +178,7 @@ export default {
                 console.log(err)
                 this.$notify({
                     title: 'Notification',
-                    text: err.message,
+                    text: err.response.data.message,
                     type: 'error'
                 });
             })

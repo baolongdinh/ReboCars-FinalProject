@@ -10,7 +10,7 @@ const defineEndpoint = (req, res, next) => {
 
 router.delete('/:id', defineEndpoint, authMiddleware.checkPermission, userController.deleteUserById);
 
-router.put('/:id', defineEndpoint, userController.updateUserByIdByAdmin);
+router.put('/:id', defineEndpoint, authMiddleware.checkPermission, userController.updateUserByIdByAdmin);
 
 router.put(
     '/activeOrBlock/:id',

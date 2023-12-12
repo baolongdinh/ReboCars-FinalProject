@@ -146,7 +146,11 @@ export default {
                 console.log({ result })
                 this.loadCars()
             }).catch((err) => {
-                console.error(err)
+                this.$notify({
+                    title: 'Notification',
+                    text: err.response.data.message,
+                    type: 'error'
+                });
             })
         },
     },

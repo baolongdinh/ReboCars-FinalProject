@@ -470,6 +470,10 @@ const carService = {
                 return respondFailure(res, 'can not find car id', 403);
             }
 
+            if (req.user.id !== existedCar.user_id.toString()) {
+                // check Is Car Owner ?
+                return respondFailure(res, 'permission denied', 401);
+            }
             // -------------------------- //
             // features = features.split(',');
             location = JSON.parse(location);
@@ -529,6 +533,11 @@ const carService = {
 
                 if (!existCar) {
                     return respondFailure(res, 'can not found car with id', 403);
+                }
+
+                if (req.user.id !== existedCar.user_id.toString()) {
+                    // check Is Car Owner ?
+                    return respondFailure(res, 'permission denied', 401);
                 }
 
                 deleteAllImagesOfCar(existCar);

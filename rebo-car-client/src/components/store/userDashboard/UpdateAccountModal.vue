@@ -104,7 +104,6 @@ import { RepositoryFactory } from "../../../apis/repositoryFactory";
 import { useStore } from 'vuex';
 import { useNotification } from "@kyvg/vue3-notification";
 const { notify } = useNotification()
-const carsRepo = RepositoryFactory.get('cars')
 const usersRepo = RepositoryFactory.get("users");
 const store = useStore()
 const props = defineProps({ user: Object })
@@ -112,7 +111,7 @@ const emit = defineEmits(['confirm'])
 
 const preview = ref()
 const image = ref()
-const dateOfBirth = ref(formatDateToYYYYMMDD(new Date(props?.user.dateOfBirth)))
+const dateOfBirth = ref(new Date(props?.user.dateOfBirth).toISOString().split('T')[0])
 const name = ref(props?.user.name)
 const phone = ref(props?.user.phone)
 const userId = props.user._id
@@ -129,14 +128,6 @@ function previewImage(event) {
         image.value = input.files[0];
         reader.readAsDataURL(input.files[0]);
     }
-}
-
-function formatDateToYYYYMMDD(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${month}-${day}-${year}`;
 }
 
 // handle image src
@@ -163,33 +154,36 @@ function handleBtnConfirmUpdate() {
     }
 
     const payload = convertObjToFormData(user)
-    console.log({ user })
+    console.log(userId)
     usersRepo.updateUserById(userId, payload).then((result) => {
-        console.log({ result })
         notify({
             title: 'Thông báo',
-            text: 'Thay đổi thông tin thành công.',
+            text: 'Thay đổi thông tin tài khoản thành công.',
             type: 'success'
         });
         const user = result.data.metadata.userUpdated
-        window.sessionStorage.setItem("user", JSON.stringify(user));
+        sessionStorage.setItem("user", JSON.stringify(user));
         store.commit("setUser", user);
         emit('confirm')
 
     }).catch(err => {
-        console.error(err)
-        msgErr.value = err.message
+        notify({
+            title: 'Error',
+            text: err.response.data.message,
+            type: 'error'
+        });
+        msgErr.value = err.response.data.message
     })
 }
 
 onMounted(() => {
     console.log({ props })
-    console.log(dateOfBirth)
+    console.log(dateOfBirth.value)
 
 })
 
 onUpdated(() => {
-    console.log(dateOfBirth)
+    console.log(dateOfBirth.value)
 })
 
 </script>

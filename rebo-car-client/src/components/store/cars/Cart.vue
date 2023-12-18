@@ -223,10 +223,6 @@ const car = inject('car')
 
 const dateRange = ref([props.startDateTime, props.endDateTime])
 
-const startDate = ref()
-const endDate = ref()
-const startTime = ref()
-const endTime = ref()
 const startDateTimeObj = ref()
 const endDateTimeObj = ref()
 const dateBetween = ref()
@@ -243,10 +239,8 @@ const disabledDates = ref([])
 
 
 ///// provide value to lower component
-provide('startDate', startDate)
-provide('endDate', endDate)
-provide('startTime', startTime)
-provide('endTime', endTime)
+
+
 provide('startDateTimeObj', computed(() => dateRange.value[0]))
 provide('endDateTimeObj', computed(() => dateRange.value[1]))
 provide('dateBetween', dateBetween)
@@ -261,10 +255,8 @@ provide('delivery_receipt_address', delivery_receipt_address)
 
 
 
-
-
 function handleSubmitUpdateDateRange() {
-    console.log(dateRange.value)
+    calculatePriceAndFixedNumber()
 }
 
 const filter = ref({ car_id: car.value._id })
@@ -320,8 +312,7 @@ function calculatePriceAndFixedNumber() {
     brokerageCost.value = brokerageCost.value.toFixed()
 
     unitPrice.value = parseInt(discountPrice.value) + parseInt(brokerageCost.value)
-
-    dateBetween.value = daysBetween(new Date(props.startDateTime), new Date(props.endDateTime))
+    dateBetween.value = daysBetween(new Date(dateRange.value[0]), new Date(dateRange.value[1]))
     unitPrice.value = unitPrice.value * dateBetween.value
 
     unitTotalPrice.value = unitPrice.value
@@ -333,12 +324,6 @@ function calculatePriceAndFixedNumber() {
 function convertAndFormatDateStringToDate() {
     startDateTimeObj.value = new Date(props.startDateTime)
     endDateTimeObj.value = new Date(props.endDateTime)
-
-    startDate.value = `${startDateTimeObj.value.getDate()}/${startDateTimeObj.value.getMonth() + 1}/${startDateTimeObj.value.getFullYear()}`
-    startTime.value = `${startDateTimeObj.value.getHours()}:${startDateTimeObj.value.getMinutes()}`
-
-    endDate.value = `${endDateTimeObj.value.getDate()}/${endDateTimeObj.value.getMonth() + 1}/${endDateTimeObj.value.getFullYear()}`
-    endTime.value = `${endDateTimeObj.value.getHours()}:${endDateTimeObj.value.getMinutes()}`
 
 }
 

@@ -535,7 +535,7 @@ const carService = {
                     return respondFailure(res, 'can not found car with id', 403);
                 }
 
-                if (req.user.id !== existedCar.user_id.toString()) {
+                if (req.user.id !== existCar.user_id.toString()) {
                     // check Is Car Owner ?
                     return respondFailure(res, 'permission denied', 401);
                 }

@@ -4,7 +4,7 @@ const carController = require('../controllers/car.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 
 const defineEndpoint = (req, res, next) => {
-    req.endpoint = 'userCars';
+    req.endpoint = 'cars';
     next();
 };
 

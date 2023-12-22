@@ -8,7 +8,9 @@ const orderSchema = new mongoose.Schema(
         delivery_receipt_address: { type: Schema.Types.Mixed, require: true },
         prices_table: { type: Schema.Types.Mixed, require: true },
         status: {
-            type: String
+            type: String,
+            enum: ['Created', 'Car Received', 'Car Returned'],
+            default: 'Created'
         },
         reviewed: {
             type: Boolean,

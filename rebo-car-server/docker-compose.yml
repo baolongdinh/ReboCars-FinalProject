@@ -8,10 +8,12 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - app
+      - app1
+      - app2
+      - app3
 
-  app:
-    container_name: rebocars-server
+  app1:
+    container_name: rebocars-server1
     build:
       context: .
       dockerfile: Dockerfile
@@ -19,6 +21,26 @@ services:
       - "3000:3000"
     depends_on:
       - db
+
+  app2:
+    container_name: rebocars-server2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    depends_on:
+      - db
+
+  app3:
+    container_name: rebocars-server3
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3000"
+    depends_on:
+      - db  
 
   db:
     image: mongo

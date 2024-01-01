@@ -50,7 +50,8 @@ import { ref, onMounted, inject } from 'vue';
 import { RepositoryFactory } from "../../../apis/repositoryFactory";
 import StarRating from 'vue-star-rating'
 import { useStore } from 'vuex'
-
+import { useNotification } from "@kyvg/vue3-notification";
+const { notify } = useNotification()
 
 
 //define
@@ -71,6 +72,11 @@ function updateRating(rating) {
 
 function handleConfirmSubmitReviewBtn() {
     orderRepo.addReviewOrderById(orderId, { carId, userAvatar, userName, rate: rate.value, comment: comment.value }).then(() => {
+        notify({
+            title: 'Thông báo',
+            text: 'Đánh giá đơn hàng thành công.',
+            type: 'success'
+        });
         emit('handleConfirmSubmitReviewBtn')
     }).catch((err) => {
         console.error(err)

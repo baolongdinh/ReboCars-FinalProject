@@ -168,10 +168,10 @@ const userService = {
                     throw new NotfoundError('Can not found user ID');
                 }
                 //delete user avt-image
-                if (userExist.avatar && req.file) {
-                    const userAvtImagePath = userExist.avatar.replace('static', 'public');
-                    deleteFileWithPath(userAvtImagePath);
-                }
+                // if (userExist.avatar && req.file) {
+                //     const userAvtImagePath = userExist.avatar.replace('static', 'public');
+                //     deleteFileWithPath(userAvtImagePath);
+                // }
 
                 if (req.file) {
                     const new_avatar_path = `/static/images/users/${req.file.filename}`;

@@ -589,7 +589,6 @@ function hideReviewOrderDialog() {
 function handleConfirmSubmitReviewBtn() {
     console.log('success reviewed')
     showReviewOrderModal.value = false
-    router.go()
 }
 
 // handle image src

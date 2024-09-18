@@ -12,11 +12,11 @@ Installing NPM modules on both client and server folders
 Execute these commands from the project directory
 
 ```
-cd client && npm install
+cd rebo-car-client && npm install
 ```
 
 ```
-cd server && npm install
+cd rebo-car-server && npm install
 ```
 
 ### Running the app
